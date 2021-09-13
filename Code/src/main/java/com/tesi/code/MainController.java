@@ -35,25 +35,18 @@ public class MainController {
 
     @FXML
     void load(ActionEvent event) throws IOException, ClassNotFoundException {
-        Database db = new Database();
         Utility u = new Utility();
         /*
             if(loaded == true || txtTextArea.getText()!="") {
-                if("@article"){
-                    loadTypeBib(u.Article);
-                    db.connection(u.Article);
+                if(u.Article){
+                    loadTypeBib(u.article);
                 }
                 else{
                     loadTypeBib(u.inProceedings);
-                    db.connection(u.inProceedings);
                 }
             }
        */
-
-        db.connection(u.Article);
-        //db.connection(u.inProceedings);
-        db.insertIntoDB(u.Article);
-        db.reading(u.Article);
+        loadTypeBib(u.article);
     }
 
     private void loadTypeBib(String type) throws IOException {

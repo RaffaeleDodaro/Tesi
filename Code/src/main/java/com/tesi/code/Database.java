@@ -7,59 +7,60 @@ import java.sql.Statement;
 
 public class Database {
 
-    private Utility u = new Utility();
+    private final Utility u = new Utility();
 
-    public void connection(String type) throws ClassNotFoundException {
+    public void openConnection(String type) throws ClassNotFoundException {
         Connection c = null;
         Statement stmt = null;
         String sql = "";
         try {
             Class.forName("org.sqlite.JDBC");
-            if (type.equalsIgnoreCase(u.Article))
+            if (type.equalsIgnoreCase(u.article))
                 c = DriverManager.getConnection("jdbc:sqlite:article.db");
             else
                 c = DriverManager.getConnection("jdbc:sqlite:inproceedings.db");
             c.setAutoCommit(false);
             stmt = c.createStatement();
-            if (type.equalsIgnoreCase(u.Article))
+            if (type.equalsIgnoreCase(u.article))
                 createDBArticle(sql, stmt);
             else
                 createDBInProceedings(sql, stmt);
-            stmt.executeUpdate(sql);
+            /*stmt.executeUpdate(sql);
             stmt.close();
-            c.close();
+            c.close();*/
         } catch (Exception e) {
             e.printStackTrace();
         }
         System.out.println("DB aperto");
     }
 
-    public void insertIntoDB(String type) {
+    public void insertIntoDB(String type, String journal,String title,String short_title, String address) {
         String sql="";
         Connection c = null;
         Statement stmt = null;
 
         try {
             Class.forName("org.sqlite.JDBC");
-            c = DriverManager.getConnection("jdbc:sqlite:test.db");
+            if (type.equalsIgnoreCase(u.article))
+                c = DriverManager.getConnection("jdbc:sqlite:article.db");
+            else
+                c = DriverManager.getConnection("jdbc:sqlite:inproceedings.db");
             c.setAutoCommit(false);
-            System.out.println("Opened database successfully");
+            System.out.println("Opened database successfully "+c.getSchema());
 
             stmt = c.createStatement();
-            if (type.equalsIgnoreCase(u.Article)) {
+            if (type.equalsIgnoreCase(u.article)) {
                 System.out.println("i am here");
-                sql = "INSERT INTO article (" + u.articleAttributes + ") " +
-                        "VALUES(2000,90--106,conf/padl/AlvianoDZ21,Data Validation Meets Answer Set,Fundam. Informaticae,176,aaa,http:++,10.3233)";
+                //sql = "INSERT INTO ARTICLE (" + u.articleAttributes + ") " +
+                //        "VALUES(2000,\"90--106\",\"confpadlAlvianoDZ21\",\"Data Validation Meets Answer Set\",\"Fundam. Informaticae\",176,\"aaa\",\"http:++\",\"10.3233\")";
+
                 stmt.executeUpdate(sql);
             }
             stmt.close();
             c.commit();
             c.close();
         }
-        catch(Exception e)
-        {
-            e.printStackTrace();
-        }
+        catch(Exception e){e.printStackTrace();}
     }
 
     public void reading(String type) {
@@ -69,7 +70,7 @@ public class Database {
         try {
             Class.forName("org.sqlite.JDBC");
 
-            if (type.equalsIgnoreCase(u.Article))
+            if (type.equalsIgnoreCase(u.article))
                 c = DriverManager.getConnection("jdbc:sqlite:article.db");
             else
                 c = DriverManager.getConnection("jdbc:sqlite:inproceedings.db");
@@ -89,10 +90,7 @@ public class Database {
             stmt.close();
             c.close();
         }
-        catch (Exception e)
-        {
-            e.printStackTrace();
-        }
+        catch (Exception e){e.printStackTrace();}
     }
 
     private void createDBInProceedings(String sql, Statement stmt) {
@@ -149,4 +147,5 @@ public class Database {
             System.out.println(e.getStackTrace());
         }
     }
+
 }
