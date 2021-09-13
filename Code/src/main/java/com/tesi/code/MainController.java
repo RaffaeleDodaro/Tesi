@@ -24,30 +24,44 @@ public class MainController {
     @FXML
     private TextArea txtTextArea;
 
-    private boolean loaded=false;
+    private boolean loaded = false;
 
     @FXML
     void chooseFile(ActionEvent event) {
-        FileHandler f=new FileHandler();
+        FileHandler f = new FileHandler();
         f.chooseFile(txtTextArea); //mi serve solo in fase di debug. da eliminare poi
-        loaded=true;
+        loaded = true;
     }
 
     @FXML
-    void load(ActionEvent event) throws IOException {
-        if(loaded == true || txtTextArea.getText()!="")
-            //if("@article")
-                loadTypeBib("Article");
-            //else
-                loadTypeBib("InProocedings");
+    void load(ActionEvent event) throws IOException, ClassNotFoundException {
+        Database db = new Database();
+        Utility u = new Utility();
+        /*
+            if(loaded == true || txtTextArea.getText()!="") {
+                if("@article"){
+                    loadTypeBib(u.Article);
+                    db.connection(u.Article);
+                }
+                else{
+                    loadTypeBib(u.inProceedings);
+                    db.connection(u.inProceedings);
+                }
+            }
+       */
+
+        db.connection(u.Article);
+        //db.connection(u.inProceedings);
+        db.insertIntoDB(u.Article);
+        db.reading(u.Article);
     }
 
     private void loadTypeBib(String type) throws IOException {
         Stage stage = (Stage) btnLoad.getScene().getWindow();
-        FXMLLoader fxmlLoader = new FXMLLoader(Main.class.getResource(type+".fxml"));
+        FXMLLoader fxmlLoader = new FXMLLoader(Main.class.getResource(type + ".fxml"));
         Pane root = (Pane) fxmlLoader.load();
         Scene scene = new Scene(root, 600, 442);
-        stage.setTitle("@"+type);
+        stage.setTitle(type);
         stage.setScene(scene);
         stage.setResizable(false);
         stage.show();

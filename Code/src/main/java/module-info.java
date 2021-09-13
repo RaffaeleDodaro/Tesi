@@ -3,6 +3,7 @@ module com.example.code {
     requires javafx.fxml;
     requires java.desktop;
     requires jbibtex;
+    requires java.sql;
 
 
     opens com.tesi.code to javafx.fxml;
