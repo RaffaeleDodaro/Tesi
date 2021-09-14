@@ -5,12 +5,13 @@ import javafx.stage.FileChooser;
 import org.jbibtex.ParseException;
 
 import javax.swing.JFileChooser;
+import java.awt.*;
 import java.io.*;
 import java.nio.Buffer;
 
 import org.jbibtex.BibTeXParser;
 
-public class FileHandler {
+public class FileHandler extends Component {
     File file=null;
 
     public File getFile(){
@@ -18,9 +19,9 @@ public class FileHandler {
         return file;
     }
 
-    public void chooseFile(TextArea textArea) {
+    public void chooseFile() {
         JFileChooser chooser = new JFileChooser();
-        chooser.showOpenDialog(null);
+        chooser.showOpenDialog(FileHandler.this);
         file = chooser.getSelectedFile();
         System.out.println(file.getName());
         //Parser parser = new Parser();

@@ -1,5 +1,8 @@
-package com.tesi.code;
+package com.tesi.code.Controller;
 
+import com.tesi.code.Database;
+import com.tesi.code.FileHandler;
+import com.tesi.code.Utility;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -32,7 +35,7 @@ public class ArticleController implements Initializable {
 
         //da eliminare e mettere nell'if sopra
         db.openConnection(u.article);
-        db.insertIntoDB(u.article, txtJournal.getText(), txtTitle.getText(), txtShortTitle.getText(),"");
+        db.insertIntoDB(file, u.article, txtJournal.getText(), txtTitle.getText(), txtShortTitle.getText(),"");
         //db.reading(u.article);
     }
 

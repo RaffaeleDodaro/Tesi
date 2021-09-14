@@ -1,5 +1,9 @@
-package com.tesi.code;
+package com.tesi.code.Controller;
 
+import com.tesi.code.FileHandler;
+import com.tesi.code.Main;
+import com.tesi.code.Parser;
+import com.tesi.code.Utility;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -12,6 +16,7 @@ import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import javafx.stage.Window;
 
+import java.io.File;
 import java.io.IOException;
 
 public class MainController {
@@ -25,11 +30,12 @@ public class MainController {
     private TextArea txtTextArea;
 
     private boolean loaded = false;
-
+    private File file=null;
     @FXML
     void chooseFile(ActionEvent event) {
         FileHandler f = new FileHandler();
-        f.chooseFile(txtTextArea); //mi serve solo in fase di debug. da eliminare poi
+        f.chooseFile(); //mi serve solo in fase di debug. da eliminare poi
+        file=f.getFile();
         loaded = true;
     }
 
@@ -46,6 +52,11 @@ public class MainController {
                 }
             }
        */
+
+        //codice di prova
+        Parser p=new Parser();
+
+        p.parsering(file);
         loadTypeBib(u.article);
     }
 

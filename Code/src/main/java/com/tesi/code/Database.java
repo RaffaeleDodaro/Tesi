@@ -1,5 +1,6 @@
 package com.tesi.code;
 
+import java.io.File;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
@@ -34,7 +35,7 @@ public class Database {
         System.out.println("DB aperto");
     }
 
-    public void insertIntoDB(String type, String journal,String title,String short_title, String address) {
+    public void insertIntoDB(File file, String type, String journal, String title, String short_title, String address) {
         String sql="";
         Connection c = null;
         Statement stmt = null;
