@@ -40,7 +40,7 @@ public class Parser {
         }
     }
 
-    public void findType(String row) {
+    private void findType(String row) {
         Pattern pattern = Pattern.compile("@(\\w+)\\{");
         Matcher matcher = pattern.matcher(row);
         if (matcher.find()) {
@@ -49,7 +49,7 @@ public class Parser {
         }
     }
 
-    public void findAuthor(String row) {
+    private void findAuthor(String row) {
         Pattern pattern = Pattern.compile("author\\s+\\=\\s+\\{([\\s\\S]*?)\\},");
         Matcher matcher = pattern.matcher(row);
         if (matcher.find()) {
