@@ -30,34 +30,28 @@ public class MainController {
     private TextArea txtTextArea;
 
     private boolean loaded = false;
-    private File file=null;
+    private File file = null;
+
     @FXML
     void chooseFile(ActionEvent event) {
         FileHandler f = new FileHandler();
         f.chooseFile(); //mi serve solo in fase di debug. da eliminare poi
-        file=f.getFile();
+        file = f.getFile();
         loaded = true;
     }
 
     @FXML
     void load(ActionEvent event) throws IOException, ClassNotFoundException {
+        Parser p = Parser.getInstance();
         Utility u = new Utility();
-        /*
-            if(loaded == true || txtTextArea.getText()!="") {
-                if(u.Article){
-                    loadTypeBib(u.article);
-                }
-                else{
-                    loadTypeBib(u.inProceedings);
-                }
-            }
-       */
-
-        //codice di prova
-        Parser p=new Parser();
-
         p.parsering(file);
-        loadTypeBib(u.article);
+        if (loaded == true || txtTextArea.getText() != "") {
+            if (u.article.equalsIgnoreCase(p.getType())) {
+                loadTypeBib(u.article);
+            } else {
+                loadTypeBib(u.inProceedings);
+            }
+        }
     }
 
     private void loadTypeBib(String type) throws IOException {
