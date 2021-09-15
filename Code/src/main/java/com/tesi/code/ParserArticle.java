@@ -4,7 +4,7 @@ import java.io.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class ParserInProceedings {
+public class ParserArticle {
     private String type = "";
     private String booktitle = "";
     private int year = 0;
@@ -20,13 +20,11 @@ public class ParserInProceedings {
     private String series = "";
     private String doi = "";
 
-    private String author="";
+    private String author = "";
 
-    private static ParserInProceedings instance = null;
-
-    public static ParserInProceedings getInstance() {
+    public static ParserArticle getInstance() {
         if (instance == null)
-            instance = new ParserInProceedings();
+            instance = new ParserArticle();
         return instance;
     }
 
@@ -40,13 +38,13 @@ public class ParserInProceedings {
                 reader.close();
                 findAuthor(conc);
                 findType(conc);
-                findAddress(conc);
-                findBookTitle(conc);
+                findTitle(conc);
                 findDBLP(conc);
                 findBookTitle(conc);
                 findDoi(conc);
                 findVolume(conc);
                 findURL(conc);
+                findJournal(conc);
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -55,37 +53,46 @@ public class ParserInProceedings {
                 conc += text.split("\\n")[i];
             findAuthor(conc);
             findType(conc);
-            findAddress(conc);
-            findBookTitle(conc);
+            findTitle(conc);
             findDBLP(conc);
             findBookTitle(conc);
             findDoi(conc);
             findVolume(conc);
             findURL(conc);
+            findJournal(conc);
         }
     }
 
-    private void findType(String row) {
-        Pattern pattern = Pattern.compile("@(\\w+)\\{");
+    private String find(String pattern)
+    {
+        Pattern pattern = Pattern.compile(pattern);
         Matcher matcher = pattern.matcher(row);
         if (matcher.find())
-        {
+            return matcher.group(1);
+    }
 
-            type = matcher.group(1);
-            System.out.println("type: "+type);
-        }
+    private void findType(String row) {
+
+        type=find("@(\\w+)\\{");
+        /*
+            Pattern pattern = Pattern.compile("@(\\w+)\\{");
+            Matcher matcher = pattern.matcher(row);
+            if (matcher.find()) {
+
+                type = matcher.group(1);
+                System.out.println("type: " + type);
+            }
+        */
+        System.out.println("type: " + type);
     }
 
     private void findAuthor(String row) {
         Pattern pattern = Pattern.compile("author\\s+\\=\\s+\\{([\\s\\S]*?)\\},");
         Matcher matcher = pattern.matcher(row);
-        if (matcher.find()) {
+        if (matcher.find())
             //come prova per il momento lo metto all'interno della text box book title
             //sostituisco "and <tanti spazi>" con "and "
             author = matcher.group(1).replaceAll("and \\s+", "and ");
-
-            System.out.println("author: "+author);
-        }
     }
 
     private void findBookTitle(String row) {
@@ -93,7 +100,7 @@ public class ParserInProceedings {
         Matcher matcher = pattern.matcher(row);
         if (matcher.find()) {
             booktitle = matcher.group(1);
-            System.out.println("booktitle: "+booktitle);
+            System.out.println("booktitle: " + booktitle);
         }
     }
 
@@ -103,7 +110,8 @@ public class ParserInProceedings {
         if (matcher.find())
             //come prova per il momento lo metto all'interno della text box book title
             //sostituisco "and <tanti spazi>" con "and "
-            year = Integer.parseInt(matcher.group(1)); }
+            year = Integer.parseInt(matcher.group(1));
+    }
 
     private void findPages(String row) {
         Pattern pattern = Pattern.compile("pages\\s+\\=\\s+\\{([\\s\\S]*?)\\},");
@@ -111,7 +119,8 @@ public class ParserInProceedings {
         if (matcher.find())
             //come prova per il momento lo metto all'interno della text box book title
             //sostituisco "and <tanti spazi>" con "and "
-            pages = matcher.group(1); }
+            pages = matcher.group(1);
+    }
 
     private void findDBLP(String row) {
         Pattern pattern = Pattern.compile("DBLP:(.+),");
@@ -119,7 +128,8 @@ public class ParserInProceedings {
         if (matcher.find())
             //come prova per il momento lo metto all'interno della text box book title
             //sostituisco "and <tanti spazi>" con "and "
-            dblp = matcher.group(1); }
+            dblp = matcher.group(1);
+    }
 
     private void findTitle(String row) {
         Pattern pattern = Pattern.compile("\\s{1,2}title\\s+\\=\\s+\\{([\\s\\S]*?)\\},");
@@ -127,7 +137,8 @@ public class ParserInProceedings {
         if (matcher.find())
             //come prova per il momento lo metto all'interno della text box book title
             //sostituisco "and <tanti spazi>" con "and "
-            title = matcher.group(1); }
+            title = matcher.group(1);
+    }
 
     private void findJournal(String row) {
         Pattern pattern = Pattern.compile("author\\s+\\=\\s+\\{([\\s\\S]*?)\\},");
@@ -135,7 +146,8 @@ public class ParserInProceedings {
         if (matcher.find())
             //come prova per il momento lo metto all'interno della text box book title
             //sostituisco "and <tanti spazi>" con "and "
-            title = matcher.group(1).replaceAll("and \\s+", "and "); }
+            title = matcher.group(1).replaceAll("and \\s+", "and ");
+    }
 
     private void findVolume(String row) {
         Pattern pattern = Pattern.compile("volume\\s+\\=\\s+\\{([\\s\\S]*?)\\},");
@@ -143,15 +155,8 @@ public class ParserInProceedings {
         if (matcher.find())
             //come prova per il momento lo metto all'interno della text box book title
             //sostituisco "and <tanti spazi>" con "and "
-            volume = Integer.parseInt(matcher.group(1)); }
-
-    private void findAddress(String row) {
-        Pattern pattern = Pattern.compile("author\\s+\\=\\s+\\{([\\s\\S]*?)\\},");
-        Matcher matcher = pattern.matcher(row);
-        if (matcher.find())
-            //come prova per il momento lo metto all'interno della text box book title
-            //sostituisco "and <tanti spazi>" con "and "
-            title = matcher.group(1).replaceAll("and \\s+", "and "); }
+            volume = Integer.parseInt(matcher.group(1));
+    }
 
     private void findURL(String row) {
         Pattern pattern = Pattern.compile("\\s{1,2}url\\s+\\=\\s+\\{([\\s\\S]*?)\\},");
@@ -159,7 +164,8 @@ public class ParserInProceedings {
         if (matcher.find())
             //come prova per il momento lo metto all'interno della text box book title
             //sostituisco "and <tanti spazi>" con "and "
-            url = matcher.group(1); }
+            url = matcher.group(1);
+    }
 
     private void findPublisher(String row) {
         Pattern pattern = Pattern.compile("publisher\\s+\\=\\s+\\{([\\s\\S]*?)\\},");
@@ -167,7 +173,8 @@ public class ParserInProceedings {
         if (matcher.find())
             //come prova per il momento lo metto all'interno della text box book title
             //sostituisco "and <tanti spazi>" con "and "
-            publisher = matcher.group(1); }
+            publisher = matcher.group(1);
+    }
 
     private void findSeries(String row) {
         Pattern pattern = Pattern.compile("series\\s+\\=\\s+\\{([\\s\\S]*?)\\},");
@@ -175,7 +182,8 @@ public class ParserInProceedings {
         if (matcher.find())
             //come prova per il momento lo metto all'interno della text box book title
             //sostituisco "and <tanti spazi>" con "and "
-            series = matcher.group(1); }
+            series = matcher.group(1);
+    }
 
     private void findDoi(String row) {
         Pattern pattern = Pattern.compile("doi\\s+\\=\\s+\\{([\\s\\S]*?)\\},");
@@ -183,7 +191,8 @@ public class ParserInProceedings {
         if (matcher.find())
             //come prova per il momento lo metto all'interno della text box book title
             //sostituisco "and <tanti spazi>" con "and "
-            doi = matcher.group(1); }
+            doi = matcher.group(1);
+    }
 
     public String getType() {
         return type;
@@ -195,10 +204,6 @@ public class ParserInProceedings {
 
     public String getShort_title() {
         return short_title;
-    }
-
-    public String getAddress() {
-        return address;
     }
 
     public String getBooktitle() {
@@ -244,4 +249,5 @@ public class ParserInProceedings {
     public String getAuthor() {
         return author;
     }
+
 }

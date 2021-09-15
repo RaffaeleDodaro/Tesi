@@ -39,7 +39,8 @@ public class Database {
         String sql="";
         Connection c = null;
         Statement stmt = null;
-
+        //inserisco inProceedings
+        ParserinProceedings pip=ParserinProceedings.getInstance();
         try {
             Class.forName("org.sqlite.JDBC");
             if (type.equalsIgnoreCase(u.article))
@@ -50,12 +51,17 @@ public class Database {
             System.out.println("Opened database successfully "+c.getSchema());
 
             stmt = c.createStatement();
-            if (type.equalsIgnoreCase(u.article)) {
+            if (type.equalsIgnoreCase(u.inProceedings)) {
                 System.out.println("i am here");
-                //sql = "INSERT INTO ARTICLE (" + u.articleAttributes + ") " +
-                //        "VALUES(2000,\"90--106\",\"confpadlAlvianoDZ21\",\"Data Validation Meets Answer Set\",\"Fundam. Informaticae\",176,\"aaa\",\"http:++\",\"10.3233\")";
-
+                sql = "INSERT INTO ARTICLE (" + u.inProceedingsAttributes + ") " +
+                        "VALUES("+pip.getYear()+","+pip.getPage()+","+pip.getDblp()+","+pip.getTitle()+","+pip.getJournal()
+                    +","+pip.getVolume()+","+pip.getShortTitle()+","+pip.getUrl()+","+pip.getText()+","+pip.getAddress()+"," +
+                    +pip.getPublisher()+","+pip.getSeries()+","+pip.getBookTitle()+","+pip.getDoi()+")";
                 stmt.executeUpdate(sql);
+            }
+            else
+            {
+
             }
             stmt.close();
             c.commit();
@@ -85,6 +91,8 @@ public class Database {
 
                 System.out.println( "YEAR = " + year );
                 System.out.println( "PAGES = " + pages );
+
+
                 System.out.println();
             }
             rs.close();
