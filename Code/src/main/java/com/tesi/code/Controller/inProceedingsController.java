@@ -35,22 +35,21 @@ public class inProceedingsController implements Initializable {
     void save(ActionEvent event) throws ClassNotFoundException {
         Database db = new Database();
         Utility u = new Utility();
-        File file=new FileHandler().getFile();
+        File file = new FileHandler().getFile();
 
         //da eliminare e mettere nell'if sopra
         db.openConnection(u.article);
-        db.insertIntoDB(file, u.article,txtBookTitle.getText(),txtTitle.getText(),txtShortTitle.getText(),txtAddress.getText());
+        db.insertIntoDB(file, u.article, txtBookTitle.getText(), txtTitle.getText(), txtShortTitle.getText(), txtAddress.getText());
         //db.reading(u.article);
     }
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-        Parser p=Parser.getInstance();
-        System.out.println("title: "+p.getTitle());
+        Parser p = Parser.getInstance();
+        System.out.println("title: " + p.getTitle());
         txtBookTitle.setText(p.getTitle());
         txtTitle.setText("Come");
         txtShortTitle.setText("Va?");
         txtAddress.setText("Tutto bene");
     }
-
 }

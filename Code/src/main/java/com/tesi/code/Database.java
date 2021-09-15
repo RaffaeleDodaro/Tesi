@@ -43,9 +43,9 @@ public class Database {
         try {
             Class.forName("org.sqlite.JDBC");
             if (type.equalsIgnoreCase(u.article))
-                c = DriverManager.getConnection("jdbc:sqlite:article.db");
+                c = DriverManager.getConnection("jdbc:sqlite:"+u.article+".db");
             else
-                c = DriverManager.getConnection("jdbc:sqlite:inproceedings.db");
+                c = DriverManager.getConnection("jdbc:sqlite:"+u.inProceedings+".db");
             c.setAutoCommit(false);
             System.out.println("Opened database successfully "+c.getSchema());
 
@@ -72,9 +72,9 @@ public class Database {
             Class.forName("org.sqlite.JDBC");
 
             if (type.equalsIgnoreCase(u.article))
-                c = DriverManager.getConnection("jdbc:sqlite:article.db");
+                c = DriverManager.getConnection("jdbc:sqlite:"+u.article+".db");
             else
-                c = DriverManager.getConnection("jdbc:sqlite:inproceedings.db");
+                c = DriverManager.getConnection("jdbc:sqlite:"+u.inProceedings+".db");
             c.setAutoCommit(false);
             stmt = c.createStatement();
             ResultSet rs = stmt.executeQuery( "SELECT * FROM ARTICLE;" );

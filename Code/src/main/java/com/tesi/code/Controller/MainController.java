@@ -20,6 +20,9 @@ import java.io.File;
 import java.io.IOException;
 
 public class MainController {
+    private boolean loaded = false;
+    private File file = null;
+
     @FXML
     private Button btnChooseFile;
 
@@ -28,9 +31,6 @@ public class MainController {
 
     @FXML
     private TextArea txtTextArea;
-
-    private boolean loaded = false;
-    private File file = null;
 
     @FXML
     void chooseFile(ActionEvent event) {
@@ -41,11 +41,16 @@ public class MainController {
     }
 
     @FXML
-    void load(ActionEvent event) throws IOException, ClassNotFoundException {
+    void load(ActionEvent event) throws IOException {
         Parser p = Parser.getInstance();
-        Utility u = new Utility();
-        p.parsering(file);
+        Utility u = Utility.getInstance();
+
         if (loaded == true || txtTextArea.getText() != "") {
+            if (!(txtTextArea.getText().equalsIgnoreCase("")))
+                p.parsering(null,txtTextArea.getText());
+            else
+                p.parsering(file,"");
+
             if (u.article.equalsIgnoreCase(p.getType())) {
                 loadTypeBib(u.article);
             } else {

@@ -12,10 +12,9 @@ import java.nio.Buffer;
 import org.jbibtex.BibTeXParser;
 
 public class FileHandler extends Component {
-    File file=null;
+    private File file = null;
 
-    public File getFile(){
-        System.out.println(file.getName());
+    public File getFile() {
         return file;
     }
 
@@ -24,7 +23,5 @@ public class FileHandler extends Component {
         chooser.showOpenDialog(FileHandler.this);
         file = chooser.getSelectedFile();
         System.out.println(file.getName());
-        //Parser parser = new Parser();
-        //parser.parsering(file);
     }
 }

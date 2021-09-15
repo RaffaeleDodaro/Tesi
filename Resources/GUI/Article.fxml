@@ -6,23 +6,22 @@
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
-
 <Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="351.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1">
    <children>
-      <TextField fx:id="txtJournal" layoutX="31.0" layoutY="14.0" prefHeight="25.0" prefWidth="366.0" />
-      <TextField fx:id="txtTitle" layoutX="31.0" layoutY="64.0" prefHeight="25.0" prefWidth="366.0" />
-      <TextField fx:id="txtShortTitle" layoutX="31.0" layoutY="126.0" prefHeight="25.0" prefWidth="366.0" />
-      <Text layoutX="444.0" layoutY="31.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Journal">
+      <TextField fx:id="txtJournal" layoutX="214.0" layoutY="17.0" prefHeight="25.0" prefWidth="366.0" />
+      <TextField fx:id="txtTitle" layoutX="214.0" layoutY="80.0" prefHeight="25.0" prefWidth="366.0" />
+      <TextField fx:id="txtShortTitle" layoutX="214.0" layoutY="146.0" prefHeight="25.0" prefWidth="366.0" />
+      <Text layoutX="31.0" layoutY="39.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Journal">
          <font>
             <Font size="27.0" />
          </font>
       </Text>
-      <Text layoutX="444.0" layoutY="87.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Title">
+      <Text layoutX="48.0" layoutY="105.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Title">
          <font>
             <Font size="27.0" />
          </font>
       </Text>
-      <Text layoutX="444.0" layoutY="149.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Short title">
+      <Text layoutX="31.0" layoutY="168.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Short title">
          <font>
             <Font size="27.0" />
          </font>
