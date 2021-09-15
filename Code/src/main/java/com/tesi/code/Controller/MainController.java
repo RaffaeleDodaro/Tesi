@@ -2,19 +2,16 @@ package com.tesi.code.Controller;
 
 import com.tesi.code.FileHandler;
 import com.tesi.code.Main;
-import com.tesi.code.Parser;
+import com.tesi.code.ParserInProceedings;
 import com.tesi.code.Utility;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
-import javafx.scene.control.Label;
 import javafx.scene.control.TextArea;
 import javafx.scene.layout.Pane;
-import javafx.stage.FileChooser;
 import javafx.stage.Stage;
-import javafx.stage.Window;
 
 import java.io.File;
 import java.io.IOException;
@@ -42,7 +39,7 @@ public class MainController {
 
     @FXML
     void load(ActionEvent event) throws IOException {
-        Parser p = Parser.getInstance();
+        ParserInProceedings p = ParserInProceedings.getInstance();
         Utility u = Utility.getInstance();
 
         if (loaded == true || txtTextArea.getText() != "") {

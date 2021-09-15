@@ -2,7 +2,7 @@ package com.tesi.code.Controller;
 
 import com.tesi.code.Database;
 import com.tesi.code.FileHandler;
-import com.tesi.code.Parser;
+import com.tesi.code.ParserInProceedings;
 import com.tesi.code.Utility;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -42,7 +42,7 @@ public class ArticleController implements Initializable {
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-        Parser p=Parser.getInstance();
+        ParserInProceedings p= ParserInProceedings.getInstance();
         System.out.println("title: "+p.getTitle());
         txtJournal.setText(p.getTitle());
         txtTitle.setText("Come");
