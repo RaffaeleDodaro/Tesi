@@ -33,23 +33,27 @@ public class inProceedingsController implements Initializable {
 
     @FXML
     void save(ActionEvent event) throws ClassNotFoundException {
-        Database db = new Database();
-        Utility u = new Utility();
+        Database db = Database.getInstance();
+        Utility u = Utility.getInstance();
         File file = new FileHandler().getFile();
+        ParserInProceedings pip=ParserInProceedings.getInstance();
+        db.openConnection(u.inProceedings);
+        db.createTableInProceedings();
+        //if(!txtShortTitle.getText().equalsIgnoreCase("") && !txtAddress.getText().equalsIgnoreCase(""))
+        db.insertIntoDBInProceedings(pip.getYear(),pip.getPages(),pip.getDblp(),txtTitle.getText(),pip.getVolume(),txtShortTitle.getText(),pip.getUrl(),
+                            pip.getAddress(),pip.getPublisher(),pip.getSeries(),pip.getBooktitle(),pip.getDoi());
 
-        //da eliminare e mettere nell'if sopra
-        db.openConnection(u.article);
-        db.insertIntoDB(file, u.article, txtBookTitle.getText(), txtTitle.getText(), txtShortTitle.getText(), txtAddress.getText());
-        //db.reading(u.article);
+
+        //db.reading(u.inProceedings);
     }
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         ParserInProceedings p = ParserInProceedings.getInstance();
         System.out.println("title: " + p.getTitle());
-        txtBookTitle.setText(p.getTitle());
-        txtTitle.setText("Come");
-        txtShortTitle.setText("Va?");
-        txtAddress.setText("Tutto bene");
+        txtBookTitle.setText(p.getBooktitle());
+        txtTitle.setText(p.getTitle());
+        txtShortTitle.setText("");
+        txtAddress.setText("");
     }
 }

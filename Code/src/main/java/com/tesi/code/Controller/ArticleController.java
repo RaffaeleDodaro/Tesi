@@ -1,9 +1,6 @@
 package com.tesi.code.Controller;
 
-import com.tesi.code.Database;
-import com.tesi.code.FileHandler;
-import com.tesi.code.ParserInProceedings;
-import com.tesi.code.Utility;
+import com.tesi.code.*;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -33,18 +30,19 @@ public class ArticleController implements Initializable {
         Database db = new Database();
         Utility u = new Utility();
         File file=new FileHandler().getFile();
-
+        ParserArticle pa=ParserArticle.getInstance();
         //da eliminare e mettere nell'if sopra
         db.openConnection(u.article);
-        db.insertIntoDB(file, u.article, txtJournal.getText(), txtTitle.getText(), txtShortTitle.getText(),"");
+        db.insertIntoDBArticle(pa.getYear(),pa.getPages(),pa.getDblp(),txtTitle.getText(),pa.getVolume(),txtShortTitle.getText(),pa.getUrl()
+                ,pa.getPublisher(),pa.getSeries(),pa.getBooktitle(),pa.getDoi());
         //db.reading(u.article);
     }
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-        ParserInProceedings p= ParserInProceedings.getInstance();
-        System.out.println("title: "+p.getTitle());
-        txtJournal.setText(p.getTitle());
+        ParserArticle p= ParserArticle.getInstance();
+        //System.out.println("title: "+p.getTitle());
+        //txtJournal.setText(p.getTitle());
         txtTitle.setText("Come");
         txtShortTitle.setText("Va?");
     }

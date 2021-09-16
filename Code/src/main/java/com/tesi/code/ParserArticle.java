@@ -22,6 +22,8 @@ public class ParserArticle {
 
     private String author = "";
 
+    private static ParserArticle instance = null;
+
     public static ParserArticle getInstance() {
         if (instance == null)
             instance = new ParserArticle();
@@ -63,17 +65,18 @@ public class ParserArticle {
         }
     }
 
-    private String find(String pattern)
+    private String find(String p, String row)
     {
-        Pattern pattern = Pattern.compile(pattern);
+        Pattern pattern = Pattern.compile(p);
         Matcher matcher = pattern.matcher(row);
         if (matcher.find())
             return matcher.group(1);
+        return "";
     }
 
     private void findType(String row) {
 
-        type=find("@(\\w+)\\{");
+        type=find("@(\\w+)\\{",row);
         /*
             Pattern pattern = Pattern.compile("@(\\w+)\\{");
             Matcher matcher = pattern.matcher(row);
