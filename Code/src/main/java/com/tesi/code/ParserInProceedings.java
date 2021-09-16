@@ -39,18 +39,6 @@ public class ParserInProceedings {
                     conc += reader.readLine();
                 reader.close();
                 regex(conc);
-                System.out.println("author: " + author);
-                System.out.println("editor: " + editor);
-                System.out.println("title: " + title);
-                System.out.println("series: " + series);
-                System.out.println("publisher: " + publisher);
-                System.out.println("booktitle: " + booktitle);
-                System.out.println("dblp: " + dblp);
-                System.out.println("doi: " + doi);
-                System.out.println("volume: " + volume);
-                System.out.println("url: " + url);
-                System.out.println("year: " + year);
-                System.out.println("pages: " + pages);
             } catch (Exception e) {
                 e.printStackTrace();
             }

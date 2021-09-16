@@ -7,6 +7,8 @@ public class Database {
 
     private final Utility u = Utility.getInstance();
     private static Database instance = null;
+    private int lastAuthorId = -1;
+    private int lastEditorId = -1;
 
     public static Database getInstance() {
         if (instance == null)
@@ -18,16 +20,25 @@ public class Database {
 
     public void openConnection(String type) {
         try {
-            //Class.forName("org.sqlite.JDBC");
             if (type.equalsIgnoreCase(u.article))
                 c = DriverManager.getConnection("jdbc:sqlite:" + u.article + ".db");
             else
                 c = DriverManager.getConnection("jdbc:sqlite:" + u.inProceedings + ".db");
-
             System.out.println("c.getCatalog() Opened database successfully " + c.getCatalog());
 
             if (c != null && !c.isClosed())
                 System.out.println("Connected! " + c.getCatalog());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void closeConnection() {
+        try {
+            if (c == null)
+                return;
+            c.close();
+            c = null;
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -39,27 +50,19 @@ public class Database {
     }
 
     public void insertIntoDBInProceedings(int year, String pages, String dblp, String title, int volume, String shortTitle,
-                                          String url, String address, String publisher, String series, String bookTitle, String doi) {
-        String sql = "";
-        Connection c = null;
-        Statement stmt = null;
+                                          String url, String address, String publisher, String series, String bookTitle, String doi,
+                                          String author, String editor) {
         try {
-            Class.forName("org.sqlite.JDBC");
-            c = DriverManager.getConnection("jdbc:sqlite:" + u.inProceedings + ".db");
-            c.setAutoCommit(false);
-            System.out.println("Opened database successfully " + c.getSchema());
-
-            System.out.println("i am here");
+            if (c == null || c.isClosed())
+                return;
 
             //momentaneo
             address = "casdcsda";
             shortTitle = "cascasvfsw";
             //fine momentaneo
 
-            sql = "INSERT INTO ARTICLE VALUES(?,?,?,?,?,?,?,?,?,?,?,?);";
-            /*sql = "INSERT INTO ARTICLE(" + u.inProceedingsAttributes + ") " +
-                    "VALUES(?,?,?,?,?,?,?,?,?,?,?,?)";*/
-            PreparedStatement preparedStmt = c.prepareStatement(sql);
+
+            PreparedStatement preparedStmt = c.prepareStatement("INSERT INTO ARTICLE VALUES(?,?,?,?,?,?,?,?,?,?,?,?);");
             preparedStmt.setInt(1, year);
             preparedStmt.setString(2, pages);
             preparedStmt.setString(3, dblp);
@@ -73,41 +76,37 @@ public class Database {
             preparedStmt.setString(11, bookTitle);
             preparedStmt.setString(12, doi);
 
-            preparedStmt.execute();
-            stmt.close();
+            preparedStmt.executeUpdate();
+            preparedStmt.close();
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
     public void reading(String type) {
-        Connection c = null;
-        Statement stmt = null;
-        String sql = "";
         try {
-            Class.forName("org.sqlite.JDBC");
-
-            if (type.equalsIgnoreCase(u.article))
-                c = DriverManager.getConnection("jdbc:sqlite:" + u.article + ".db");
-            else
-                c = DriverManager.getConnection("jdbc:sqlite:" + u.inProceedings + ".db");
-            c.setAutoCommit(false);
-            stmt = c.createStatement();
+            if (c == null || c.isClosed())
+                return;
+            Statement stmt = c.createStatement();
             ResultSet rs = stmt.executeQuery("SELECT * FROM ARTICLE;");
 
             while (rs.next()) {
                 int year = rs.getInt("YEAR");
                 String pages = rs.getString("PAGES");
-
-                System.out.println("YEAR = " + year);
-                System.out.println("PAGES = " + pages);
-
-
-                System.out.println();
+                String dblp = rs.getString("DBLP");
+                String title = rs.getString("TITLE");
+                int volume = rs.getInt("VOLUME");
+                String shortTitle = rs.getString("SHORT_TITLE");
+                String url = rs.getString("URL");
+                String address = rs.getString("ADDRESS");
+                String publisher = rs.getString("PUBLISHER");
+                String series = rs.getString("SERIES");
+                String bookTitle = rs.getString("BOOKTITLE");
+                String doi = rs.getString("DOI");
+                System.out.println("YEAR: " + year + " PAGES: " + pages + " TITLE: " + title + " VOLUME: " + volume + " SHORT TITLE: " + shortTitle + " URL: " + url +
+                        " ADDRESS: " + address + " PUBLISHER: " + publisher + " SERIES: " + series + " BOOKTITLE: " + bookTitle + " DOI: " + doi + " DBLP: " + dblp);
             }
-            rs.close();
             stmt.close();
-            c.close();
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -121,9 +120,9 @@ public class Database {
             String sql = "";
             System.out.println("qui");
             sql = "CREATE TABLE IF NOT EXISTS ARTICLE" +
-                    "(YEAR INT PRIMARY KEY NOT NULL," +
+                    "(YEAR INT NOT NULL," +
                     "PAGES varchar(200) NOT NULL," +
-                    "DBLP varchar(200) NOT NULL," +
+                    "DBLP varchar(200) PRIMARY KEY NOT NULL," +
                     "TITLE varchar(200) NOT NULL," +
                     "VOLUME INT NOT NULL," +
                     "SHORT_TITLE varchar(200) NOT NULL," +
@@ -136,19 +135,19 @@ public class Database {
             Statement stmt = c.createStatement();
             stmt.executeUpdate(sql);
             sql = "CREATE TABLE IF NOT EXISTS AUTHOR" +
-                    "(ID INT PRIMARY KEY NOT NULL" +
+                    "(ID INTEGER PRIMARY KEY AUTOINCREMENT" +
                     "SURNAME varchar(200) NOT NULL," +
                     "NAME varchar(200) NOT NULL);";
+            lastAuthorId += 1;
             stmt.executeUpdate(sql);
             sql = "CREATE TABLE IF NOT EXISTS EDITOR" +
-                    "(ID INT PRIMARY KEY NOT NULL" +
+                    "(ID INTEGER PRIMARY KEY AUTOINCREMENT" +
                     "SURNAME varchar(200) NOT NULL," +
                     "NAME varchar(200) NOT NULL);";
+            lastEditorId += 1;
             stmt.executeUpdate(sql);
             stmt.close();
-        }
-        catch (Exception e)
-        {
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }

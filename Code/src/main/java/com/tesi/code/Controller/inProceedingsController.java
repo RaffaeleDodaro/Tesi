@@ -41,10 +41,10 @@ public class inProceedingsController implements Initializable {
         db.createTableInProceedings();
         //if(!txtShortTitle.getText().equalsIgnoreCase("") && !txtAddress.getText().equalsIgnoreCase(""))
         db.insertIntoDBInProceedings(pip.getYear(),pip.getPages(),pip.getDblp(),txtTitle.getText(),pip.getVolume(),txtShortTitle.getText(),pip.getUrl(),
-                            pip.getAddress(),pip.getPublisher(),pip.getSeries(),pip.getBooktitle(),pip.getDoi());
+                    txtAddress.getText(),pip.getPublisher(),pip.getSeries(),pip.getBooktitle(),pip.getDoi(),pip.getAuthor(),pip.getEditor());
 
 
-        //db.reading(u.inProceedings);
+        db.reading(u.inProceedings);
     }
 
     @Override
