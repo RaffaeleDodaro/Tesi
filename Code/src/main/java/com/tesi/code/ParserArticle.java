@@ -38,33 +38,29 @@ public class ParserArticle {
                 while (reader.ready())
                     conc += reader.readLine();
                 reader.close();
-                findAuthor(conc);
-                findType(conc);
-                findTitle(conc);
-                findDBLP(conc);
-                findBookTitle(conc);
-                findDoi(conc);
-                findVolume(conc);
-                findURL(conc);
-                findJournal(conc);
+                regex(conc);
             } catch (Exception e) {
                 e.printStackTrace();
             }
         } else {
             for (int i = 0; i < text.split("\\n").length; i++)
                 conc += text.split("\\n")[i];
-            findAuthor(conc);
-            findType(conc);
-            findTitle(conc);
-            findDBLP(conc);
-            findBookTitle(conc);
-            findDoi(conc);
-            findVolume(conc);
-            findURL(conc);
-            findJournal(conc);
+            regex(conc);
         }
     }
-
+    private void regex(String conc) {
+        type=find("@(\\w+)\\{",conc);
+        dblp=find("DBLP:(.+),\\s+author",conc);
+        title=find("title\\s+\\=\\s+\\{([\\s\\S]*?)\\},",conc);
+        volume=Integer.parseInt(find("volume\\s+\\=\\s+\\{([\\s\\S]*?)\\},",conc));
+        pages=find("pages\\s+\\=\\s+\\{([\\s\\S]*?)\\},",conc);
+        publisher=find("publisher\\s+\\=\\s+\\{([\\s\\S]*?)\\},",conc);
+        year=Integer.parseInt(find("year\\s+\\=\\s+\\{([\\s\\S]*?)\\},",conc));
+        url=find("\\s{1,2}url\\s+\\=\\s+\\{([\\s\\S]*?)\\},",conc);
+        doi=find("doi\\s+\\=\\s+\\{([\\s\\S]*?)\\},",conc);
+        author=find("author\\s+\\=\\s+\\{([\\s\\S]*?)\\},",conc);
+        journal=find("journal\\s+\\=\\s+\\{([\\s\\S]*?)\\},",conc);
+    }
     private String find(String p, String row)
     {
         Pattern pattern = Pattern.compile(p);
@@ -144,7 +140,7 @@ public class ParserArticle {
     }
 
     private void findJournal(String row) {
-        Pattern pattern = Pattern.compile("author\\s+\\=\\s+\\{([\\s\\S]*?)\\},");
+        Pattern pattern = Pattern.compile("journal\\s+\\=\\s+\\{([\\s\\S]*?)\\},");
         Matcher matcher = pattern.matcher(row);
         if (matcher.find())
             //come prova per il momento lo metto all'interno della text box book title

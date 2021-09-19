@@ -44,14 +44,13 @@ public class inProceedingsController implements Initializable {
                     txtAddress.getText(),pip.getPublisher(),pip.getSeries(),pip.getBooktitle(),pip.getDoi(),pip.getAuthor(),pip.getEditor());
 
 
-        db.readingArticle();
-        db.readingAuthor();
+        db.readingArticleInProceedings();
+        db.readingAuthorInProceedings();
     }
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         ParserInProceedings p = ParserInProceedings.getInstance();
-        System.out.println("title: " + p.getTitle());
         txtBookTitle.setText(p.getBooktitle());
         txtTitle.setText(p.getTitle());
         txtShortTitle.setText("");

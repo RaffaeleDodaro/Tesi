@@ -44,10 +44,10 @@ public class MainController {
 
         if (loaded == true || txtTextArea.getText() != "") {
             if (!(txtTextArea.getText().equalsIgnoreCase("")))
-                p.parsering(null,txtTextArea.getText());
+                p.parsering(null, txtTextArea.getText());
             else
-                p.parsering(file,"");
-
+                p.parsering(file, "");
+            System.out.println("u.article: " + u.article + " p.getType: " + p.getType());
             if (u.article.equalsIgnoreCase(p.getType())) {
                 loadTypeBib(u.article);
             } else {

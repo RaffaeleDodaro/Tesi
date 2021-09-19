@@ -33,17 +33,19 @@ public class ArticleController implements Initializable {
         ParserArticle pa=ParserArticle.getInstance();
         //da eliminare e mettere nell'if sopra
         db.openConnection(u.article);
+        db.createTableArticle();
         db.insertIntoDBArticle(pa.getYear(),pa.getPages(),pa.getDblp(),txtTitle.getText(),pa.getVolume(),txtShortTitle.getText(),pa.getUrl()
-                ,pa.getPublisher(),pa.getSeries(),pa.getBooktitle(),pa.getDoi());
-        //db.reading(u.article);
+                ,pa.getSeries(),pa.getBooktitle(),pa.getDoi(),pa.getAuthor(),txtJournal.getText());
+        db.readingArticleArticle();
+        db.readingAuthorArticle();
     }
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         ParserArticle p= ParserArticle.getInstance();
         //System.out.println("title: "+p.getTitle());
-        //txtJournal.setText(p.getTitle());
-        txtTitle.setText("Come");
+        txtJournal.setText(p.getJournal());
+        txtTitle.setText(p.getTitle());
         txtShortTitle.setText("Va?");
     }
 }

@@ -16,7 +16,7 @@ public class ParserInProceedings {
     private String publisher = "";
     private String series = "";
     private String doi = "";
-    private String editor="";
+    private String allEditor="";
     private String allAuthor="";
     private String title="";
     private String address="";
@@ -51,9 +51,10 @@ public class ParserInProceedings {
     }
 
     private void regex(String conc) {
+        type=find("@(\\w+)\\{",conc);
         dblp=find("DBLP:(.+),\\s+author",conc);
         allAuthor=find("author\\s+\\=\\s+\\{([\\s\\S]*?)\\},",conc);
-        editor=find("editor\\s+\\=\\s+\\{([\\s\\S]*?)\\},",conc);
+        allEditor=find("editor\\s+\\=\\s+\\{([\\s\\S]*?)\\},",conc);
         title=find("title\\s+\\=\\s+\\{([\\s\\S]*?)\\},",conc);
         booktitle=find("booktitle\\s+\\=\\s+\\{([\\s\\S]*?)\\},",conc);
         series=find("series\\s+\\=\\s+\\{([\\s\\S]*?)\\},",conc);
@@ -161,7 +162,7 @@ public class ParserInProceedings {
             doi = matcher.group(1); }
 
     public String getEditor() {
-        return editor;
+        return allEditor;
     }
 
     public String getTitle() {
