@@ -2,6 +2,8 @@ package com.tesi.code;
 
 import java.io.File;
 import java.sql.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class Database {
 
@@ -9,6 +11,7 @@ public class Database {
     private static Database instance = null;
     private int lastAuthorId = -1;
     private int lastEditorId = -1;
+    private ParserInProceedings pip = ParserInProceedings.getInstance();
 
     public static Database getInstance() {
         if (instance == null)
@@ -49,9 +52,39 @@ public class Database {
 
     }
 
-    public void insertIntoDBInProceedings(int year, String pages, String dblp, String title, int volume, String shortTitle,
-                                          String url, String address, String publisher, String series, String bookTitle, String doi,
-                                          String author, String editor) {
+    private void calculateAuthor(String author) {
+        Pattern pattern = Pattern.compile("(\\w+)\\s(.+)");
+        Matcher matcher;
+        String[] splittedAuthor = pip.getAuthor().split(" andand ");
+        for (int i = 0; i < splittedAuthor.length; i++) {
+            matcher = pattern.matcher(splittedAuthor[i]);
+            if (matcher.find()) {
+                String nome = matcher.group(1);
+                String cognome = matcher.group(2);
+                insertIntoDBInProceedingsAuthor(cognome,nome);
+                System.out.println("Autore " + i + " nome " + nome + " cognome " + cognome);
+            }
+        }
+    }
+
+    private void insertIntoDBInProceedingsAuthor(String name, String surname) {
+        try {
+            if (c == null || c.isClosed())
+                return;
+            PreparedStatement preparedStmt = c.prepareStatement("INSERT INTO AUTHOR VALUES(?,?,?);");
+            preparedStmt.setString(2, surname);
+            preparedStmt.setString(3, name);
+            preparedStmt.executeUpdate();
+            preparedStmt.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void insertIntoDBInProceedings
+            (int year, String pages, String dblp, String title, int volume, String shortTitle,
+             String url, String address, String publisher, String series, String bookTitle, String doi,
+             String author, String editor) {
         try {
             if (c == null || c.isClosed())
                 return;
@@ -60,7 +93,6 @@ public class Database {
             address = "casdcsda";
             shortTitle = "cascasvfsw";
             //fine momentaneo
-
 
             PreparedStatement preparedStmt = c.prepareStatement("INSERT INTO ARTICLE VALUES(?,?,?,?,?,?,?,?,?,?,?,?);");
             preparedStmt.setInt(1, year);
@@ -77,13 +109,16 @@ public class Database {
             preparedStmt.setString(12, doi);
 
             preparedStmt.executeUpdate();
+
             preparedStmt.close();
+
+            calculateAuthor(author);
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
-    public void reading(String type) {
+    public void readingArticle() {
         try {
             if (c == null || c.isClosed())
                 return;
@@ -105,6 +140,7 @@ public class Database {
                 String doi = rs.getString("DOI");
                 System.out.println("YEAR: " + year + " PAGES: " + pages + " TITLE: " + title + " VOLUME: " + volume + " SHORT TITLE: " + shortTitle + " URL: " + url +
                         " ADDRESS: " + address + " PUBLISHER: " + publisher + " SERIES: " + series + " BOOKTITLE: " + bookTitle + " DOI: " + doi + " DBLP: " + dblp);
+
             }
             stmt.close();
         } catch (Exception e) {
@@ -135,13 +171,13 @@ public class Database {
             Statement stmt = c.createStatement();
             stmt.executeUpdate(sql);
             sql = "CREATE TABLE IF NOT EXISTS AUTHOR" +
-                    "(ID INTEGER PRIMARY KEY AUTOINCREMENT" +
+                    "(ID INTEGER PRIMARY KEY AUTOINCREMENT," +
                     "SURNAME varchar(200) NOT NULL," +
                     "NAME varchar(200) NOT NULL);";
             lastAuthorId += 1;
             stmt.executeUpdate(sql);
             sql = "CREATE TABLE IF NOT EXISTS EDITOR" +
-                    "(ID INTEGER PRIMARY KEY AUTOINCREMENT" +
+                    "(ID INTEGER PRIMARY KEY AUTOINCREMENT," +
                     "SURNAME varchar(200) NOT NULL," +
                     "NAME varchar(200) NOT NULL);";
             lastEditorId += 1;
@@ -168,7 +204,7 @@ public class Database {
             Statement stmt = c.createStatement();
             stmt.executeUpdate(sql);
             sql = "CREATE TABLE IF NOT EXISTS AUTHOR" +
-                    "(ID INT PRIMARY KEY NOT NULL" +
+                    "(ID INT PRIMARY KEY NOT NULL," +
                     "SURNAME varchar(200) NOT NULL," +
                     "NAME varchar(200) NOT NULL);";
             stmt.executeUpdate(sql);
@@ -177,4 +213,23 @@ public class Database {
         }
     }
 
+    public void readingAuthor() {
+        try {
+            if (c == null || c.isClosed())
+                return;
+            System.out.println("reading author");
+            Statement stmt = c.createStatement();
+            ResultSet rs = stmt.executeQuery("SELECT * FROM AUTHOR;");
+
+            while (rs.next()) {
+                int id=rs.getInt("ID");
+                String name = rs.getString("NAME");
+                String surname = rs.getString("SURNAME");
+                System.out.println("ID: " + id + " NAME: " + name + " SURNAME: " + surname);
+            }
+            stmt.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 }

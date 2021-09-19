@@ -44,7 +44,8 @@ public class inProceedingsController implements Initializable {
                     txtAddress.getText(),pip.getPublisher(),pip.getSeries(),pip.getBooktitle(),pip.getDoi(),pip.getAuthor(),pip.getEditor());
 
 
-        db.reading(u.inProceedings);
+        db.readingArticle();
+        db.readingAuthor();
     }
 
     @Override

@@ -1,6 +1,7 @@
 package com.tesi.code;
 
 import java.io.*;
+import java.util.ArrayList;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -16,10 +17,9 @@ public class ParserInProceedings {
     private String series = "";
     private String doi = "";
     private String editor="";
-    private String author="";
+    private String allAuthor="";
     private String title="";
     private String address="";
-
 
     private static ParserInProceedings instance = null;
 
@@ -52,7 +52,7 @@ public class ParserInProceedings {
 
     private void regex(String conc) {
         dblp=find("DBLP:(.+),\\s+author",conc);
-        author=find("author\\s+\\=\\s+\\{([\\s\\S]*?)\\},",conc);
+        allAuthor=find("author\\s+\\=\\s+\\{([\\s\\S]*?)\\},",conc);
         editor=find("editor\\s+\\=\\s+\\{([\\s\\S]*?)\\},",conc);
         title=find("title\\s+\\=\\s+\\{([\\s\\S]*?)\\},",conc);
         booktitle=find("booktitle\\s+\\=\\s+\\{([\\s\\S]*?)\\},",conc);
@@ -70,11 +70,11 @@ public class ParserInProceedings {
         Pattern pattern = Pattern.compile(p);
         Matcher matcher = pattern.matcher(row);
         if (matcher.find())
-        {
             return matcher.group(1).replaceAll("\\s{2,100}", "and ");
-        }
         return "";
     }
+
+
 
     private void findType(String row) {
         type=find("@(\\w+)\\{",row);
@@ -97,9 +97,9 @@ public class ParserInProceedings {
         if (matcher.find()) {
             //come prova per il momento lo metto all'interno della text box book title
             //sostituisco "and <tanti spazi>" con "and "
-            author = matcher.group(1).replaceAll("\\s{2,100}", " ");
+            allAuthor = matcher.group(1).replaceAll("\\s{2,100}", " ");
 
-            System.out.println("author: "+author);
+            System.out.println("author: "+allAuthor);
         }
     }
 
@@ -209,7 +209,7 @@ public class ParserInProceedings {
     }
 
     public String getAuthor() {
-        return author;
+        return allAuthor;
     }
 
     public String getAddress() {
