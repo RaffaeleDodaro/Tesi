@@ -18,8 +18,8 @@
             <Font size="32.0" />
          </font>
       </Button>
-      <TextArea fx:id="txtTextArea" layoutX="73.0" layoutY="141.0" prefHeight="192.0" prefWidth="311.0" />
-      <Text layoutX="427.0" layoutY="176.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Paste text">
+      <TextArea fx:id="txtTextArea" layoutX="236.0" layoutY="133.0" prefHeight="192.0" prefWidth="311.0" />
+      <Text layoutX="68.0" layoutY="221.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Paste text">
          <font>
             <Font size="32.0" />
          </font>

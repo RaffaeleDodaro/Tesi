@@ -12,7 +12,7 @@ public class Database {
     private final Utility u = Utility.getInstance();
     private static Database instance = null;
     //private ParserInProceedings pip = ParserInProceedings.getInstance();
-    private GenericParser gp=GenericParser.getInstance();
+    private GenericParser gp = GenericParser.getInstance();
     private Connection c = null;
 
     private ArrayList<Author> authors = new ArrayList<Author>();
@@ -83,19 +83,23 @@ public class Database {
             calculateEditor(editor);
 
             for (int i = 0; i < authors.size(); i++) {
-                preparedStmt = c.prepareStatement("INSERT INTO AUTHOR VALUES(?,?,?);");
-                //System.out.println("surname author: " + authors.get(i).getSurnameAuthor() + " name author: " + authors.get(i).getNameAuthor());
-                preparedStmt.setString(2, authors.get(i).getSurnameAuthor());
-                preparedStmt.setString(3, authors.get(i).getNameAuthor());
-                preparedStmt.executeUpdate();
+                if (!(compareAuthor(authors.get(i).getNameAuthor(), authors.get(i).getSurnameAuthor()))) { //se nome e cognome non ci sono gia'
+                    preparedStmt = c.prepareStatement("INSERT INTO AUTHOR VALUES(?,?,?);");
+                    //System.out.println("surname author: " + authors.get(i).getSurnameAuthor() + " name author: " + authors.get(i).getNameAuthor());
+                    preparedStmt.setString(2, authors.get(i).getSurnameAuthor());
+                    preparedStmt.setString(3, authors.get(i).getNameAuthor());
+                    preparedStmt.executeUpdate();
+                }
             }
 
             for (int i = 0; i < editors.size(); i++) {
-                preparedStmt = c.prepareStatement("INSERT INTO EDITOR VALUES(?,?,?);");
-                //System.out.println("surname editor: " + editors.get(i).getSurnameEditor() + " name editor: " + editors.get(i).getNameEditor());
-                preparedStmt.setString(2, editors.get(i).getSurnameEditor());
-                preparedStmt.setString(3, editors.get(i).getNameEditor());
-                preparedStmt.executeUpdate();
+                if (!(compareEditor(editors.get(i).getNameEditor(), editors.get(i).getSurnameEditor()))) { //se nome e cognome non ci sono gia'
+                    preparedStmt = c.prepareStatement("INSERT INTO EDITOR VALUES(?,?,?);");
+                    //System.out.println("surname editor: " + editors.get(i).getSurnameEditor() + " name editor: " + editors.get(i).getNameEditor());
+                    preparedStmt.setString(2, editors.get(i).getSurnameEditor());
+                    preparedStmt.setString(3, editors.get(i).getNameEditor());
+                    preparedStmt.executeUpdate();
+                }
             }
 
             for (int i = 0; i < authors.size(); i++) {
@@ -118,7 +122,7 @@ public class Database {
     }
 
     public void insertIntoDBArticle(int year, String pages, String dblp, String title, String volume, String shortTitle,
-                                    String url, String doi,String author, String journal) {
+                                    String url, String doi, String author, String journal) {
         try {
             if (c == null || c.isClosed())
                 return;
@@ -143,11 +147,13 @@ public class Database {
             calculateAuthor(author);
 
             for (int i = 0; i < authors.size(); i++) {
-                preparedStmt = c.prepareStatement("INSERT INTO AUTHOR VALUES(?,?,?);");
-                //System.out.println("surname author: " + authors.get(i).getSurnameAuthor() + " name author: " + authors.get(i).getNameAuthor());
-                preparedStmt.setString(2, authors.get(i).getSurnameAuthor());
-                preparedStmt.setString(3, authors.get(i).getNameAuthor());
-                preparedStmt.executeUpdate();
+                if (!(compareAuthor(authors.get(i).getNameAuthor(), authors.get(i).getSurnameAuthor()))) { //se nome e cognome non ci sono gia'
+                    preparedStmt = c.prepareStatement("INSERT INTO AUTHOR VALUES(?,?,?);");
+                    //System.out.println("surname author: " + authors.get(i).getSurnameAuthor() + " name author: " + authors.get(i).getNameAuthor());
+                    preparedStmt.setString(2, authors.get(i).getSurnameAuthor());
+                    preparedStmt.setString(3, authors.get(i).getNameAuthor());
+                    preparedStmt.executeUpdate();
+                }
             }
 
             for (int i = 0; i < authors.size(); i++) {
@@ -373,7 +379,7 @@ public class Database {
                 String url = rs.getString("URL");
                 String doi = rs.getString("DOI");
                 System.out.println("YEAR: " + year + " PAGES: " + pages + " TITLE: " + title + " VOLUME: " + volume + " SHORT TITLE: " + shortTitle + " URL: " + url +
-                       " DOI: " + doi + " DBLP: " + dblp+" JOURNAL: "+journal);
+                        " DOI: " + doi + " DBLP: " + dblp + " JOURNAL: " + journal);
 
             }
             stmt.close();
@@ -418,7 +424,6 @@ public class Database {
                     return true;
             }
             stmt.close();
-
         } catch (Exception e) {
             e.printStackTrace();
         }

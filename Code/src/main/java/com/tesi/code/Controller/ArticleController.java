@@ -4,11 +4,16 @@ import com.tesi.code.*;
 import com.tesi.code.Parser.GenericParser;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
+import javafx.scene.layout.Pane;
+import javafx.stage.Stage;
 
 import java.io.File;
+import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
 
@@ -25,6 +30,21 @@ public class ArticleController implements Initializable {
 
     @FXML
     private Button btnSave;
+
+    @FXML
+    private Button btnAnotherBibtex;
+
+    @FXML
+    void anotherBibtex(ActionEvent event)  throws IOException {
+        Stage stage = (Stage) btnAnotherBibtex.getScene().getWindow();
+        FXMLLoader fxmlLoader = new FXMLLoader(Main.class.getResource("ChooseFile.fxml"));
+        Pane root = (Pane) fxmlLoader.load();
+        Scene scene = new Scene(root, 600, 442);
+        stage.setTitle("Tesi");
+        stage.setScene(scene);
+        stage.setResizable(false);
+        stage.show();
+    }
 
     @FXML
     void save(ActionEvent event) throws ClassNotFoundException {

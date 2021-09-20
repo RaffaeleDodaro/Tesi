@@ -26,7 +26,12 @@
             <Font size="27.0" />
          </font>
       </Text>
-      <Button fx:id="btnSave" layoutX="243.0" layoutY="252.0" mnemonicParsing="false" onAction="#save" text="Save">
+      <Button fx:id="btnSave" layoutX="31.0" layoutY="245.0" mnemonicParsing="false" onAction="#save" text="Save">
+         <font>
+            <Font size="32.0" />
+         </font>
+      </Button>
+      <Button fx:id="btnAnotherBibtex" layoutX="270.0" layoutY="245.0" mnemonicParsing="false" onAction="#anotherBibtex" text="Add another bibtex">
          <font>
             <Font size="32.0" />
          </font>
