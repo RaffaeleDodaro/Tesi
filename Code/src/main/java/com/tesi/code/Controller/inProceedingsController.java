@@ -2,7 +2,7 @@ package com.tesi.code.Controller;
 
 import com.tesi.code.Database;
 import com.tesi.code.FileHandler;
-import com.tesi.code.ParserInProceedings;
+import com.tesi.code.Parser.GenericParser;
 import com.tesi.code.Utility;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -36,12 +36,12 @@ public class inProceedingsController implements Initializable {
         Database db = Database.getInstance();
         Utility u = Utility.getInstance();
         File file = new FileHandler().getFile();
-        ParserInProceedings pip=ParserInProceedings.getInstance();
+        GenericParser gp = GenericParser.getInstance();
         db.openConnection(u.inProceedings);
         db.createTableInProceedings();
         //if(!txtShortTitle.getText().equalsIgnoreCase("") && !txtAddress.getText().equalsIgnoreCase(""))
-        db.insertIntoDBInProceedings(pip.getYear(),pip.getPages(),pip.getDblp(),txtTitle.getText(),pip.getVolume(),txtShortTitle.getText(),pip.getUrl(),
-                    txtAddress.getText(),pip.getPublisher(),pip.getSeries(),pip.getBooktitle(),pip.getDoi(),pip.getAuthor(),pip.getEditor());
+        db.insertIntoDBInProceedings(gp.getYear(),gp.getPages(),gp.getDblp(),txtTitle.getText(),gp.getVolume(),txtShortTitle.getText(),gp.getUrl(),
+                    txtAddress.getText(),gp.getPublisher(),gp.getSeries(),gp.getBooktitle(),gp.getDoi(),gp.getAuthor(),gp.getEditor());
 
 
         db.readingArticleInProceedings();
@@ -50,9 +50,9 @@ public class inProceedingsController implements Initializable {
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-        ParserInProceedings p = ParserInProceedings.getInstance();
-        txtBookTitle.setText(p.getBooktitle());
-        txtTitle.setText(p.getTitle());
+        GenericParser gp = GenericParser.getInstance();
+        txtBookTitle.setText(gp.getBooktitle());
+        txtTitle.setText(gp.getTitle());
         txtShortTitle.setText("");
         txtAddress.setText("");
     }

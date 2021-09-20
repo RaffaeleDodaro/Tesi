@@ -1,6 +1,7 @@
 package com.tesi.code.Controller;
 
 import com.tesi.code.*;
+import com.tesi.code.Parser.GenericParser;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -30,22 +31,22 @@ public class ArticleController implements Initializable {
         Database db = new Database();
         Utility u = new Utility();
         File file=new FileHandler().getFile();
-        ParserArticle pa=ParserArticle.getInstance();
+        GenericParser gp=GenericParser.getInstance();
         //da eliminare e mettere nell'if sopra
         db.openConnection(u.article);
         db.createTableArticle();
-        db.insertIntoDBArticle(pa.getYear(),pa.getPages(),pa.getDblp(),txtTitle.getText(),pa.getVolume(),txtShortTitle.getText(),pa.getUrl()
-                ,pa.getSeries(),pa.getBooktitle(),pa.getDoi(),pa.getAuthor(),txtJournal.getText());
+        db.insertIntoDBArticle(gp.getYear(),gp.getPages(),gp.getDblp(),txtTitle.getText(),gp.getVolume(),txtShortTitle.getText(),gp.getUrl()
+                ,gp.getDoi(),gp.getAuthor(),txtJournal.getText());
         db.readingArticleArticle();
         db.readingAuthorArticle();
     }
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-        ParserArticle p= ParserArticle.getInstance();
+        GenericParser gp= GenericParser.getInstance();
         //System.out.println("title: "+p.getTitle());
-        txtJournal.setText(p.getJournal());
-        txtTitle.setText(p.getTitle());
+        txtJournal.setText(gp.getJournal());
+        txtTitle.setText(gp.getTitle());
         txtShortTitle.setText("Va?");
     }
 }

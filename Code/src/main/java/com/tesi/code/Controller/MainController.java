@@ -2,7 +2,7 @@ package com.tesi.code.Controller;
 
 import com.tesi.code.FileHandler;
 import com.tesi.code.Main;
-import com.tesi.code.ParserInProceedings;
+import com.tesi.code.Parser.GenericParser;
 import com.tesi.code.Utility;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -39,20 +39,36 @@ public class MainController {
 
     @FXML
     void load(ActionEvent event) throws IOException {
-        ParserInProceedings p = ParserInProceedings.getInstance();
+        //ParserInProceedings p = ParserInProceedings.getInstance();
+        //ParserArticle pa = ParserArticle.getInstance();
+        GenericParser gp = GenericParser.getInstance();
         Utility u = Utility.getInstance();
-
         if (loaded == true || txtTextArea.getText() != "") {
-            if (!(txtTextArea.getText().equalsIgnoreCase("")))
-                p.parsering(null, txtTextArea.getText());
-            else
-                p.parsering(file, "");
-            System.out.println("u.article: " + u.article + " p.getType: " + p.getType());
-            if (u.article.equalsIgnoreCase(p.getType())) {
-                loadTypeBib(u.article);
+            if (!(txtTextArea.getText().equalsIgnoreCase(""))) {
+                gp.parsering(null, txtTextArea.getText());
+                if (gp.getType().equalsIgnoreCase(u.inProceedings)) {
+                    //p.parsering(null, txtTextArea.getText());
+                    loadTypeBib(u.inProceedings);
+                } else {
+                    //pa.parsering(null, txtTextArea.getText());
+                    loadTypeBib(u.article);
+                }
             } else {
-                loadTypeBib(u.inProceedings);
+                gp.parsering(file, "");
+                if (gp.getType().equalsIgnoreCase(u.inProceedings)) {
+                    //p.parsering(file, "");
+                    loadTypeBib(u.inProceedings);
+                } else {
+                    //pa.parsering(file, "");
+                    loadTypeBib(u.article);
+                }
             }
+            System.out.println("u.article: " + u.article + " p.getType: " + gp.getType());
+
+            /*if (u.article.equalsIgnoreCase(p.getType()))
+                loadTypeBib(u.article);
+            else
+                loadTypeBib(u.inProceedings);*/
         }
     }
 

@@ -10,4 +10,6 @@ module com.example.code {
     exports com.tesi.code;
     exports com.tesi.code.Controller;
     opens com.tesi.code.Controller to javafx.fxml;
+    exports com.tesi.code.Parser;
+    opens com.tesi.code.Parser to javafx.fxml;
 }

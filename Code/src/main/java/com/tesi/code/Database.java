@@ -1,6 +1,7 @@
 package com.tesi.code;
 
-import java.io.File;
+import com.tesi.code.Parser.GenericParser;
+
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.regex.Matcher;
@@ -10,8 +11,8 @@ public class Database {
 
     private final Utility u = Utility.getInstance();
     private static Database instance = null;
-    private ParserInProceedings pip = ParserInProceedings.getInstance();
-
+    //private ParserInProceedings pip = ParserInProceedings.getInstance();
+    private GenericParser gp=GenericParser.getInstance();
     private Connection c = null;
 
     private ArrayList<Author> authors = new ArrayList<Author>();
@@ -50,7 +51,7 @@ public class Database {
     }
 
     public void insertIntoDBInProceedings
-            (int year, String pages, String dblp, String title, int volume, String shortTitle,
+            (int year, String pages, String dblp, String title, String volume, String shortTitle,
              String url, String address, String publisher, String series, String bookTitle, String doi,
              String author, String editor) {
         try {
@@ -67,7 +68,7 @@ public class Database {
             preparedStmt.setString(2, pages);
             preparedStmt.setString(3, dblp);
             preparedStmt.setString(4, title);
-            preparedStmt.setInt(5, volume);
+            preparedStmt.setString(5, volume);
             preparedStmt.setString(6, shortTitle);
             preparedStmt.setString(7, url);
             preparedStmt.setString(8, address);
@@ -116,7 +117,7 @@ public class Database {
         }
     }
 
-    public void insertIntoDBArticle(int year, String pages, String dblp, String title, int volume, String shortTitle,
+    public void insertIntoDBArticle(int year, String pages, String dblp, String title, String volume, String shortTitle,
                                     String url, String doi,String author, String journal) {
         try {
             if (c == null || c.isClosed())
@@ -132,7 +133,7 @@ public class Database {
             preparedStmt.setString(3, dblp);
             preparedStmt.setString(4, title);
             preparedStmt.setString(5, journal);
-            preparedStmt.setInt(6, volume);
+            preparedStmt.setString(6, volume);
             preparedStmt.setString(7, shortTitle);
             preparedStmt.setString(8, url);
             preparedStmt.setString(9, doi);
@@ -165,7 +166,7 @@ public class Database {
     private void calculateAuthor(String author) {
         Pattern pattern = Pattern.compile("(^[^\\s]*)\\s(.+)");
         Matcher matcher;
-        String[] splittedAuthor = pip.getAuthor().split(" andand ");
+        String[] splittedAuthor = gp.getAuthor().split(" andand ");
         for (int i = 0; i < splittedAuthor.length; i++) {
             matcher = pattern.matcher(splittedAuthor[i]);
             if (matcher.find()) {
@@ -186,7 +187,7 @@ public class Database {
     private void calculateEditor(String editor) {
         Pattern pattern = Pattern.compile("(^[^\\s]*)\\s(.+)");
         Matcher matcher;
-        String[] splittedEditor = pip.getEditor().split(" andand ");
+        String[] splittedEditor = gp.getEditor().split(" andand ");
         for (int i = 0; i < splittedEditor.length; i++) {
             matcher = pattern.matcher(splittedEditor[i]);
             //System.out.println("splittedEditor[i] " + splittedEditor[i]);
@@ -296,7 +297,7 @@ public class Database {
                 int id = rs.getInt("ID");
                 String name = rs.getString("NAME");
                 String surname = rs.getString("SURNAME");
-                //System.out.println("ID: " + id + " NAME: " + name + " SURNAME: " + surname);
+                System.out.println("ID: " + id + " NAME: " + name + " SURNAME: " + surname);
             }
             stmt.close();
         } catch (Exception e) {
@@ -393,7 +394,7 @@ public class Database {
                 int id = rs.getInt("ID");
                 String name = rs.getString("NAME");
                 String surname = rs.getString("SURNAME");
-                //System.out.println("ID: " + id + " NAME: " + name + " SURNAME: " + surname);
+                System.out.println("ID: " + id + " NAME: " + name + " SURNAME: " + surname);
             }
             stmt.close();
         } catch (Exception e) {
