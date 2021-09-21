@@ -9,7 +9,6 @@ import java.util.regex.Pattern;
 
 public class Database {
 
-    private final Utility u = Utility.getInstance();
     private static Database instance = null;
     //private ParserInProceedings pip = ParserInProceedings.getInstance();
     private GenericParser gp = GenericParser.getInstance();
@@ -26,10 +25,10 @@ public class Database {
 
     public void openConnection(String type) {
         try {
-            if (type.equalsIgnoreCase(u.article))
-                c = DriverManager.getConnection("jdbc:sqlite:" + u.article + ".db");
+            if (type.equalsIgnoreCase(Utility.article))
+                c = DriverManager.getConnection("jdbc:sqlite:" + Utility.article + ".db");
             else
-                c = DriverManager.getConnection("jdbc:sqlite:" + u.inProceedings + ".db");
+                c = DriverManager.getConnection("jdbc:sqlite:" + Utility.inProceedings + ".db");
             //System.out.println("c.getCatalog() Opened database successfully " + c.getCatalog());
 
             if (c != null && !c.isClosed())
@@ -57,11 +56,6 @@ public class Database {
         try {
             if (c == null || c.isClosed())
                 return;
-
-            //momentaneo
-            address = "casdcsda";
-            shortTitle = "cascasvfsw";
-            //fine momentaneo
 
             PreparedStatement preparedStmt = c.prepareStatement("INSERT INTO ARTICLE VALUES(?,?,?,?,?,?,?,?,?,?,?,?);");
             preparedStmt.setInt(1, year);
@@ -127,10 +121,6 @@ public class Database {
             if (c == null || c.isClosed())
                 return;
 
-            //momentaneo
-            shortTitle = "cascasvfsw";
-            //fine momentaneo
-
             PreparedStatement preparedStmt = c.prepareStatement("INSERT INTO ARTICLE VALUES(?,?,?,?,?,?,?,?,?);");
             preparedStmt.setInt(1, year);
             preparedStmt.setString(2, pages);
@@ -149,7 +139,6 @@ public class Database {
             for (int i = 0; i < authors.size(); i++) {
                 if (!(compareAuthor(authors.get(i).getNameAuthor(), authors.get(i).getSurnameAuthor()))) { //se nome e cognome non ci sono gia'
                     preparedStmt = c.prepareStatement("INSERT INTO AUTHOR VALUES(?,?,?);");
-                    //System.out.println("surname author: " + authors.get(i).getSurnameAuthor() + " name author: " + authors.get(i).getNameAuthor());
                     preparedStmt.setString(2, authors.get(i).getSurnameAuthor());
                     preparedStmt.setString(3, authors.get(i).getNameAuthor());
                     preparedStmt.executeUpdate();
@@ -203,12 +192,10 @@ public class Database {
                 if (!compareEditor(surname, name)) {
                     Editor e = new Editor();
                     e.setNameEditor(name);
-                    //System.out.println("e.setNameEditor(name) " + e.getNameEditor());
                     e.setSurnameEditor(surname);
                     editors.add(e);
                 } else
                     System.out.println("UGUALI");
-                //System.out.println("Editore " + i + " nome " + name + " cognome " + surname);
             }
         }
     }
@@ -219,7 +206,6 @@ public class Database {
                 return;
 
             String sql = "";
-            //System.out.println("qui");
             sql = "CREATE TABLE IF NOT EXISTS ARTICLE" +
                     "(YEAR INT NOT NULL," +
                     "PAGES varchar(200) NOT NULL," +
@@ -335,9 +321,9 @@ public class Database {
         try {
             String sql = "";
             sql = "CREATE TABLE IF NOT EXISTS ARTICLE" +
-                    "(YEAR INT PRIMARY KEY NOT NULL," +
+                    "(YEAR INT NOT NULL," +
                     "PAGES varchar(200) NOT NULL," +
-                    "DBLP varchar(200) NOT NULL," +
+                    "DBLP varchar(200) PRIMARY KEY NOT NULL," +
                     "TITLE varchar(200) NOT NULL," +
                     "JOURNAL varchar(200) NOT NULL," +
                     "VOLUME INT NOT NULL," +

@@ -32,43 +32,30 @@ public class MainController {
     @FXML
     void chooseFile(ActionEvent event) {
         FileHandler f = new FileHandler();
-        f.chooseFile(); //mi serve solo in fase di debug. da eliminare poi
+        f.chooseFile();
         file = f.getFile();
         loaded = true;
     }
 
     @FXML
     void load(ActionEvent event) throws IOException {
-        //ParserInProceedings p = ParserInProceedings.getInstance();
-        //ParserArticle pa = ParserArticle.getInstance();
         GenericParser gp = GenericParser.getInstance();
-        Utility u = Utility.getInstance();
         if (loaded == true || txtTextArea.getText() != "") {
             if (!(txtTextArea.getText().equalsIgnoreCase(""))) {
                 gp.parsering(null, txtTextArea.getText());
-                if (gp.getType().equalsIgnoreCase(u.inProceedings)) {
+                if (gp.getType().equalsIgnoreCase(Utility.inProceedings))
                     //p.parsering(null, txtTextArea.getText());
-                    loadTypeBib(u.inProceedings);
-                } else {
-                    //pa.parsering(null, txtTextArea.getText());
-                    loadTypeBib(u.article);
-                }
+                    loadTypeBib(Utility.inProceedings);
+                else
+                    loadTypeBib(Utility.article);
             } else {
                 gp.parsering(file, "");
-                if (gp.getType().equalsIgnoreCase(u.inProceedings)) {
-                    //p.parsering(file, "");
-                    loadTypeBib(u.inProceedings);
-                } else {
-                    //pa.parsering(file, "");
-                    loadTypeBib(u.article);
-                }
+                if (gp.getType().equalsIgnoreCase(Utility.inProceedings))
+                    loadTypeBib(Utility.inProceedings);
+                else
+                    loadTypeBib(Utility.article);
             }
-            System.out.println("u.article: " + u.article + " p.getType: " + gp.getType());
-
-            /*if (u.article.equalsIgnoreCase(p.getType()))
-                loadTypeBib(u.article);
-            else
-                loadTypeBib(u.inProceedings);*/
+            System.out.println("u.article: " + Utility.article + " p.getType: " + gp.getType());
         }
     }
 

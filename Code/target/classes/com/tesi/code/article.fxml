@@ -8,20 +8,20 @@
 
 <Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="351.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.tesi.code.Controller.ArticleController">
    <children>
-      <TextField fx:id="txtJournal" layoutX="31.0" layoutY="14.0" prefHeight="25.0" prefWidth="366.0" />
-      <TextField fx:id="txtTitle" layoutX="31.0" layoutY="64.0" prefHeight="25.0" prefWidth="366.0" />
-      <TextField fx:id="txtShortTitle" layoutX="31.0" layoutY="126.0" prefHeight="25.0" prefWidth="366.0" />
-      <Text layoutX="444.0" layoutY="31.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Journal">
+      <TextField fx:id="txtJournal" layoutX="191.0" layoutY="14.0" prefHeight="25.0" prefWidth="366.0" />
+      <TextField fx:id="txtTitle" layoutX="191.0" layoutY="64.0" prefHeight="25.0" prefWidth="366.0" />
+      <TextField fx:id="txtShortTitle" layoutX="191.0" layoutY="126.0" prefHeight="25.0" prefWidth="366.0" />
+      <Text layoutX="26.0" layoutY="28.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Journal">
          <font>
             <Font size="27.0" />
          </font>
       </Text>
-      <Text layoutX="444.0" layoutY="87.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Title">
+      <Text layoutX="26.0" layoutY="84.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Title">
          <font>
             <Font size="27.0" />
          </font>
       </Text>
-      <Text layoutX="444.0" layoutY="149.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Short title">
+      <Text layoutX="26.0" layoutY="146.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Short title">
          <font>
             <Font size="27.0" />
          </font>

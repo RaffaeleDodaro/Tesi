@@ -15,6 +15,7 @@ import javafx.scene.control.TextField;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 
+import javax.swing.*;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
@@ -54,18 +55,20 @@ public class inProceedingsController implements Initializable {
     @FXML
     void save(ActionEvent event) throws ClassNotFoundException {
         Database db = Database.getInstance();
-        Utility u = Utility.getInstance();
-        File file = new FileHandler().getFile();
         GenericParser gp = GenericParser.getInstance();
-        db.openConnection(u.inProceedings);
+        db.openConnection(Utility.inProceedings);
         db.createTableInProceedings();
-        //if(!txtShortTitle.getText().equalsIgnoreCase("") && !txtAddress.getText().equalsIgnoreCase(""))
-        db.insertIntoDBInProceedings(gp.getYear(),gp.getPages(),gp.getDblp(),txtTitle.getText(),gp.getVolume(),txtShortTitle.getText(),gp.getUrl(),
-                    txtAddress.getText(),gp.getPublisher(),gp.getSeries(),gp.getBooktitle(),gp.getDoi(),gp.getAuthor(),gp.getEditor());
-
+        if(!txtShortTitle.getText().equalsIgnoreCase("") && !txtAddress.getText().equalsIgnoreCase(""))
+            db.insertIntoDBInProceedings(gp.getYear(),gp.getPages(),gp.getDblp(),txtTitle.getText(),gp.getVolume(),txtShortTitle.getText(),gp.getUrl(),
+                        txtAddress.getText(),gp.getPublisher(),gp.getSeries(),gp.getBooktitle(),gp.getDoi(),gp.getAuthor(),gp.getEditor());
+        else if(txtShortTitle.getText().equalsIgnoreCase(""))
+            JOptionPane.showMessageDialog(null,"Insert short title", "ERROR", JOptionPane.INFORMATION_MESSAGE);
+        else if(txtAddress.getText().equalsIgnoreCase(""))
+            JOptionPane.showMessageDialog(null,"Insert address", "ERROR", JOptionPane.INFORMATION_MESSAGE);
 
         db.readingArticleInProceedings();
         db.readingAuthorInProceedings();
+        db.closeConnection();
     }
 
     @Override

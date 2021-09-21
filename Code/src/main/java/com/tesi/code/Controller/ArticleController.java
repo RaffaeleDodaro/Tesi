@@ -12,6 +12,7 @@ import javafx.scene.control.TextField;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 
+import javax.swing.*;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
@@ -55,16 +56,21 @@ public class ArticleController implements Initializable {
         //da eliminare e mettere nell'if sopra
         db.openConnection(u.article);
         db.createTableArticle();
-        db.insertIntoDBArticle(gp.getYear(),gp.getPages(),gp.getDblp(),txtTitle.getText(),gp.getVolume(),txtShortTitle.getText(),gp.getUrl()
+        if(!txtShortTitle.getText().equalsIgnoreCase("") && !txtJournal.getText().equalsIgnoreCase(""))
+            db.insertIntoDBArticle(gp.getYear(),gp.getPages(),gp.getDblp(),txtTitle.getText(),gp.getVolume(),txtShortTitle.getText(),gp.getUrl()
                 ,gp.getDoi(),gp.getAuthor(),txtJournal.getText());
+        else if(txtShortTitle.getText().equalsIgnoreCase(""))
+            JOptionPane.showMessageDialog(null,"Insert short title", "ERROR", JOptionPane.INFORMATION_MESSAGE);
+        else if(txtJournal.getText().equalsIgnoreCase(""))
+            JOptionPane.showMessageDialog(null,"Insert journal", "ERROR", JOptionPane.INFORMATION_MESSAGE);
         db.readingArticleArticle();
         db.readingAuthorArticle();
+        db.closeConnection();
     }
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         GenericParser gp= GenericParser.getInstance();
-        //System.out.println("title: "+p.getTitle());
         txtJournal.setText(gp.getJournal());
         txtTitle.setText(gp.getTitle());
         txtShortTitle.setText("Va?");
