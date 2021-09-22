@@ -30,6 +30,14 @@ public class MainController {
     private TextArea txtTextArea;
 
     @FXML
+    private Button Export;
+
+    @FXML
+    void export(ActionEvent event) throws IOException {
+        loadTypeBib("export");
+    }
+
+    @FXML
     void chooseFile(ActionEvent event) {
         FileHandler f = new FileHandler();
         f.chooseFile();
