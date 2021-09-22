@@ -20,6 +20,7 @@ import javax.swing.*;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.ResourceBundle;
 
 public class ArticleController implements Initializable {
@@ -48,6 +49,8 @@ public class ArticleController implements Initializable {
     @FXML
     private GridPane grdpane;
 
+    private ArrayList<TextField> allTextField=new ArrayList<TextField>();
+
     @FXML
     void anotherBibtex(ActionEvent event)  throws IOException {
         Stage stage = (Stage) btnAnotherBibtex.getScene().getWindow();
@@ -67,12 +70,21 @@ public class ArticleController implements Initializable {
         File file=new FileHandler().getFile();
         GenericParser gp=GenericParser.getInstance();
 
-        //da eliminare e mettere nell'if sopra
+        db.getAuthors().clear();
+
+        for(int i=0;i<allTextField.size();i+=2)
+        {
+            Author a=new Author();
+            a.setSurnameAuthor(allTextField.get(i).getText());
+            a.setNameAuthor(allTextField.get(i+1).getText());
+            db.getAuthors().add(a);
+        }
+
         db.openConnection(u.article);
         db.createTableArticle();
         if(!txtShortTitle.getText().equalsIgnoreCase("") && !txtJournal.getText().equalsIgnoreCase(""))
             db.insertIntoDBArticle(gp.getYear(),gp.getPages(),gp.getDblp(),txtTitle.getText(),gp.getVolume(),txtShortTitle.getText(),gp.getUrl()
-                ,gp.getDoi(),gp.getAuthor(),txtJournal.getText());
+                ,gp.getDoi(),txtJournal.getText());
         else if(txtShortTitle.getText().equalsIgnoreCase(""))
             JOptionPane.showMessageDialog(null,"Insert short title", "ERROR", JOptionPane.INFORMATION_MESSAGE);
         else if(txtJournal.getText().equalsIgnoreCase(""))
@@ -93,7 +105,6 @@ public class ArticleController implements Initializable {
 
         for(int i = 0; i<db.getAuthors().size(); i++)
             loadAuthors(i,db);
-
     }
 
     private void loadAuthors(int i, Database db)
@@ -146,5 +157,7 @@ public class ArticleController implements Initializable {
         grdpane.add(paneLabelSurname, 3, i);
         grdpane.add(paneShowSurname, 4, i);
 
+        allTextField.add(surname);
+        allTextField.add(name);
     }
 }

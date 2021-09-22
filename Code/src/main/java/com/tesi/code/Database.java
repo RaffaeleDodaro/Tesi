@@ -14,8 +14,8 @@ public class Database {
     private GenericParser gp = GenericParser.getInstance();
     private Connection c = null;
 
-    public ArrayList<Author> authors = new ArrayList<Author>();
-    public ArrayList<Editor> editors = new ArrayList<Editor>();
+    private ArrayList<Author> authors = new ArrayList<Author>();
+    private ArrayList<Editor> editors = new ArrayList<Editor>();
 
     public static Database getInstance() {
         if (instance == null)
@@ -51,8 +51,7 @@ public class Database {
 
     public void insertIntoDBInProceedings
             (int year, String pages, String dblp, String title, String volume, String shortTitle,
-             String url, String address, String publisher, String series, String bookTitle, String doi,
-             String author, String editor) {
+             String url, String address, String publisher, String series, String bookTitle, String doi) {
         try {
             if (c == null || c.isClosed())
                 return;
@@ -73,8 +72,8 @@ public class Database {
 
             preparedStmt.executeUpdate();
 
-            calculateAuthor(author);
-            calculateEditor(editor);
+            //calculateAuthor(author);
+            //calculateEditor(editor);
 
             for (int i = 0; i < authors.size(); i++) {
                 if (!(compareAuthor(authors.get(i).getNameAuthor(), authors.get(i).getSurnameAuthor()))) { //se nome e cognome non ci sono gia'
@@ -116,7 +115,7 @@ public class Database {
     }
 
     public void insertIntoDBArticle(int year, String pages, String dblp, String title, String volume, String shortTitle,
-                                    String url, String doi, String author, String journal) {
+                                    String url, String doi, String journal) {
         try {
             if (c == null || c.isClosed())
                 return;
@@ -134,7 +133,7 @@ public class Database {
 
             preparedStmt.executeUpdate();
 
-            calculateAuthor(author);
+            //calculateAuthor(author);
 
             for (int i = 0; i < authors.size(); i++) {
                 if (!(compareAuthor(authors.get(i).getNameAuthor(), authors.get(i).getSurnameAuthor()))) { //se nome e cognome non ci sono gia'
@@ -498,4 +497,22 @@ public class Database {
         this.editors = editors;
     }
 
+    public void findArticleByAuthorName(String surname,String name)
+    {
+        try {
+            if (c == null || c.isClosed())
+                return;
+            Statement stmt = c.createStatement();
+            ResultSet rs = stmt.executeQuery("SELECT * FROM ARTICLE,AUTHOR WHERE AUTHOR.NAME==name AND AUTHOR.SURNAME==surname;");
+
+            while (rs.next()) {
+                int id = rs.getInt("ID");
+                String name2 = rs.getString("NAME");
+                String surname2 = rs.getString("SURNAME");
+            }
+            stmt.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 }

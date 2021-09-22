@@ -1,5 +1,6 @@
 package com.tesi.code.Controller;
 
+import com.tesi.code.Database;
 import com.tesi.code.Parser.GenericParser;
 import com.tesi.code.Utility;
 import javafx.event.ActionEvent;
@@ -53,12 +54,29 @@ public class ExportController implements Initializable {
 
     @FXML
     void filterByAuthor(ActionEvent event) {
+        Database db=Database.getInstance();
 
+        db.openConnection(Utility.inProceedings);
+        db.findArticleByAuthorName(txtAuthorSurname.getText(), txtAuthorName.getText());
+        db.closeConnection();
+
+        db.openConnection(Utility.article);
+        db.findArticleByAuthorName(txtAuthorSurname.getText(), txtAuthorName.getText());
+        db.closeConnection();
     }
 
     @FXML
     void filterByType(ActionEvent event) {
-
+        Database db=Database.getInstance();
+        if(cbChooseType.getValue().equalsIgnoreCase(Utility.inProceedings)){
+            db.openConnection(Utility.inProceedings);
+            db.readingArticleInProceedings();
+        }
+        else{
+            db.openConnection(Utility.article);
+            db.readingArticleArticle();
+        }
+        db.closeConnection();
     }
 
     @Override
