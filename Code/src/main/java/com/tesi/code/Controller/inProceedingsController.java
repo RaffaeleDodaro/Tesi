@@ -11,8 +11,10 @@ import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.Pane;
+import javafx.scene.text.Font;
 import javafx.stage.Stage;
 
 import javax.swing.*;
@@ -39,6 +41,12 @@ public class inProceedingsController implements Initializable {
     private Button btnSave;
     @FXML
     private Button btnAnotherBibtex;
+
+    @FXML
+    private TextField txtEditor;
+
+    @FXML
+    private TextField txtAuthor;
 
     @FXML
     void anotherBibtex(ActionEvent event)  throws IOException {
@@ -76,7 +84,61 @@ public class inProceedingsController implements Initializable {
         GenericParser gp = GenericParser.getInstance();
         txtBookTitle.setText(gp.getBooktitle());
         txtTitle.setText(gp.getTitle());
-        txtShortTitle.setText("");
+        txtShortTitle.setText(gp.getTitle());
         txtAddress.setText("");
+        txtAuthor.setText(gp.getAuthor());
+        txtEditor.setText(gp.getEditor());
     }
+
+/*
+    private void loadEditors(int i, Database db)
+    {
+        Label labelEditor = new Label();
+        labelEditor.setFont(new Font("System",27));
+        labelEditor.setText("Editor");
+
+        Label labelName = new Label();
+        labelName.setFont(new Font("System",27));
+        labelName.setText("Name");
+
+        Label labelSurname = new Label();
+        labelSurname.setFont(new Font("System",27));
+        labelSurname.setText("Surname");
+
+        TextField name = new TextField(db.getEditors().get(i).getNameEditor());
+        name.setFont(new Font("System",12));
+
+        TextField surname = new TextField(db.getEditors().get(i).getSurnameEditor());
+        surname.setFont(new Font("System",12));
+
+        Pane paneEditor = new Pane();
+        Pane paneLabelName = new Pane();
+        Pane paneShowName = new Pane();
+        Pane paneLabelSurname = new Pane();
+        Pane paneShowSurname = new Pane();
+
+        paneEditor.setPrefWidth(50);
+        paneEditor.setPrefHeight(50);
+
+        paneShowName.setPrefWidth(366);
+        paneShowName.setPrefHeight(25);
+
+        paneLabelName.setPrefWidth(366);
+        paneLabelName.setPrefHeight(25);
+
+        paneLabelSurname.setPrefWidth(366);
+        paneLabelSurname.setPrefHeight(25);
+
+        paneEditor.getChildren().add(labelEditor);
+        paneShowName.getChildren().add(name);
+        paneLabelSurname.getChildren().add(labelSurname);
+        paneLabelName.getChildren().add(labelName);
+        paneShowSurname.getChildren().add(surname);
+
+        grdpane.add(paneEditor, 0, i);
+        grdpane.add(paneLabelName, 1, i);
+        grdpane.add(paneShowName, 2, i);
+        grdpane.add(paneLabelSurname, 3, i);
+        grdpane.add(paneShowSurname, 4, i);
+    }*/
 }

@@ -72,7 +72,7 @@ public class GenericParser {
         Pattern pattern = Pattern.compile(p);
         Matcher matcher = pattern.matcher(row);
         if (matcher.find())
-            return matcher.group(1).replaceAll("\\s{2,100}", "and ");
+            return matcher.group(1).replaceAll("\\s{2,100}", " ");
         return "";
     }
 

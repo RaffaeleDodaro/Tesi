@@ -60,7 +60,7 @@ public class ExportController implements Initializable {
     void filterByType(ActionEvent event) {
 
     }
-    
+
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         cbChooseType.setValue(Utility.inProceedings);

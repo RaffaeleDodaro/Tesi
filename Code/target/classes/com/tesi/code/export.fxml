@@ -17,8 +17,8 @@
          </font>
       </Button>
       <Label layoutX="13.0" layoutY="98.0" text="Author:" />
-      <TextField fx:id="txtAuthorName" layoutX="102.0" layoutY="73.0" text="Name" />
-      <TextField fx:id="txtAuthorSurname" layoutX="102.0" layoutY="122.0" text="Surname" />
+      <TextField fx:id="txtAuthorName" layoutX="102.0" layoutY="73.0" />
+      <TextField fx:id="txtAuthorSurname" layoutX="102.0" layoutY="122.0" />
       <Button fx:id="btnFilterByAuthor" layoutX="33.0" layoutY="166.0" mnemonicParsing="false" onAction="#filterByAuthor" text="Filter by author" />
       <Label layoutX="299.0" layoutY="98.0" text="Article:" />
       <TextField fx:id="txtArticleName" layoutX="439.0" layoutY="73.0" />

@@ -14,8 +14,8 @@ public class Database {
     private GenericParser gp = GenericParser.getInstance();
     private Connection c = null;
 
-    private ArrayList<Author> authors = new ArrayList<Author>();
-    private ArrayList<Editor> editors = new ArrayList<Editor>();
+    public ArrayList<Author> authors = new ArrayList<Author>();
+    public ArrayList<Editor> editors = new ArrayList<Editor>();
 
     public static Database getInstance() {
         if (instance == null)
@@ -158,10 +158,10 @@ public class Database {
         }
     }
 
-    private void calculateAuthor(String author) {
+    public void calculateAuthor(String author) {
         Pattern pattern = Pattern.compile("(^[^\\s]*)\\s(.+)");
         Matcher matcher;
-        String[] splittedAuthor = gp.getAuthor().split(" andand ");
+        String[] splittedAuthor = gp.getAuthor().split(" and ");
         for (int i = 0; i < splittedAuthor.length; i++) {
             matcher = pattern.matcher(splittedAuthor[i]);
             if (matcher.find()) {
@@ -179,10 +179,10 @@ public class Database {
         }
     }
 
-    private void calculateEditor(String editor) {
+    public void calculateEditor(String editor) {
         Pattern pattern = Pattern.compile("(^[^\\s]*)\\s(.+)");
         Matcher matcher;
-        String[] splittedEditor = gp.getEditor().split(" andand ");
+        String[] splittedEditor = gp.getEditor().split(" and ");
         for (int i = 0; i < splittedEditor.length; i++) {
             matcher = pattern.matcher(splittedEditor[i]);
             //System.out.println("splittedEditor[i] " + splittedEditor[i]);
@@ -480,4 +480,22 @@ public class Database {
         }
         return -1;
     }
+
+
+    public ArrayList<Author> getAuthors() {
+        return authors;
+    }
+
+    public void setAuthors(ArrayList<Author> authors) {
+        this.authors = authors;
+    }
+
+    public ArrayList<Editor> getEditors() {
+        return editors;
+    }
+
+    public void setEditors(ArrayList<Editor> editors) {
+        this.editors = editors;
+    }
+
 }

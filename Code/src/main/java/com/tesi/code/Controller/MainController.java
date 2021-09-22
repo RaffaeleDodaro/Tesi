@@ -52,12 +52,12 @@ public class MainController {
             if (!(txtTextArea.getText().equalsIgnoreCase(""))) {
                 gp.parsering(null, txtTextArea.getText());
                 if (gp.getType().equalsIgnoreCase(Utility.inProceedings))
-                    //p.parsering(null, txtTextArea.getText());
                     loadTypeBib(Utility.inProceedings);
                 else
                     loadTypeBib(Utility.article);
             } else {
                 gp.parsering(file, "");
+                System.out.println(gp.getAuthor());
                 if (gp.getType().equalsIgnoreCase(Utility.inProceedings))
                     loadTypeBib(Utility.inProceedings);
                 else
@@ -71,7 +71,7 @@ public class MainController {
         Stage stage = (Stage) btnLoad.getScene().getWindow();
         FXMLLoader fxmlLoader = new FXMLLoader(Main.class.getResource(type + ".fxml"));
         Pane root = (Pane) fxmlLoader.load();
-        Scene scene = new Scene(root, 600, 442);
+        Scene scene = new Scene(root, 600, 612);
         stage.setTitle(type);
         stage.setScene(scene);
         stage.setResizable(false);
