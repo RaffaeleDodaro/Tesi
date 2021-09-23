@@ -1,5 +1,6 @@
 package com.tesi.code;
 
+import com.tesi.code.Model.Article;
 import com.tesi.code.Parser.GenericParser;
 
 import java.sql.*;
@@ -16,6 +17,7 @@ public class Database {
 
     private ArrayList<Author> authors = new ArrayList<Author>();
     private ArrayList<Editor> editors = new ArrayList<Editor>();
+    private ArrayList<Article> filteredArticles=new ArrayList<Article>();
 
     public static Database getInstance() {
         if (instance == null)
@@ -363,10 +365,12 @@ public class Database {
                 String shortTitle = rs.getString("SHORT_TITLE");
                 String url = rs.getString("URL");
                 String doi = rs.getString("DOI");
+                Article a= new Article(year,pages,dblp,title,volume,shortTitle,url,journal,doi);
+                filteredArticles.add(a);
                 System.out.println("YEAR: " + year + " PAGES: " + pages + " TITLE: " + title + " VOLUME: " + volume + " SHORT TITLE: " + shortTitle + " URL: " + url +
                         " DOI: " + doi + " DBLP: " + dblp + " JOURNAL: " + journal);
-
             }
+            System.out.println(filteredArticles.size());
             stmt.close();
         } catch (Exception e) {
             e.printStackTrace();
@@ -514,5 +518,13 @@ public class Database {
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    public ArrayList<Article> getFilteredArticles() {
+        return filteredArticles;
+    }
+
+    public void setFilteredArticles(ArrayList<Article> filteredArticles) {
+        this.filteredArticles = filteredArticles;
     }
 }
