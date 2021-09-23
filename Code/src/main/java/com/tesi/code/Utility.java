@@ -17,4 +17,6 @@ public class Utility {
     public static final String url = "Url";
     public static final String journal = "Journal";
     public static final String doi = "Doi";
+    public static final String name = "Name";
+    public static final String surname = "Surname";
 }

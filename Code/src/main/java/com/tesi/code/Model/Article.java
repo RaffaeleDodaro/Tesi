@@ -1,6 +1,6 @@
 package com.tesi.code.Model;
 
-import javafx.beans.property.StringProperty;
+import java.util.ArrayList;
 
 public class Article {
     private int year;
@@ -12,8 +12,9 @@ public class Article {
     private String url;
     private String doi;
     private String journal;
+    private ArrayList <Author> allAuthors;
 
-    public Article(int year, String pages, String dblp, String title, int volume, String shortTitle, String url, String journal, String doi) {
+    public Article(int year, String pages, String dblp, String title, int volume, String shortTitle, String url, String journal, String doi, ArrayList<Author> allAuthors) {
         this.year = year;
         this.pages = pages;
         this.dblp = dblp;
@@ -23,6 +24,13 @@ public class Article {
         this.url = url;
         this.journal = journal;
         this.doi = doi;
+        this.allAuthors=allAuthors;
+    }
+
+    public ArrayList<Author> getAllAuthors(){return allAuthors;}
+
+    public String getJournal() {
+        return journal;
     }
 
     public int getYear() {
@@ -42,13 +50,7 @@ public class Article {
     }
 
     public String getDblp() {
-        System.out.println("quiii");
         return dblp;
-    }
-
-    public void dblpProperty() {
-        System.out.println("quiii");
-
     }
 
     public void setDblp(String dblp) {

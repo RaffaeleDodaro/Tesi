@@ -62,7 +62,7 @@ public class ExportController implements Initializable {
 
     @FXML
     void filterByAuthor(ActionEvent event) {
-        Database db=Database.getInstance();
+        Database db = Database.getInstance();
 
         db.openConnection(Utility.inProceedings);
         db.findArticleByAuthorName(txtAuthorSurname.getText(), txtAuthorName.getText());
@@ -75,14 +75,13 @@ public class ExportController implements Initializable {
 
     @FXML
     void filterByType(ActionEvent event) {
-        Database db=Database.getInstance();
-        if(cbChooseType.getValue().equalsIgnoreCase(Utility.inProceedings)){
+        Database db = Database.getInstance();
+        if (cbChooseType.getValue().equalsIgnoreCase(Utility.inProceedings)) {
             db.openConnection(Utility.inProceedings);
-            db.readingArticleInProceedings();
-        }
-        else{
+            db.filterByTypeInProceedings();
+        } else {
             db.openConnection(Utility.article);
-            db.readingArticleArticle();
+            db.filterByTypeArticle();
         }
         db.closeConnection();
     }
@@ -101,26 +100,84 @@ public class ExportController implements Initializable {
 
     @FXML
     void show(ActionEvent event) {
-        Database db=Database.getInstance();
-        ArrayList<Article> filteredArticle=db.getFilteredArticles();
+        Database db = Database.getInstance();
+        ArrayList<Article> filteredArticle = db.getFilteredArticles();
         System.out.println(filteredArticle.size());
 
-        for(int i=0;i<filteredArticle.size();i++) {
+        for (int i = 0; i < filteredArticle.size(); i++) {
             TableColumn<Article, String> column1 = new TableColumn<Article, String>(Utility.year);
-            int year=filteredArticle.get(i).getYear();
-            column1.setCellValueFactory(c->new SimpleStringProperty(String.valueOf(year)));
+            int year = filteredArticle.get(i).getYear();
+            column1.setCellValueFactory(c -> new SimpleStringProperty(String.valueOf(year)));
 
 
             TableColumn<Article, String> column2 = new TableColumn<>(Utility.dblp);
-            String dblp=filteredArticle.get(i).getDblp();
-            column2.setCellValueFactory(c->new SimpleStringProperty(dblp));
+            String dblp = filteredArticle.get(i).getDblp();
+            column2.setCellValueFactory(c -> new SimpleStringProperty(dblp));
+
+
+            TableColumn<Article, String> column3 = new TableColumn<>(Utility.pages);
+            String pages = filteredArticle.get(i).getPages();
+            column3.setCellValueFactory(c -> new SimpleStringProperty(pages));
+
+
+            TableColumn<Article, String> column4 = new TableColumn<>(Utility.journal);
+            String journal = filteredArticle.get(i).getJournal();
+            column4.setCellValueFactory(c -> new SimpleStringProperty(journal));
+
+
+            TableColumn<Article, String> column5 = new TableColumn<>(Utility.title);
+            String title = filteredArticle.get(i).getTitle();
+            column5.setCellValueFactory(c -> new SimpleStringProperty(title));
+
+
+            TableColumn<Article, String> column6 = new TableColumn<>(Utility.volume);
+            String volume = String.valueOf(filteredArticle.get(i).getVolume());
+            column6.setCellValueFactory(c -> new SimpleStringProperty(volume));
+
+
+            TableColumn<Article, String> column7 = new TableColumn<>(Utility.shortTitle);
+            String shortTitle = filteredArticle.get(i).getShortTitle();
+            column7.setCellValueFactory(c -> new SimpleStringProperty(shortTitle));
+
+
+            TableColumn<Article, String> column8 = new TableColumn<>(Utility.url);
+            String url = filteredArticle.get(i).getUrl();
+            column8.setCellValueFactory(c -> new SimpleStringProperty(url));
+
+
+            TableColumn<Article, String> column9 = new TableColumn<>(Utility.doi);
+            String doi = filteredArticle.get(i).getDoi();
+            column9.setCellValueFactory(c -> new SimpleStringProperty(doi));
 
 
             tblView.getColumns().add(column1);
             tblView.getColumns().add(column2);
+            tblView.getColumns().add(column3);
+            tblView.getColumns().add(column4);
+            tblView.getColumns().add(column5);
+            tblView.getColumns().add(column6);
+            tblView.getColumns().add(column7);
+            tblView.getColumns().add(column8);
+            tblView.getColumns().add(column9);
+
+
+            for(int j=0;j<db.getAllAuthors().size();j++) {
+                System.out.println("J: "+j);
+                TableColumn<Article, String> column10 = new TableColumn<>(Utility.name);
+                String name = db.getAllAuthors().get(j).getNameAuthor();
+                column10.setCellValueFactory(c -> new SimpleStringProperty(name));
+
+
+                TableColumn<Article, String> column11 = new TableColumn<>(Utility.surname);
+                String surname = db.getAllAuthors().get(j).getSurnameAuthor();
+                column11.setCellValueFactory(c -> new SimpleStringProperty(surname));
+
+
+                tblView.getColumns().add(column10);
+                tblView.getColumns().add(column11);
+            }
 
             tblView.getItems().add(filteredArticle.get(i));
-            //tableView.getItems().add(new Article("Jane", "Deer"));
         }
     }
 }

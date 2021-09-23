@@ -1,6 +1,8 @@
 package com.tesi.code.Controller;
 
 import com.tesi.code.*;
+import com.tesi.code.Model.Author;
+import com.tesi.code.Model.Editor;
 import com.tesi.code.Parser.GenericParser;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -16,7 +18,6 @@ import javafx.scene.text.Font;
 import javafx.stage.Stage;
 
 import javax.swing.*;
-import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
@@ -76,9 +77,9 @@ public class inProceedingsController implements Initializable {
         db.getEditors().clear();
         for(int i=0;i<allTextAuthor.size();i+=2)
         {
-            Author a=new Author();
-            a.setSurnameAuthor(allTextAuthor.get(i).getText());
-            a.setNameAuthor(allTextAuthor.get(i+1).getText());
+            Author a=new Author(allTextAuthor.get(i).getText(),allTextAuthor.get(i+1).getText());
+            //a.setSurnameAuthor(allTextAuthor.get(i).getText());
+            //a.setNameAuthor(allTextAuthor.get(i+1).getText());
             db.getAuthors().add(a);
         }
 
@@ -100,7 +101,7 @@ public class inProceedingsController implements Initializable {
         else if(txtAddress.getText().equalsIgnoreCase(""))
             JOptionPane.showMessageDialog(null,"Insert address", "ERROR", JOptionPane.INFORMATION_MESSAGE);
 
-        db.readingArticleInProceedings();
+        db.filterByTypeInProceedings();
         db.readingAuthorInProceedings();
         db.closeConnection();
     }

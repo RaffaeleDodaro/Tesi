@@ -1,5 +1,7 @@
 package com.tesi.code.Model;
 
+import java.util.ArrayList;
+
 public class inProceedings extends Article{
 
     private String publisher;
@@ -7,8 +9,8 @@ public class inProceedings extends Article{
     private String address;
     private String booktitle;
 
-    public inProceedings(int year, String pages, String dblp, String title, int volume, String shortTitle, String url, String bookTitle, String doi) {
-        super(year, pages, dblp, title, volume, shortTitle, url, bookTitle, doi);
+    public inProceedings(int year, String pages, String dblp, String title, int volume, String shortTitle, String url, String bookTitle, String doi, ArrayList<Author> allAuthors) {
+        super(year, pages, dblp, title, volume, shortTitle, url, bookTitle, doi,allAuthors);
     }
 
 

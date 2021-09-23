@@ -1,12 +1,12 @@
 package com.tesi.code.Controller;
 
 import com.tesi.code.*;
+import com.tesi.code.Model.Author;
 import com.tesi.code.Parser.GenericParser;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
-import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
@@ -74,9 +74,9 @@ public class ArticleController implements Initializable {
 
         for(int i=0;i<allTextField.size();i+=2)
         {
-            Author a=new Author();
-            a.setSurnameAuthor(allTextField.get(i).getText());
-            a.setNameAuthor(allTextField.get(i+1).getText());
+            Author a=new Author(allTextField.get(i).getText(),allTextField.get(i+1).getText());
+            //a.setSurnameAuthor(allTextField.get(i).getText());
+            //a.setNameAuthor(allTextField.get(i+1).getText());
             db.getAuthors().add(a);
         }
 
@@ -89,7 +89,7 @@ public class ArticleController implements Initializable {
             JOptionPane.showMessageDialog(null,"Insert short title", "ERROR", JOptionPane.INFORMATION_MESSAGE);
         else if(txtJournal.getText().equalsIgnoreCase(""))
             JOptionPane.showMessageDialog(null,"Insert journal", "ERROR", JOptionPane.INFORMATION_MESSAGE);
-        db.readingArticleArticle();
+        db.filterByTypeArticle();
         db.readingAuthorArticle();
         db.closeConnection();
     }

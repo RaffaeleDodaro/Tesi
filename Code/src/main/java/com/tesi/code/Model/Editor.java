@@ -1,4 +1,4 @@
-package com.tesi.code;
+package com.tesi.code.Model;
 
 public class Editor {
     private String nameEditor;

@@ -12,4 +12,6 @@ module com.example.code {
     opens com.tesi.code.Controller to javafx.fxml;
     exports com.tesi.code.Parser;
     opens com.tesi.code.Parser to javafx.fxml;
+    exports com.tesi.code.Model;
+    opens com.tesi.code.Model to javafx.fxml;
 }
