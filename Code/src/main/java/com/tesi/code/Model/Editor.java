@@ -1,8 +1,14 @@
 package com.tesi.code.Model;
 
 public class Editor {
+    private int id;
     private String nameEditor;
     private String surnameEditor;
+
+    public Editor(String name, String surname) {
+        this.nameEditor=name;
+        this.surnameEditor=surname;
+    }
 
     public String getNameEditor() {
         return nameEditor;

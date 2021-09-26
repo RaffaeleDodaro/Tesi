@@ -78,11 +78,14 @@ public class ExportController implements Initializable {
         Database db = Database.getInstance();
         if (cbChooseType.getValue().equalsIgnoreCase(Utility.inProceedings)) {
             db.openConnection(Utility.inProceedings);
+            System.out.println("db filterbytype " + db.getEditors().size() + " " + db.getAllEditors().size());
+            System.out.println(Utility.inProceedings);
             db.filterByTypeInProceedings();
+            System.out.println("db filterbytype " + db.getEditors().size() + " " + db.getAllEditors().size());
         } else {
             db.openConnection(Utility.article);
             db.filterByTypeArticle();
-        }
+            }
         db.closeConnection();
     }
 
@@ -163,18 +166,35 @@ public class ExportController implements Initializable {
 
             for(int j=0;j<db.getAllAuthors().size();j++) {
                 System.out.println("J: "+j);
-                TableColumn<Article, String> column10 = new TableColumn<>(Utility.name);
+                TableColumn<Article, String> column10 = new TableColumn<>(Utility.name+" Author");
                 String name = db.getAllAuthors().get(j).getNameAuthor();
                 column10.setCellValueFactory(c -> new SimpleStringProperty(name));
 
 
-                TableColumn<Article, String> column11 = new TableColumn<>(Utility.surname);
+                TableColumn<Article, String> column11 = new TableColumn<>(Utility.surname+" Author");
                 String surname = db.getAllAuthors().get(j).getSurnameAuthor();
                 column11.setCellValueFactory(c -> new SimpleStringProperty(surname));
 
 
                 tblView.getColumns().add(column10);
                 tblView.getColumns().add(column11);
+            }
+
+            System.out.println("size export controller: " + db.getAllEditors().size());
+            for(int j=0;j<db.getAllEditors().size();j++) {
+                System.out.println("H: "+j);
+                TableColumn<Article, String> column12 = new TableColumn<>(Utility.name+" Editor");
+                String name = db.getAllEditors().get(j).getNameEditor();
+                column12.setCellValueFactory(c -> new SimpleStringProperty(name));
+
+
+                TableColumn<Article, String> column13 = new TableColumn<>(Utility.surname+" Editor");
+                String surname = db.getAllEditors().get(j).getSurnameEditor();
+                column13.setCellValueFactory(c -> new SimpleStringProperty(surname));
+
+
+                tblView.getColumns().add(column12);
+                tblView.getColumns().add(column13);
             }
 
             tblView.getItems().add(filteredArticle.get(i));
