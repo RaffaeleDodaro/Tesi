@@ -300,6 +300,66 @@ public class Database {
         }
     }
 
+    public void findArticleByAuthorName(String surname, String name, String type) {
+        try {
+            if (c == null || c.isClosed())
+                return;
+            //'%name%'
+
+            PreparedStatement stmt = null;
+
+            if (!surname.equalsIgnoreCase("") && !name.equalsIgnoreCase("")) {
+                stmt = c.prepareStatement("SELECT * FROM ARTICLE,AUTHOR WHERE UPPER(AUTHOR.NAME)==UPPER(name) AND UPPER(AUTHOR.SURNAME)==UPPER(surname);");
+                //stmt.setString(1, "%"+surname+"%");
+            } else if (surname.equalsIgnoreCase("")) {
+                stmt = c.prepareStatement("SELECT * FROM ARTICLE,AUTHOR WHERE UPPER(AUTHOR.NAME) LIKE UPPER(?);");
+                stmt.setString(1, "%" + name + "%");
+            } else if (name.equalsIgnoreCase("")) {
+                stmt = c.prepareStatement("SELECT * FROM ARTICLE,AUTHOR WHERE UPPER(AUTHOR.SURNAME) LIKE UPPER(?);");
+                stmt.setString(1, "%" + surname + "%");
+            }
+
+            //else if(surname.equalsIgnoreCase("") && name.equalsIgnoreCase(""))
+            //error
+
+            ResultSet rs = stmt.executeQuery();
+            while (rs.next()) {
+                int id = rs.getInt("ID");
+                String name2 = rs.getString("NAME");
+                String surname2 = rs.getString("SURNAME");
+
+                int year = rs.getInt("YEAR");
+                String pages = rs.getString("PAGES");
+                String dblp = rs.getString("DBLP");
+                String title = rs.getString("TITLE");
+
+                int volume = rs.getInt("VOLUME");
+                String shortTitle = rs.getString("SHORT_TITLE");
+                String url = rs.getString("URL");
+                String doi = rs.getString("DOI");
+                if (type.equalsIgnoreCase(Utility.inProceedings)) {
+                    String address = rs.getString("ADDRESS");
+                    String publisher = rs.getString("PUBLISHER");
+                    String series = rs.getString("SERIES");
+                    String bookTitle = rs.getString("BOOKTITLE");
+                    readingAuthorArticle();
+                    readingEditorInProceedings();
+                    filteredArticles.add(new inProceedings(year, pages, dblp, title, volume, shortTitle, shortTitle, url, doi, allAuthors, publisher, series, address, bookTitle, allEditors));
+                } else {
+                    readingAuthorArticle();
+                    String journal = rs.getString("JOURNAL");
+                    filteredArticles.add(new Article(year, pages, dblp, title, volume, shortTitle, url, journal, doi, allAuthors));
+                }
+                System.out.println("YEAR: " + year + " PAGES: " + pages + " TITLE: " + title + " VOLUME: " + volume + " SHORT TITLE: " + shortTitle + " URL: " + url +
+                        " ADDRESS: " + " DOI: " + doi + " DBLP: " + dblp);
+
+            }
+            stmt.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
     public void readingAuthorInProceedings() {
         try {
             if (c == null || c.isClosed())
@@ -556,39 +616,6 @@ public class Database {
         this.editors = editors;
     }
 
-    public void findArticleByAuthorName(String surname, String name) {
-        try {
-            if (c == null || c.isClosed())
-                return;
-            Statement stmt = c.createStatement();
-            ResultSet rs = stmt.executeQuery("SELECT * FROM ARTICLE,AUTHOR WHERE AUTHOR.NAME==name AND AUTHOR.SURNAME==surname;");
-
-            while (rs.next()) {
-                int id = rs.getInt("ID");
-                String name2 = rs.getString("NAME");
-                String surname2 = rs.getString("SURNAME");
-
-                int year = rs.getInt("YEAR");
-                String pages = rs.getString("PAGES");
-                String dblp = rs.getString("DBLP");
-                String title = rs.getString("TITLE");
-                int volume = rs.getInt("VOLUME");
-                String shortTitle = rs.getString("SHORT_TITLE");
-                String url = rs.getString("URL");
-                String address = rs.getString("ADDRESS");
-                String publisher = rs.getString("PUBLISHER");
-                String series = rs.getString("SERIES");
-                String bookTitle = rs.getString("BOOKTITLE");
-                String doi = rs.getString("DOI");
-                System.out.println("YEAR: " + year + " PAGES: " + pages + " TITLE: " + title + " VOLUME: " + volume + " SHORT TITLE: " + shortTitle + " URL: " + url +
-                        " ADDRESS: " + address + " PUBLISHER: " + publisher + " SERIES: " + series + " BOOKTITLE: " + bookTitle + " DOI: " + doi + " DBLP: " + dblp);
-
-            }
-            stmt.close();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
 
     public ArrayList<Article> getFilteredArticles() {
         return filteredArticles;

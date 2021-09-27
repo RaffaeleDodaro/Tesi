@@ -65,11 +65,11 @@ public class ExportController implements Initializable {
         Database db = Database.getInstance();
 
         db.openConnection(Utility.inProceedings);
-        db.findArticleByAuthorName(txtAuthorSurname.getText(), txtAuthorName.getText());
+        db.findArticleByAuthorName(txtAuthorSurname.getText(), txtAuthorName.getText(),Utility.inProceedings);
         db.closeConnection();
 
         db.openConnection(Utility.article);
-        db.findArticleByAuthorName(txtAuthorSurname.getText(), txtAuthorName.getText());
+        db.findArticleByAuthorName(txtAuthorSurname.getText(), txtAuthorName.getText(),Utility.article);
         db.closeConnection();
     }
 
@@ -78,14 +78,12 @@ public class ExportController implements Initializable {
         Database db = Database.getInstance();
         if (cbChooseType.getValue().equalsIgnoreCase(Utility.inProceedings)) {
             db.openConnection(Utility.inProceedings);
-            System.out.println("db filterbytype " + db.getEditors().size() + " " + db.getAllEditors().size());
-            System.out.println(Utility.inProceedings);
+            //System.out.println(Utility.inProceedings);
             db.filterByTypeInProceedings();
-            System.out.println("db filterbytype " + db.getEditors().size() + " " + db.getAllEditors().size());
         } else {
             db.openConnection(Utility.article);
             db.filterByTypeArticle();
-            }
+        }
         db.closeConnection();
     }
 
@@ -164,14 +162,14 @@ public class ExportController implements Initializable {
             tblView.getColumns().add(column9);
 
 
-            for(int j=0;j<db.getAllAuthors().size();j++) {
-                System.out.println("J: "+j);
-                TableColumn<Article, String> column10 = new TableColumn<>(Utility.name+" Author");
+            for (int j = 0; j < db.getAllAuthors().size(); j++) {
+                System.out.println("J: " + j);
+                TableColumn<Article, String> column10 = new TableColumn<>(Utility.name + " Author");
                 String name = db.getAllAuthors().get(j).getNameAuthor();
                 column10.setCellValueFactory(c -> new SimpleStringProperty(name));
 
 
-                TableColumn<Article, String> column11 = new TableColumn<>(Utility.surname+" Author");
+                TableColumn<Article, String> column11 = new TableColumn<>(Utility.surname + " Author");
                 String surname = db.getAllAuthors().get(j).getSurnameAuthor();
                 column11.setCellValueFactory(c -> new SimpleStringProperty(surname));
 
@@ -181,14 +179,14 @@ public class ExportController implements Initializable {
             }
 
             System.out.println("size export controller: " + db.getAllEditors().size());
-            for(int j=0;j<db.getAllEditors().size();j++) {
-                System.out.println("H: "+j);
-                TableColumn<Article, String> column12 = new TableColumn<>(Utility.name+" Editor");
+            for (int j = 0; j < db.getAllEditors().size(); j++) {
+                System.out.println("H: " + j);
+                TableColumn<Article, String> column12 = new TableColumn<>(Utility.name + " Editor");
                 String name = db.getAllEditors().get(j).getNameEditor();
                 column12.setCellValueFactory(c -> new SimpleStringProperty(name));
 
 
-                TableColumn<Article, String> column13 = new TableColumn<>(Utility.surname+" Editor");
+                TableColumn<Article, String> column13 = new TableColumn<>(Utility.surname + " Editor");
                 String surname = db.getAllEditors().get(j).getSurnameEditor();
                 column13.setCellValueFactory(c -> new SimpleStringProperty(surname));
 

@@ -38,5 +38,7 @@
             <Font size="32.0" />
          </font>
       </Button>
+      <Label layoutX="67.0" layoutY="77.0" text="Name" />
+      <Label layoutX="52.0" layoutY="126.0" text="Surname" />
    </children>
 </Pane>
