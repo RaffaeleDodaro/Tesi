@@ -8,7 +8,7 @@
 <?import javafx.scene.layout.Pane?>
 <?import javafx.scene.text.Font?>
 
-<Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="612.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.tesi.code.Controller.ExportController">
+<Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="655.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.tesi.code.Controller.ExportController">
    <children>
       <ChoiceBox fx:id="cbChooseType" layoutX="159.0" layoutY="10.0" prefWidth="150.0" />
       <Label layoutX="33.0" layoutY="14.0" text="Choose type:" />
@@ -32,7 +32,7 @@
       <Label layoutX="365.0" layoutY="170.0" text="Journal:" />
       <Label layoutX="365.0" layoutY="209.0" text="Year:" />
       <Button fx:id="btnFilterByType" layoutX="378.0" layoutY="10.0" mnemonicParsing="false" onAction="#filterByType" text="Filter by type" />
-      <TableView fx:id="tblView" layoutX="7.0" layoutY="361.0" prefHeight="237.0" prefWidth="586.0" />
+      <TableView fx:id="tblViewinProceedings" layoutX="25.0" layoutY="381.0" prefHeight="237.0" prefWidth="269.0" />
       <Button fx:id="btnShow" layoutX="63.0" layoutY="282.0" mnemonicParsing="false" onAction="#show" text="Show">
          <font>
             <Font size="32.0" />
@@ -40,5 +40,8 @@
       </Button>
       <Label layoutX="67.0" layoutY="77.0" text="Name" />
       <Label layoutX="52.0" layoutY="126.0" text="Surname" />
+      <Label layoutX="102.0" layoutY="364.0" text="inProceedings:" />
+      <TableView fx:id="tblViewArticle" layoutX="305.0" layoutY="381.0" prefHeight="237.0" prefWidth="269.0" />
+      <Label layoutX="402.0" layoutY="364.0" text="Article:" />
    </children>
 </Pane>
