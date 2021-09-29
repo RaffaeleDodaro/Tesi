@@ -62,13 +62,43 @@ public class ExportController implements Initializable {
 
     @FXML
     void filterByArticle(ActionEvent event) {
+        System.out.println("quiii");
+        String title = txtArticleTitle.getText();
+        String journal = txtArticleTitle.getText();
+        int year = cbArticleYear.getValue();
 
+        Database db = Database.getInstance();
+        db.openConnection(Utility.article);
+        db.cleanAll();
+        db.findArticleByInfoArticleArticle(title, journal, year);
+        db.closeConnection();
+        db.openConnection(Utility.inProceedings);
+        db.findArticleByInfoArticleInProceedings(title, year);
+        db.closeConnection();
+        showInProceedings(db.getFilteredArticlesInProceedings(), db);
+        showArticles(db.getFilteredArticlesArticle(), db);
+        db.cleanAll();
     }
+/*
+
+                    YEAR INT NOT NULL," +
+                    "PAGES varchar(200) NOT NULL," +
+                    "DBLP varchar(200) PRIMARY KEY NOT NULL," +
+                    "TITLE varchar(200) NOT NULL," +
+                    "VOLUME INT NOT NULL," +
+                    "SHORT_TITLE varchar(200) NOT NULL," +
+                    "URL varchar(200) NOT NULL," +
+                    "ADDRESS varchar(200) NOT NULL," +
+                    "PUBLISHER varchar(200) NOT NULL," +
+                    "SERIES varchar(200) NOT NULL," +
+                    "BOOKTITLE varchar(200) NOT NULL," +
+                    "DOI varchar(200) NOT NULL);";
+ */
 
     @FXML
     void filterByAuthor(ActionEvent event) {
         Database db = Database.getInstance();
-
+        db.cleanAll();
         db.openConnection(Utility.inProceedings);
         db.findArticleByAuthorName(txtAuthorSurname.getText(), txtAuthorName.getText(), Utility.inProceedings);
         db.closeConnection();
@@ -76,21 +106,28 @@ public class ExportController implements Initializable {
         db.openConnection(Utility.article);
         db.findArticleByAuthorName(txtAuthorSurname.getText(), txtAuthorName.getText(), Utility.article);
         db.closeConnection();
+
+        showInProceedings(db.getFilteredArticlesInProceedings(), db);
+        showArticles(db.getFilteredArticlesArticle(), db);
+        db.cleanAll();
     }
 
     @FXML
     void filterByType(ActionEvent event) {
         Database db = Database.getInstance();
+        db.cleanAll();
+        tblViewinProceedings.getItems().clear();
+        tblViewArticle.getItems().clear();
         if (cbChooseType.getValue().equalsIgnoreCase(Utility.inProceedings)) {
             db.openConnection(Utility.inProceedings);
             //System.out.println(Utility.inProceedings);
             db.filterByTypeInProceedings();
-            ArrayList<Article> filteredArticle = db.getFilteredArticles();
+            ArrayList<Article> filteredArticle = db.getFilteredArticlesInProceedings();
             showInProceedings(filteredArticle, db);
         } else {
             db.openConnection(Utility.article);
             db.filterByTypeArticle();
-            ArrayList<Article> filteredArticle = db.getFilteredArticles();
+            ArrayList<Article> filteredArticle = db.getFilteredArticlesArticle();
             showArticles(filteredArticle, db);
         }
         db.closeConnection();
@@ -111,15 +148,13 @@ public class ExportController implements Initializable {
     @FXML
     void show(ActionEvent event) {
         Database db = Database.getInstance();
-        ArrayList<Article> filteredArticle = db.getFilteredArticles();
-        System.out.println("SHOW filteredArticle.size() " + filteredArticle.size());
+        //System.out.println("SHOW filteredArticle.size() " + filteredArticle.size());
 
-        showInProceedings(filteredArticle, db);
-        showArticles(filteredArticle, db);
 
     }
 
     private void showInProceedings(ArrayList<Article> filteredArticle, Database db) {
+        tblViewinProceedings.getItems().clear();
         for (int i = 0; i < filteredArticle.size(); i++) {
 
             TableColumn<Article, String> column1 = new TableColumn<>(Utility.year);
@@ -237,6 +272,7 @@ public class ExportController implements Initializable {
 
 
     private void showArticles(ArrayList<Article> filteredArticle, Database db) {
+        tblViewArticle.getItems().clear();
         for (int i = 0; i < filteredArticle.size(); i++) {
             if (filteredArticle.get(i) instanceof Article) {
                 TableColumn<Article, String> column1 = new TableColumn<>(Utility.year);
@@ -258,6 +294,7 @@ public class ExportController implements Initializable {
                 String journal = filteredArticle.get(i).getJournal();
                 column4.setCellValueFactory(c -> new SimpleStringProperty(journal));
 
+                System.out.println("JOURNAL 3 " + journal);
 
                 TableColumn<Article, String> column5 = new TableColumn<>(Utility.title);
                 String title = filteredArticle.get(i).getTitle();

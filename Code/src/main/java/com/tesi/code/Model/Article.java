@@ -16,6 +16,7 @@ public class Article {
     private String type;
 
     public Article(String type, int year, String pages, String dblp, String title, int volume, String shortTitle, String url,String journal, String doi, ArrayList<Author> allAuthors) {
+        this.type=type;
         this.year = year;
         this.pages = pages;
         this.dblp = dblp;
@@ -25,6 +26,7 @@ public class Article {
         this.url = url;
         this.doi = doi;
         this.allAuthors=allAuthors;
+        this.journal=journal;
     }
 
     public String getType() {
