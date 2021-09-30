@@ -613,7 +613,6 @@ public class Database {
         return -1;
     }
 
-
     public ArrayList<Author> getAuthors() {
         return authors;
     }
@@ -697,7 +696,6 @@ public class Database {
             e.printStackTrace();
         }
     }
-
 
     public void findArticleByInfoArticleInProceedings(String title, int year) {
         try {

@@ -1,5 +1,7 @@
 package com.tesi.code.Model;
 
+import javafx.beans.property.BooleanProperty;
+
 import java.util.ArrayList;
 
 public class Article {
@@ -12,11 +14,13 @@ public class Article {
     private String url;
     private String doi;
     private String journal;
-    private ArrayList <Author> allAuthors;
+    private ArrayList<Author> allAuthors;
     private String type;
+    private BooleanProperty check;
 
-    public Article(String type, int year, String pages, String dblp, String title, int volume, String shortTitle, String url,String journal, String doi, ArrayList<Author> allAuthors) {
-        this.type=type;
+
+    public Article(String type, int year, String pages, String dblp, String title, int volume, String shortTitle, String url, String journal, String doi, ArrayList<Author> allAuthors) {
+        this.type = type;
         this.year = year;
         this.pages = pages;
         this.dblp = dblp;
@@ -25,15 +29,25 @@ public class Article {
         this.shortTitle = shortTitle;
         this.url = url;
         this.doi = doi;
-        this.allAuthors=allAuthors;
-        this.journal=journal;
+        this.allAuthors = allAuthors;
+        this.journal = journal;
+    }
+
+    public BooleanProperty isCheck() {
+        return check;
+    }
+
+    public void setCheck(boolean check) {
+        this.check.set(check);
     }
 
     public String getType() {
         return type;
     }
 
-    public ArrayList<Author> getAllAuthors(){return allAuthors;}
+    public ArrayList<Author> getAllAuthors() {
+        return allAuthors;
+    }
 
     public String getJournal() {
         return journal;

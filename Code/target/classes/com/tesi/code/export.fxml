@@ -8,13 +8,13 @@
 <?import javafx.scene.layout.Pane?>
 <?import javafx.scene.text.Font?>
 
-<Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="655.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.tesi.code.Controller.ExportController">
+<Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="821.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.tesi.code.Controller.ExportController">
    <children>
       <ChoiceBox fx:id="cbChooseType" layoutX="159.0" layoutY="10.0" prefWidth="150.0" />
       <Label layoutX="33.0" layoutY="14.0" text="Choose type:" />
-      <Button fx:id="btnExport" layoutX="396.0" layoutY="282.0" mnemonicParsing="false" text="Export">
+      <Button fx:id="btnSave" layoutX="228.0" layoutY="489.0" mnemonicParsing="false" onAction="#saveSelectedArticle" prefHeight="17.0" prefWidth="136.0" text="Save">
          <font>
-            <Font size="32.0" />
+            <Font size="16.0" />
          </font>
       </Button>
       <Label layoutX="13.0" layoutY="98.0" text="Author:" />
@@ -22,26 +22,19 @@
       <TextField fx:id="txtAuthorSurname" layoutX="102.0" layoutY="122.0" />
       <Button fx:id="btnFilterByAuthor" layoutX="33.0" layoutY="166.0" mnemonicParsing="false" onAction="#filterByAuthor" text="Filter by author" />
       <Label layoutX="299.0" layoutY="98.0" text="Article:" />
-      <TextField fx:id="txtArticleName" layoutX="439.0" layoutY="73.0" />
-      <TextField fx:id="txtArticleTitle" layoutX="439.0" layoutY="122.0" />
-      <Button fx:id="btnFilterByArticle" layoutX="385.0" layoutY="242.0" mnemonicParsing="false" onAction="#filterByArticle" text="Filter by article" />
-      <TextField fx:id="txtArticleJournal" layoutX="439.0" layoutY="166.0" />
-      <ChoiceBox fx:id="cbArticleYear" layoutX="438.0" layoutY="205.0" prefWidth="150.0" />
-      <Label layoutX="365.0" layoutY="77.0" text="Name:" />
-      <Label layoutX="365.0" layoutY="126.0" text="Title:" />
-      <Label layoutX="365.0" layoutY="170.0" text="Journal:" />
-      <Label layoutX="365.0" layoutY="209.0" text="Year:" />
+      <TextField fx:id="txtArticleTitle" layoutX="441.0" layoutY="61.0" />
+      <Button fx:id="btnFilterByArticle" layoutX="408.0" layoutY="191.0" mnemonicParsing="false" onAction="#filterByArticle" text="Filter by article" />
+      <TextField fx:id="txtArticleJournal" layoutX="441.0" layoutY="105.0" />
+      <ChoiceBox fx:id="cbArticleYear" layoutX="440.0" layoutY="144.0" prefWidth="150.0" />
+      <Label layoutX="367.0" layoutY="65.0" text="Title:" />
+      <Label layoutX="367.0" layoutY="109.0" text="Journal:" />
+      <Label layoutX="367.0" layoutY="148.0" text="Year:" />
       <Button fx:id="btnFilterByType" layoutX="378.0" layoutY="10.0" mnemonicParsing="false" onAction="#filterByType" text="Filter by type" />
-      <TableView fx:id="tblViewinProceedings" layoutX="25.0" layoutY="381.0" prefHeight="237.0" prefWidth="269.0" />
-      <Button fx:id="btnShow" layoutX="63.0" layoutY="282.0" mnemonicParsing="false" onAction="#show" text="Show">
-         <font>
-            <Font size="32.0" />
-         </font>
-      </Button>
+      <TableView fx:id="tblViewinProceedings" editable="true" layoutX="25.0" layoutY="243.0" prefHeight="237.0" prefWidth="269.0" />
       <Label layoutX="67.0" layoutY="77.0" text="Name" />
       <Label layoutX="52.0" layoutY="126.0" text="Surname" />
-      <Label layoutX="102.0" layoutY="364.0" text="inProceedings:" />
-      <TableView fx:id="tblViewArticle" layoutX="305.0" layoutY="381.0" prefHeight="237.0" prefWidth="269.0" />
-      <Label layoutX="402.0" layoutY="364.0" text="Article:" />
+      <Label layoutX="102.0" layoutY="226.0" text="inProceedings:" />
+      <TableView fx:id="tblViewArticle" editable="true" layoutX="305.0" layoutY="243.0" prefHeight="237.0" prefWidth="269.0" />
+      <Label layoutX="402.0" layoutY="226.0" text="Article:" />
    </children>
 </Pane>

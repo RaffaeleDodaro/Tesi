@@ -1,5 +1,7 @@
 package com.tesi.code.Model;
 
+import javafx.beans.property.BooleanProperty;
+
 import java.util.ArrayList;
 
 public class inProceedings extends Article{
@@ -9,7 +11,8 @@ public class inProceedings extends Article{
     private String address;
     private String booktitle;
     private String journal;
-    private ArrayList editors=new ArrayList<Editor>();
+    private ArrayList<Editor> allEditors=new ArrayList<>();
+    private BooleanProperty check;
 
     public inProceedings(String type, int year, String pages, String dblp, String title, int volume, String s, String shortTitle, String url, String doi, ArrayList<Author> allAuthors, String publisher, String series, String address, String booktitle, ArrayList<Editor> editors) {
         super(type,year, pages, dblp, title, volume, shortTitle, url,"", doi, allAuthors);
@@ -17,10 +20,13 @@ public class inProceedings extends Article{
         this.series = series;
         this.address = address;
         this.booktitle = booktitle;
-        this.editors=editors;
+        this.allEditors=editors;
     }
 
 
+    public BooleanProperty isCheck() {
+        return check;
+    }
 
     public String getBookTitle() {
         return booktitle;
@@ -52,5 +58,9 @@ public class inProceedings extends Article{
 
     public void setAddress(String address) {
         this.address = address;
+    }
+
+    public ArrayList<Editor> getAllEditors() {
+        return allEditors;
     }
 }
