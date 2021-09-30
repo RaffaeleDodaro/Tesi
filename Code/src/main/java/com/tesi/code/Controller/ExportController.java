@@ -153,23 +153,20 @@ public class ExportController implements Initializable {
 
         PrintWriter printWriter = new PrintWriter(fileWriter);*/
 
-        BufferedWriter bOut = new BufferedWriter(new FileWriter("C:\\Users\\raffa\\Desktop\\" + new SimpleDateFormat("yyyy-MM-dd").format(System.currentTimeMillis()) + ".txt", true));
+        BufferedWriter bOut = new BufferedWriter(new FileWriter("C:\\Users\\raffa\\Desktop\\" + new SimpleDateFormat("yyyy-MM-dd").format(System.currentTimeMillis()) + ".txt"));
         if (tblViewArticle.getItems().size() != 0) {
-            for(int i=0;i<tblViewArticle.getItems().size();i++)
-            {
-                if(tblViewArticle.getItems().get(i).isCheck()){
+            for (int i = 0; i < tblViewArticle.getItems().size(); i++) {
+                //if (tblViewArticle.getItems().get(i).isCheck())
                     savedArticle.add(tblViewArticle.getItems().get(i));
-                }
+
             }
             bOut.append("-------ARTICLE-------\n");
             saveArticle(bOut);
         }
         if (tblViewinProceedings.getItems().size() != 0) {
-            for(int i=0;i<tblViewinProceedings.getItems().size();i++)
-            {
-                if(tblViewinProceedings.getItems().get(i).isCheck()){
+            for (int i = 0; i < tblViewinProceedings.getItems().size(); i++) {
+                //if (tblViewinProceedings.getItems().get(i).isCheck()
                     savedInProceedings.add((inProceedings) tblViewinProceedings.getItems().get(i));
-                }
             }
             bOut.append("\n\n-------INPROCEEDINGS-------\n");
             saveInProceedings(bOut);
@@ -191,7 +188,8 @@ public class ExportController implements Initializable {
             //column20.setCellValueFactory(new PropertyValueFactory<Article, Boolean>("check"));
             //column20.setCellFactory(column -> new CheckBoxTableCell());
             column20.setCellFactory(column -> new CheckBoxTableCell());
-            column20.setCellValueFactory(cellData->{ Article cellValue = cellData.getValue();
+            column20.setCellValueFactory(cellData -> {
+                Article cellValue = cellData.getValue();
                 BooleanProperty property = cellValue.isCheck();
 
                 // Add listener to handler change
