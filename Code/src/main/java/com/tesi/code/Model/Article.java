@@ -1,6 +1,7 @@
 package com.tesi.code.Model;
 
 import javafx.beans.property.BooleanProperty;
+import javafx.beans.property.SimpleBooleanProperty;
 
 import java.util.ArrayList;
 
@@ -16,7 +17,7 @@ public class Article {
     private String journal;
     private ArrayList<Author> allAuthors;
     private String type;
-    private BooleanProperty check;
+    private BooleanProperty check=new SimpleBooleanProperty(this,"check");
 
 
     public Article(String type, int year, String pages, String dblp, String title, int volume, String shortTitle, String url, String journal, String doi, ArrayList<Author> allAuthors) {
@@ -33,12 +34,16 @@ public class Article {
         this.journal = journal;
     }
 
-    public BooleanProperty isCheck() {
+    public BooleanProperty checkProperty() {
         return check;
     }
 
     public void setCheck(boolean check) {
         this.check.set(check);
+    }
+
+    public BooleanProperty isCheck() {
+        return check;
     }
 
     public String getType() {

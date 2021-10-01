@@ -18,6 +18,7 @@ import javafx.scene.control.*;
 import javafx.scene.control.cell.CheckBoxTableCell;
 import javafx.scene.control.cell.PropertyValueFactory;
 import com.tesi.code.Model.inProceedings;
+import javafx.stage.FileChooser;
 import javafx.util.Callback;
 
 import javax.swing.*;
@@ -64,8 +65,8 @@ public class ExportController implements Initializable {
     @FXML
     private TableView<Article> tblViewArticle;
 
-    private ArrayList<Article> savedArticle;
-    private ArrayList<inProceedings> savedInProceedings;
+    private ArrayList<Article> savedArticle = new ArrayList<>();
+    private ArrayList<inProceedings> savedInProceedings = new ArrayList<>();
 
     @FXML
     void filterByArticle(ActionEvent event) {
@@ -119,7 +120,6 @@ public class ExportController implements Initializable {
         tblViewArticle.getItems().clear();
         if (cbChooseType.getValue().equalsIgnoreCase(Utility.inProceedings)) {
             db.openConnection(Utility.inProceedings);
-            //System.out.println(Utility.inProceedings);
             db.filterByTypeInProceedings();
             ArrayList<Article> filteredArticle = db.getFilteredArticlesInProceedings();
             showInProceedings(filteredArticle, db);
@@ -134,7 +134,7 @@ public class ExportController implements Initializable {
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-        cbChooseType.setValue(Utility.article);
+        cbChooseType.setValue(Utility.inProceedings);
         cbChooseType.getItems().add(Utility.inProceedings);
         cbChooseType.getItems().add(Utility.article);
 
@@ -148,31 +148,51 @@ public class ExportController implements Initializable {
 
     @FXML
     void saveSelectedArticle(ActionEvent event) throws IOException {
-        /*
-        FileWriter fileWriter = new FileWriter("C:\\Users\\raffa\\Desktop\\" + new SimpleDateFormat("yyyy-MM-dd").format(System.currentTimeMillis()) + ".txt");
+        if (tblViewArticle.getItems().size() > 0 || tblViewinProceedings.getItems().size() > 0) {
+            FileChooser fileChooser = new FileChooser();
 
-        PrintWriter printWriter = new PrintWriter(fileWriter);*/
+            //Set extension filter for text files
+            FileChooser.ExtensionFilter extFilter = new FileChooser.ExtensionFilter("TXT files (*.txt)", "*.txt");
+            fileChooser.getExtensionFilters().add(extFilter);
 
-        BufferedWriter bOut = new BufferedWriter(new FileWriter("C:\\Users\\raffa\\Desktop\\" + new SimpleDateFormat("yyyy-MM-dd").format(System.currentTimeMillis()) + ".txt"));
-        if (tblViewArticle.getItems().size() != 0) {
-            for (int i = 0; i < tblViewArticle.getItems().size(); i++) {
-                //if (tblViewArticle.getItems().get(i).isCheck())
-                    savedArticle.add(tblViewArticle.getItems().get(i));
+            File file = fileChooser.showSaveDialog(null);
 
+            if (file != null) {
+                BufferedWriter bOut = new BufferedWriter(new FileWriter(file));
+
+                bOut.append("-------ARTICLE-------\n");
+                for (int i = 0; i < tblViewArticle.getItems().size(); i++) {
+                    if (tblViewArticle.getItems().get(i).isCheck().getValue()) {
+                        if (!existsArticle(tblViewArticle.getItems().get(i), savedArticle))
+                            savedArticle.add(tblViewArticle.getItems().get(i));
+                    }
+                }
+                saveArticle(bOut);
+                bOut.append("\n\n-------INPROCEEDINGS-------\n");
+                for (int i = 0; i < tblViewinProceedings.getItems().size(); i++)
+                    if (tblViewinProceedings.getItems().get(i).isCheck().getValue()) {
+                        if (!existsInProceedings(tblViewinProceedings.getItems().get(i), savedInProceedings))
+                            savedInProceedings.add((inProceedings) tblViewinProceedings.getItems().get(i));
+                    }
+                saveInProceedings(bOut);
+
+                bOut.close();
             }
-            bOut.append("-------ARTICLE-------\n");
-            saveArticle(bOut);
         }
-        if (tblViewinProceedings.getItems().size() != 0) {
-            for (int i = 0; i < tblViewinProceedings.getItems().size(); i++) {
-                //if (tblViewinProceedings.getItems().get(i).isCheck()
-                    savedInProceedings.add((inProceedings) tblViewinProceedings.getItems().get(i));
-            }
-            bOut.append("\n\n-------INPROCEEDINGS-------\n");
-            saveInProceedings(bOut);
-        }
+    }
 
-        bOut.close();
+    private boolean existsArticle(Article a, ArrayList<Article> savedArticle) {
+        for (int i = 0; i < savedArticle.size(); i++)
+            if (savedArticle.get(i).getDblp().equals(a.getDblp()))
+                return true;
+        return false;
+    }
+
+    private boolean existsInProceedings(Article a, ArrayList<inProceedings> savedArticle) {
+        for (int i = 0; i < savedArticle.size(); i++)
+            if (savedArticle.get(i).getDblp().equals(a.getDblp()))
+                return true;
+        return false;
     }
 
     private void showInProceedings(ArrayList<Article> filteredArticle, Database db) {
@@ -184,7 +204,7 @@ public class ExportController implements Initializable {
             column1.setCellValueFactory(c -> new SimpleStringProperty(String.valueOf(year)));
 
 
-            TableColumn<Article, Boolean> column20 = new TableColumn<>("");
+            /*TableColumn<Article, Boolean> column20 = new TableColumn<>("");
             //column20.setCellValueFactory(new PropertyValueFactory<Article, Boolean>("check"));
             //column20.setCellFactory(column -> new CheckBoxTableCell());
             column20.setCellFactory(column -> new CheckBoxTableCell());
@@ -196,7 +216,13 @@ public class ExportController implements Initializable {
                 property.addListener((observable, oldValue, newValue) -> cellValue.setCheck(newValue));
 
                 return property;
-            });
+            });*/
+
+
+            TableColumn<Article, Boolean> column20 = new TableColumn<>("Complete");
+            column20.setCellValueFactory(features -> features.getValue().checkProperty());
+            column20.setCellFactory(CheckBoxTableCell.forTableColumn(column20));
+
 
             TableColumn<Article, String> column2 = new TableColumn<>(Utility.dblp);
             String dblp = filteredArticle.get(i).getDblp();
@@ -264,11 +290,7 @@ public class ExportController implements Initializable {
                 tblViewinProceedings.getColumns().add(column17);
             }
 
-            System.out.println("db.getAllAuthors().size() " + db.getAllAuthors().size());
-
-
             for (int j = 0; j < db.getAllAuthors().size(); j++) {
-                System.out.println("Author number J: " + j);
                 TableColumn<Article, String> column10 = new TableColumn<>(Utility.name + " Author");
                 String name = db.getAllAuthors().get(j).getNameAuthor();
                 column10.setCellValueFactory(c -> new SimpleStringProperty(name));
@@ -283,9 +305,7 @@ public class ExportController implements Initializable {
                 tblViewinProceedings.getColumns().add(column11);
             }
 
-            System.out.println("db.getAllEditors().size(): " + db.getAllEditors().size());
             for (int j = 0; j < db.getAllEditors().size(); j++) {
-                System.out.println("Editor number H: " + j);
                 TableColumn<Article, String> column12 = new TableColumn<>(Utility.name + " Editor");
                 String name = db.getAllEditors().get(j).getNameEditor();
                 column12.setCellValueFactory(c -> new SimpleStringProperty(name));
@@ -302,7 +322,6 @@ public class ExportController implements Initializable {
 
 
             tblViewinProceedings.getItems().add(filteredArticle.get(i));
-            System.out.println("I: " + i);
         }
     }
 
@@ -311,9 +330,9 @@ public class ExportController implements Initializable {
         for (int i = 0; i < filteredArticle.size(); i++) {
             if (filteredArticle.get(i) instanceof Article) {
 
-                TableColumn<Article, Boolean> column20 = new TableColumn<>("");
-                column20.setCellValueFactory(new PropertyValueFactory<Article, Boolean>("check"));
-                column20.setCellFactory(column -> new CheckBoxTableCell());
+                TableColumn<Article, Boolean> column20 = new TableColumn<>("Complete");
+                column20.setCellValueFactory(features -> features.getValue().checkProperty());
+                column20.setCellFactory(CheckBoxTableCell.forTableColumn(column20));
 
                 TableColumn<Article, String> column1 = new TableColumn<>(Utility.year);
                 int year = filteredArticle.get(i).getYear();
@@ -334,7 +353,6 @@ public class ExportController implements Initializable {
                 String journal = filteredArticle.get(i).getJournal();
                 column4.setCellValueFactory(c -> new SimpleStringProperty(journal));
 
-                System.out.println("JOURNAL 3 " + journal);
 
                 TableColumn<Article, String> column5 = new TableColumn<>(Utility.title);
                 String title = filteredArticle.get(i).getTitle();
@@ -372,11 +390,8 @@ public class ExportController implements Initializable {
                 tblViewArticle.getColumns().add(column8);
                 tblViewArticle.getColumns().add(column9);
 
-                System.out.println("db.getAllAuthors().size() " + db.getAllAuthors().size());
-
 
                 for (int j = 0; j < db.getAllAuthors().size(); j++) {
-                    System.out.println("Author number J: " + j);
                     TableColumn<Article, String> column10 = new TableColumn<>(Utility.name + " Author");
                     String name = db.getAllAuthors().get(j).getNameAuthor();
                     column10.setCellValueFactory(c -> new SimpleStringProperty(name));
@@ -393,7 +408,6 @@ public class ExportController implements Initializable {
 
 
                 tblViewArticle.getItems().add(filteredArticle.get(i));
-                System.out.println("I: " + i);
             }
         }
     }
@@ -410,7 +424,6 @@ public class ExportController implements Initializable {
             String doi = savedArticle.get(i).getDoi();
             String journal = savedArticle.get(i).getJournal();
             String type = savedArticle.get(i).getType();
-            //BooleanProperty check = tblViewArticle.getItems().get(i).isCheck();
             ArrayList<Author> allAuthors = savedArticle.get(i).getAllAuthors();
             bOut.append("year: " + year + "\npages: " + pages + "\ndblp: " + dblp + "\ntitle: " + title +
                     "\nvolume: " + volume + "\nShort title: " + shortTitle + "\nurl: " + url + "\ndoi: " + doi +
@@ -418,7 +431,7 @@ public class ExportController implements Initializable {
             for (int j = 0; j < allAuthors.size(); j++) {
                 bOut.append("\nAutore " + j + ": " + allAuthors.get(j).getNameAuthor() + " " + allAuthors.get(j).getSurnameAuthor());
             }
-            bOut.append("\n*************************");
+            bOut.append("\n*************************\n");
         }
     }
 
@@ -451,7 +464,7 @@ public class ExportController implements Initializable {
                 for (int j = 0; j < allEditor.size(); j++) {
                     printWriter.append("\nEditore " + j + ": " + allEditor.get(j).getNameEditor() + " " + allEditor.get(j).getSurnameEditor());
                 }
-                printWriter.append("\n*************************");
+                printWriter.append("\n*************************\n");
             }
         }
     }
