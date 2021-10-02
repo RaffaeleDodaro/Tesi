@@ -15,9 +15,9 @@ public class inProceedings extends Article {
     private ArrayList<Editor> allEditors = new ArrayList<>();
     private BooleanProperty check = new SimpleBooleanProperty(this, "check");
 
-    public inProceedings(String type, int year, String pages, String dblp, String title, int volume, String shortTitle, String url, String booktitle, String doi, ArrayList<Author> allAuthors, String publisher, String series, String address, ArrayList<Editor> editors) {
+    public inProceedings(String type, int year, String pages, String dblp, String title, int volume, String shortTitle, String url, String booktitle,
+                         String doi, ArrayList<Author> allAuthors, String publisher, String series, String address, ArrayList<Editor> editors) {
         super(type, year, pages, dblp, title, volume, shortTitle, url, "", doi, allAuthors);
-        System.out.println("URL2 : " + url);
         this.publisher = publisher;
         this.series = series;
         this.address = address;

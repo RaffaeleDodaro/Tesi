@@ -165,10 +165,14 @@ public class ExportController implements Initializable {
                 bOut.append("-------ARTICLE-------\n");
                 for (int i = 0; i < tblViewArticle.getItems().size(); i++) {
                     if (tblViewArticle.getItems().get(i).isCheck().getValue()) {
-                        if (!existsArticle(tblViewArticle.getItems().get(i), savedArticle))
+                        if (!existsArticle(tblViewArticle.getItems().get(i))){
                             savedArticle.add(tblViewArticle.getItems().get(i));
+                            System.out.println(tblViewArticle.getItems().get(i).getAllAuthors().get(1).getNameAuthor());
+                            System.out.println(tblViewArticle.getItems().get(i).getTitle());
+                        }
                     }
                 }
+
                 saveArticle(bOut);
                 bOut.append("\n\n-------INPROCEEDINGS-------\n");
                 for (int i = 0; i < tblViewinProceedings.getItems().size(); i++)
@@ -177,13 +181,12 @@ public class ExportController implements Initializable {
                             savedInProceedings.add((inProceedings) tblViewinProceedings.getItems().get(i));
                     }
                 saveInProceedings(bOut);
-
                 bOut.close();
             }
         }
     }
 
-    private boolean existsArticle(Article a, ArrayList<Article> savedArticle) {
+    private boolean existsArticle(Article a) {
         for (int i = 0; i < savedArticle.size(); i++)
             if (savedArticle.get(i).getDblp().equals(a.getDblp()))
                 return true;
@@ -286,8 +289,10 @@ public class ExportController implements Initializable {
         column20.setCellValueFactory(features -> features.getValue().checkProperty());
         column20.setCellFactory(CheckBoxTableCell.forTableColumn(column20));
 
+
         TableColumn<Article, Integer> column1 = new TableColumn<>(Utility.year);
         column1.setCellValueFactory(new PropertyValueFactory<>("year"));
+
 
         TableColumn<Article, String> column2 = new TableColumn<>(Utility.dblp);
         column2.setCellValueFactory(new PropertyValueFactory<>("dblp"));
@@ -371,6 +376,7 @@ public class ExportController implements Initializable {
                     "\njournal: " + journal + "\ntype: " + type);
             for (int j = 0; j < allAuthors.size(); j++) {
                 bOut.append("\nAutore " + j + ": " + allAuthors.get(j).getNameAuthor() + " " + allAuthors.get(j).getSurnameAuthor());
+                System.out.println(("\nAutore " + j + ": " + allAuthors.get(j).getNameAuthor() + " " + allAuthors.get(j).getSurnameAuthor()));
             }
             bOut.append("\n*************************\n");
         }

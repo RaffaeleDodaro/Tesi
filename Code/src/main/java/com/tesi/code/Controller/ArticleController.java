@@ -73,12 +73,7 @@ public class ArticleController implements Initializable {
         db.getAuthors().clear();
 
         for(int i=0;i<allTextField.size();i+=2)
-        {
-            Author a=new Author(allTextField.get(i).getText(),allTextField.get(i+1).getText());
-            //a.setSurnameAuthor(allTextField.get(i).getText());
-            //a.setNameAuthor(allTextField.get(i+1).getText());
-            db.getAuthors().add(a);
-        }
+            db.getAuthors().add(new Author(allTextField.get(i).getText(),allTextField.get(i+1).getText()));
 
         db.openConnection(u.article);
         db.createTableArticle();
@@ -89,18 +84,19 @@ public class ArticleController implements Initializable {
             JOptionPane.showMessageDialog(null,"Insert short title", "ERROR", JOptionPane.INFORMATION_MESSAGE);
         else if(txtJournal.getText().equalsIgnoreCase(""))
             JOptionPane.showMessageDialog(null,"Insert journal", "ERROR", JOptionPane.INFORMATION_MESSAGE);
-        db.filterByTypeArticle();
-        db.readingAuthorArticle();
+
         db.closeConnection();
     }
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         GenericParser gp= GenericParser.getInstance();
+
         txtJournal.setText(gp.getJournal());
         txtTitle.setText(gp.getTitle());
         txtShortTitle.setText(gp.getTitle());
         Database db=Database.getInstance();
+        db.getAuthors().clear();
         db.calculateAuthor(gp.getAuthor());
 
         for(int i = 0; i<db.getAuthors().size(); i++)
