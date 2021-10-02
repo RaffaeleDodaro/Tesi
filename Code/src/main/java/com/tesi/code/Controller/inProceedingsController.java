@@ -72,23 +72,19 @@ public class inProceedingsController implements Initializable {
     }
 
     @FXML
-    void save(ActionEvent event) throws ClassNotFoundException {
+    void save(ActionEvent event) {
         Database db = Database.getInstance();
         GenericParser gp = GenericParser.getInstance();
 
         db.getAuthors().clear();
         db.getEditors().clear();
-        for (int i = 0; i < allTextAuthor.size(); i += 2) {
-            Author a = new Author(allTextAuthor.get(i).getText(), allTextAuthor.get(i + 1).getText());
-            //a.setSurnameAuthor(allTextAuthor.get(i).getText());
-            //a.setNameAuthor(allTextAuthor.get(i+1).getText());
-            db.getAuthors().add(a);
-        }
+        for (int i = 0; i < allTextAuthor.size(); i += 2)
+            db.getAuthors().add(new Author(allTextAuthor.get(i).getText(), allTextAuthor.get(i + 1).getText()));
+
 
         for (int i = 0; i < allTextEditor.size(); i += 2) {
-            db.getEditors().add(new Editor(allTextEditor.get(i + 1).getText(),allTextEditor.get(i).getText()));
+            db.getEditors().add(new Editor(allTextEditor.get(i + 1).getText(), allTextEditor.get(i).getText()));
         }
-        System.out.println("db.getEditors: " + db.getEditors().size());
 
         db.openConnection(Utility.inProceedings);
         db.createTableInProceedings();
@@ -99,10 +95,11 @@ public class inProceedingsController implements Initializable {
             JOptionPane.showMessageDialog(null, "Insert short title", "ERROR", JOptionPane.INFORMATION_MESSAGE);
         else if (txtAddress.getText().equalsIgnoreCase(""))
             JOptionPane.showMessageDialog(null, "Insert address", "ERROR", JOptionPane.INFORMATION_MESSAGE);
-
-        db.filterByTypeInProceedings();
-        db.readingAuthorInProceedings();
-        db.closeConnection();
+        else {
+            db.filterByTypeInProceedings();
+            db.readingAuthorInProceedings();
+            db.closeConnection();
+        }
     }
 
     @Override
@@ -117,9 +114,9 @@ public class inProceedingsController implements Initializable {
         db.calculateEditor(gp.getEditor());
         for (int i = 0; i < db.getAuthors().size(); i++)
             loadAuthors(i, db);
-        System.out.println("size: "+db.getEditors().size());
         for (int i = 0; i < db.getEditors().size(); i++)
             loadEditors(i, db);
+        db.closeConnection();
     }
 
     private void loadEditors(int i, Database db) {

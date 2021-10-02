@@ -19,4 +19,8 @@ public class Utility {
     public static final String doi = "Doi";
     public static final String name = "Name";
     public static final String surname = "Surname";
+    public static final String series = "Series";
+    public static final String address = "Address";
+    public static final String booktitle = "BookTitle";
+    public static final String publisher = "Publisher";
 }
