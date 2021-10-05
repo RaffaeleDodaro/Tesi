@@ -72,7 +72,6 @@ public class ExportController implements Initializable {
 
     @FXML
     void filterByArticle(ActionEvent event) {
-        System.out.println("quiii");
         String title = txtArticleTitle.getText();
         String journal = txtArticleTitle.getText();
         int year = cbArticleYear.getValue();
@@ -81,18 +80,15 @@ public class ExportController implements Initializable {
         db.openConnection(Utility.article);
         db.cleanAll();
 
-
         db.findArticleByInfoArticleArticle(title, journal, year);
         db.closeConnection();
-
 
         db.openConnection(Utility.inProceedings);
         db.findArticleByInfoArticleInProceedings(title, year);
         db.closeConnection();
 
-
         showInProceedings(db.getFilteredArticlesInProceedings(), db);
-        showArticles(db.getFilteredArticlesArticle(), db);
+        showArticles(db.getFilteredArticlesArticle());
         db.cleanAll();
     }
 
@@ -100,16 +96,19 @@ public class ExportController implements Initializable {
     void filterByAuthor(ActionEvent event) {
         Database db = Database.getInstance();
         db.cleanAll();
+        tblViewinProceedings.getItems().clear();
+        tblViewArticle.getItems().clear();
         db.openConnection(Utility.inProceedings);
         db.findArticleByAuthorName(txtAuthorSurname.getText(), txtAuthorName.getText(), Utility.inProceedings);
         db.closeConnection();
+
 
         db.openConnection(Utility.article);
         db.findArticleByAuthorName(txtAuthorSurname.getText(), txtAuthorName.getText(), Utility.article);
         db.closeConnection();
 
         showInProceedings(db.getFilteredArticlesInProceedings(), db);
-        showArticles(db.getFilteredArticlesArticle(), db);
+        showArticles(db.getFilteredArticlesArticle());
         db.cleanAll();
 
     }
@@ -128,8 +127,11 @@ public class ExportController implements Initializable {
         } else {
             db.openConnection(Utility.article);
             db.filterByTypeArticle();
+            db = Database.getInstance();
             ArrayList<Article> filteredArticle = db.getFilteredArticlesArticle();
-            showArticles(filteredArticle, db);
+            System.out.println("RIGA 132 exportcontroller: " + filteredArticle.get(0).getAllAuthors().size() + " "
+                    + filteredArticle.size());
+            showArticles(filteredArticle);
         }
         db.closeConnection();
     }
@@ -153,7 +155,7 @@ public class ExportController implements Initializable {
         if (tblViewArticle.getItems().size() > 0 || tblViewinProceedings.getItems().size() > 0) {
             FileChooser fileChooser = new FileChooser();
 
-            //Set extension filter for text files
+            // Set extension filter for text files
             FileChooser.ExtensionFilter extFilter = new FileChooser.ExtensionFilter("TXT files (*.txt)", "*.txt");
             fileChooser.getExtensionFilters().add(extFilter);
 
@@ -165,10 +167,14 @@ public class ExportController implements Initializable {
                 bOut.append("-------ARTICLE-------\n");
                 for (int i = 0; i < tblViewArticle.getItems().size(); i++) {
                     if (tblViewArticle.getItems().get(i).isCheck().getValue()) {
-                        if (!existsArticle(tblViewArticle.getItems().get(i))){
+                        if (!existsArticle(tblViewArticle.getItems().get(i))) {
+                            System.out.println("QUIIII");
                             savedArticle.add(tblViewArticle.getItems().get(i));
-                            System.out.println(tblViewArticle.getItems().get(i).getAllAuthors().get(1).getNameAuthor());
-                            System.out.println(tblViewArticle.getItems().get(i).getTitle());
+                            System.out.println("savedArticle.get(0).getAllAuthors().size(): "
+                                    + savedArticle.get(0).getAllAuthors().size() + " "
+                                    + tblViewArticle.getItems().get(i).getTitle());
+                            // System.out.println(tblViewArticle.getItems().get(i).getAllAuthors().get(0).getNameAuthor());
+                            // System.out.println(tblViewArticle.getItems().get(i).getTitle());
                         }
                     }
                 }
@@ -260,71 +266,63 @@ public class ExportController implements Initializable {
         tblViewinProceedings.getColumns().add(column11);
         tblViewinProceedings.getColumns().add(column12);
 
-
         for (Article a : fxlist)
             tblViewinProceedings.getItems().add(a);
 
-        /*for (int j = 0; j < db.getAllAuthors().size(); j++) {
-            TableColumn<Article, String> column13 = new TableColumn<>("Author's " + Utility.name);
-            String name = db.getAllAuthors().get(j).getNameAuthor();
-            column13.setCellValueFactory(new PropertyValueFactory<>("arraylistToString"));
-            System.out.println("\n"+"Name: " + name);
-
-            TableColumn<Article, String> column14 = new TableColumn<>("Author's " + Utility.surname);
-            String surname = db.getAllAuthors().get(j).getSurnameAuthor();
-            column14.setCellValueFactory(c -> new SimpleStringProperty(surname));
-            System.out.println("Surname: " + surname);
-
-            tblViewinProceedings.getColumns().add(column13);
-            tblViewinProceedings.getColumns().add(column14);
-        }*/
+        /*
+         * for (int j = 0; j < db.getAllAuthors().size(); j++) { TableColumn<Article,
+         * String> column13 = new TableColumn<>("Author's " + Utility.name); String name
+         * = db.getAllAuthors().get(j).getNameAuthor(); column13.setCellValueFactory(new
+         * PropertyValueFactory<>("arraylistToString"));
+         * System.out.println("\n"+"Name: " + name);
+         * 
+         * TableColumn<Article, String> column14 = new TableColumn<>("Author's " +
+         * Utility.surname); String surname =
+         * db.getAllAuthors().get(j).getSurnameAuthor(); column14.setCellValueFactory(c
+         * -> new SimpleStringProperty(surname)); System.out.println("Surname: " +
+         * surname);
+         * 
+         * tblViewinProceedings.getColumns().add(column13);
+         * tblViewinProceedings.getColumns().add(column14); }
+         */
     }
 
-    private void showArticles(ArrayList<Article> filteredArticle, Database db) {
+    private void showArticles(ArrayList<Article> filteredArticle) {
         tblViewArticle.getItems().clear();
 
         ObservableList<Article> fxlist = FXCollections.observableList(filteredArticle);
+        int i = 0;
 
         TableColumn<Article, Boolean> column20 = new TableColumn<>("");
         column20.setCellValueFactory(features -> features.getValue().checkProperty());
         column20.setCellFactory(CheckBoxTableCell.forTableColumn(column20));
 
-
         TableColumn<Article, Integer> column1 = new TableColumn<>(Utility.year);
         column1.setCellValueFactory(new PropertyValueFactory<>("year"));
-
 
         TableColumn<Article, String> column2 = new TableColumn<>(Utility.dblp);
         column2.setCellValueFactory(new PropertyValueFactory<>("dblp"));
 
-
         TableColumn<Article, String> column3 = new TableColumn<>(Utility.pages);
         column3.setCellValueFactory(new PropertyValueFactory<>("pages"));
-
 
         TableColumn<Article, String> column4 = new TableColumn<>(Utility.journal);
         column4.setCellValueFactory(new PropertyValueFactory<>("journal"));
 
-
         TableColumn<Article, String> column5 = new TableColumn<>(Utility.title);
         column5.setCellValueFactory(new PropertyValueFactory<>("title"));
-
 
         TableColumn<Article, String> column6 = new TableColumn<>(Utility.volume);
         column6.setCellValueFactory(new PropertyValueFactory<>("volume"));
 
-
         TableColumn<Article, String> column7 = new TableColumn<>(Utility.shortTitle);
         column7.setCellValueFactory(new PropertyValueFactory<>("shortTitle"));
-
 
         TableColumn<Article, String> column8 = new TableColumn<>(Utility.url);
         column8.setCellValueFactory(new PropertyValueFactory<>("url"));
 
-
         TableColumn<Article, String> column9 = new TableColumn<>(Utility.doi);
         column9.setCellValueFactory(new PropertyValueFactory<>("doi"));
-
 
         tblViewArticle.getColumns().add(column20);
         tblViewArticle.getColumns().add(column1);
@@ -337,25 +335,26 @@ public class ExportController implements Initializable {
         tblViewArticle.getColumns().add(column8);
         tblViewArticle.getColumns().add(column9);
 
-
-        for (Article a : fxlist)
-            tblViewArticle.getItems().add(a);
-
-        /*for (int j = 0; j < db.getAllAuthors().size(); j++) {
+        /*for (int j = 0; j < fxlist.get(i).getAllAuthors().size(); j++) {
             TableColumn<Article, String> column10 = new TableColumn<>("Author's " + Utility.name);
-            String name = db.getAllAuthors().get(j).getNameAuthor();
-            column10.setCellValueFactory(new PropertyValueFactory<>("arraylistToString"));
-            System.out.println("\n"+"Name: " + name);
+            String name = fxlist.get(i).getAllAuthors().get(j).getNameAuthor();
+            column10.setCellValueFactory(new PropertyValueFactory<>("Name"));
+            System.out.println("\n" + "Name: " + name);
 
             TableColumn<Article, String> column11 = new TableColumn<>("Author's " + Utility.surname);
-            String surname = db.getAllAuthors().get(j).getSurnameAuthor();
-            column11.setCellValueFactory(c -> new SimpleStringProperty(surname));
+            String surname = fxlist.get(i).getAllAuthors().get(j).getSurnameAuthor();
+            column11.setCellValueFactory(new PropertyValueFactory<>("Surname"));
             System.out.println("Surname: " + surname);
 
             tblViewArticle.getColumns().add(column10);
             tblViewArticle.getColumns().add(column11);
         }*/
 
+        for (Article a : fxlist) {
+            System.out.println("size exportcontroller showarticle: " + a.getAllAuthors().size());
+            tblViewArticle.getItems().add(a);
+        }
+        i+=1;
     }
 
     private void saveArticle(BufferedWriter bOut) throws IOException {
@@ -371,12 +370,15 @@ public class ExportController implements Initializable {
             String journal = savedArticle.get(i).getJournal();
             String type = savedArticle.get(i).getType();
             ArrayList<Author> allAuthors = savedArticle.get(i).getAllAuthors();
-            bOut.append("year: " + year + "\npages: " + pages + "\ndblp: " + dblp + "\ntitle: " + title +
-                    "\nvolume: " + volume + "\nShort title: " + shortTitle + "\nurl: " + url + "\ndoi: " + doi +
-                    "\njournal: " + journal + "\ntype: " + type);
+            System.out.println("size exportcontroller savearticle: " + allAuthors.size());
+            bOut.append("year: " + year + "\npages: " + pages + "\ndblp: " + dblp + "\ntitle: " + title + "\nvolume: "
+                    + volume + "\nShort title: " + shortTitle + "\nurl: " + url + "\ndoi: " + doi + "\njournal: "
+                    + journal + "\ntype: " + type);
             for (int j = 0; j < allAuthors.size(); j++) {
-                bOut.append("\nAutore " + j + ": " + allAuthors.get(j).getNameAuthor() + " " + allAuthors.get(j).getSurnameAuthor());
-                System.out.println(("\nAutore " + j + ": " + allAuthors.get(j).getNameAuthor() + " " + allAuthors.get(j).getSurnameAuthor()));
+                bOut.append("\nAutore " + j + ": " + allAuthors.get(j).getNameAuthor() + " "
+                        + allAuthors.get(j).getSurnameAuthor());
+                System.out.println(("\nAutore " + j + ": " + allAuthors.get(j).getNameAuthor() + " "
+                        + allAuthors.get(j).getSurnameAuthor()));
             }
             bOut.append("\n*************************\n");
         }
@@ -399,17 +401,19 @@ public class ExportController implements Initializable {
                 String address = ((inProceedings) savedInProceedings.get(i)).getAddress();
                 String booktitle = ((inProceedings) savedInProceedings.get(i)).getBooktitle();
                 ArrayList<Editor> allEditor = ((inProceedings) savedInProceedings.get(i)).getAllEditors();
-                //BooleanProperty check = tblViewinProceedings.getItems().get(i).isCheck();
+                // BooleanProperty check = tblViewinProceedings.getItems().get(i).isCheck();
                 ArrayList<Author> allAuthors = savedInProceedings.get(i).getAllAuthors();
-                printWriter.append("year: " + year + "\npages: " + pages + "\ndblp: " + dblp + "\ntitle: " + title +
-                        "\nvolume: " + volume + "\nShort title: " + shortTitle + "\nurl: " + url + "\ndoi: " + doi +
-                        "\npublisher" + publisher + "\ntype: " + type + "\nseries: " + series + "\naddress: " + address +
-                        "\nbook title: " + booktitle);
+                printWriter.append("year: " + year + "\npages: " + pages + "\ndblp: " + dblp + "\ntitle: " + title
+                        + "\nvolume: " + volume + "\nShort title: " + shortTitle + "\nurl: " + url + "\ndoi: " + doi
+                        + "\npublisher" + publisher + "\ntype: " + type + "\nseries: " + series + "\naddress: "
+                        + address + "\nbook title: " + booktitle);
                 for (int j = 0; j < allAuthors.size(); j++) {
-                    printWriter.append("\nAutore " + j + ": " + allAuthors.get(j).getNameAuthor() + " " + allAuthors.get(j).getSurnameAuthor());
+                    printWriter.append("\nAutore " + j + ": " + allAuthors.get(j).getNameAuthor() + " "
+                            + allAuthors.get(j).getSurnameAuthor());
                 }
                 for (int j = 0; j < allEditor.size(); j++) {
-                    printWriter.append("\nEditore " + j + ": " + allEditor.get(j).getNameEditor() + " " + allEditor.get(j).getSurnameEditor());
+                    printWriter.append("\nEditore " + j + ": " + allEditor.get(j).getNameEditor() + " "
+                            + allEditor.get(j).getSurnameEditor());
                 }
                 printWriter.append("\n*************************\n");
             }

@@ -1,28 +1,28 @@
 package com.tesi.code.Model;
 
 public class Author {
-    private String nameAuthor;
-    private String surnameAuthor;
+    private String name;
+    private String surname;
 
     public Author(String surname, String name) {
-        this.nameAuthor = name;
-        this.surnameAuthor = surname;
+        this.name = name;
+        this.surname = surname;
         //this.id = id;
     }
 
     public String getNameAuthor() {
-        return nameAuthor;
+        return name;
     }
 
     public void setNameAuthor(String nameAuthor) {
-        this.nameAuthor = nameAuthor;
+        this.name = nameAuthor;
     }
 
     public String getSurnameAuthor() {
-        return surnameAuthor;
+        return surname;
     }
 
     public void setSurnameAuthor(String surnameAuthor) {
-        this.surnameAuthor = surnameAuthor;
+        this.surname = surnameAuthor;
     }
 }

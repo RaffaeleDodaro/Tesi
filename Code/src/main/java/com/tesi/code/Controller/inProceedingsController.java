@@ -97,7 +97,7 @@ public class inProceedingsController implements Initializable {
             JOptionPane.showMessageDialog(null, "Insert address", "ERROR", JOptionPane.INFORMATION_MESSAGE);
         else {
             db.filterByTypeInProceedings();
-            db.readingAuthorInProceedings();
+            //db.readingAuthorInProceedings();
             db.closeConnection();
         }
     }

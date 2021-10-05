@@ -4,7 +4,6 @@ import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
 
 import java.util.ArrayList;
-import java.util.stream.Collectors;
 
 public class Article {
     private int year;
@@ -19,8 +18,7 @@ public class Article {
     private ArrayList<Author> allAuthors;
     private String type;
     private BooleanProperty check=new SimpleBooleanProperty(this,"check");
-    private String arraylistToString;
-
+    
     public Article(String type, int year, String pages, String dblp, String title, int volume, String shortTitle, String url, String journal, String doi, ArrayList<Author> allAuthors) {
         this.type = type;
         this.year = year;
@@ -35,13 +33,6 @@ public class Article {
         this.journal = journal;
     }
 
-    public String getArraylistToString()
-    {
-        String p="";
-        for(Author a: allAuthors)
-            p+=a.getNameAuthor()+" " + a.getSurnameAuthor()+", ";
-        return p;
-    }
 
     public BooleanProperty checkProperty() {
         return check;
@@ -60,6 +51,7 @@ public class Article {
     }
 
     public ArrayList<Author> getAllAuthors() {
+        System.out.println("RIGA 56 article size: " + allAuthors.size());
         return allAuthors;
     }
 
