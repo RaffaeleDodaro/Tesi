@@ -6,13 +6,17 @@
 <?import javafx.scene.control.TableView?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.Pane?>
+<?import javafx.scene.shape.Rectangle?>
 <?import javafx.scene.text.Font?>
 
-<Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="821.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.tesi.code.Controller.ExportController">
+<Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="595.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.tesi.code.Controller.ExportController">
    <children>
-      <ChoiceBox fx:id="cbChooseType" layoutX="159.0" layoutY="10.0" prefWidth="150.0" />
-      <Label layoutX="33.0" layoutY="14.0" text="Choose type:" />
-      <Button fx:id="btnSave" layoutX="228.0" layoutY="489.0" mnemonicParsing="false" onAction="#saveSelectedArticle" prefHeight="17.0" prefWidth="136.0" text="Save">
+      <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#1f93ff00" height="35.0" layoutX="81.0" layoutY="5.0" stroke="BLACK" strokeType="INSIDE" width="449.0" />
+      <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#1f93ff00" height="171.0" layoutX="2.0" layoutY="48.0" stroke="BLACK" strokeType="INSIDE" width="269.0" />
+      <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#1f93ff00" height="171.0" layoutX="293.0" layoutY="49.0" stroke="BLACK" strokeType="INSIDE" width="303.0" />
+      <ChoiceBox fx:id="cbChooseType" layoutX="217.0" layoutY="10.0" prefWidth="150.0" />
+      <Label layoutX="91.0" layoutY="14.0" text="Choose type:" />
+      <Button fx:id="btnSave" layoutX="25.0" layoutY="492.0" mnemonicParsing="false" onAction="#saveSelectedArticle" prefHeight="17.0" prefWidth="136.0" text="Save">
          <font>
             <Font size="16.0" />
          </font>
@@ -20,21 +24,26 @@
       <Label layoutX="13.0" layoutY="98.0" text="Author:" />
       <TextField fx:id="txtAuthorName" layoutX="102.0" layoutY="73.0" />
       <TextField fx:id="txtAuthorSurname" layoutX="102.0" layoutY="122.0" />
-      <Button fx:id="btnFilterByAuthor" layoutX="33.0" layoutY="166.0" mnemonicParsing="false" onAction="#filterByAuthor" text="Filter by author" />
+      <Button fx:id="btnFilterByAuthor" layoutX="111.0" layoutY="179.0" mnemonicParsing="false" onAction="#filterByAuthor" text="Filter by author" />
       <Label layoutX="299.0" layoutY="98.0" text="Article:" />
       <TextField fx:id="txtArticleTitle" layoutX="441.0" layoutY="61.0" />
-      <Button fx:id="btnFilterByArticle" layoutX="408.0" layoutY="191.0" mnemonicParsing="false" onAction="#filterByArticle" text="Filter by article" />
+      <Button fx:id="btnFilterByArticle" layoutX="416.0" layoutY="179.0" mnemonicParsing="false" onAction="#filterByArticle" text="Filter by article" />
       <TextField fx:id="txtArticleJournal" layoutX="441.0" layoutY="105.0" />
       <ChoiceBox fx:id="cbArticleYear" layoutX="440.0" layoutY="144.0" prefWidth="150.0" />
       <Label layoutX="367.0" layoutY="65.0" text="Title:" />
       <Label layoutX="367.0" layoutY="109.0" text="Journal:" />
       <Label layoutX="367.0" layoutY="148.0" text="Year:" />
-      <Button fx:id="btnFilterByType" layoutX="378.0" layoutY="10.0" mnemonicParsing="false" onAction="#filterByType" text="Filter by type" />
+      <Button fx:id="btnFilterByType" layoutX="436.0" layoutY="10.0" mnemonicParsing="false" onAction="#filterByType" text="Filter by type" />
       <TableView fx:id="tblViewinProceedings" editable="true" layoutX="25.0" layoutY="243.0" prefHeight="237.0" prefWidth="269.0" />
       <Label layoutX="67.0" layoutY="77.0" text="Name" />
       <Label layoutX="52.0" layoutY="126.0" text="Surname" />
       <Label layoutX="102.0" layoutY="226.0" text="inProceedings:" />
       <TableView fx:id="tblViewArticle" editable="true" layoutX="305.0" layoutY="243.0" prefHeight="237.0" prefWidth="269.0" />
       <Label layoutX="402.0" layoutY="226.0" text="Article:" />
+      <Button fx:id="btnAnotherBibtex" layoutX="422.0" layoutY="492.0" mnemonicParsing="false" onAction="#anotherBibtex" text="Add another bibtex">
+         <font>
+            <Font size="16.0" />
+         </font>
+      </Button>
    </children>
 </Pane>

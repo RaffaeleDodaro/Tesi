@@ -82,21 +82,21 @@ public class Database {
 
 
                 for (int i = 0; i < authors.size(); i++) {
-                    if (!(compareAuthor(authors.get(i).getNameAuthor(), authors.get(i).getSurnameAuthor()))) { //se nome e cognome non ci sono gia'
+                    if (!(compareAuthor(authors.get(i).getName(), authors.get(i).getSurname()))) { //se nome e cognome non ci sono gia'
                         preparedStmt = c.prepareStatement("INSERT INTO AUTHOR VALUES(?,?,?);");
                         //System.out.println("surname author: " + authors.get(i).getSurnameAuthor() + " name author: " + authors.get(i).getNameAuthor());
-                        preparedStmt.setString(2, authors.get(i).getSurnameAuthor());
-                        preparedStmt.setString(3, authors.get(i).getNameAuthor());
+                        preparedStmt.setString(2, authors.get(i).getSurname());
+                        preparedStmt.setString(3, authors.get(i).getName());
                         preparedStmt.executeUpdate();
                     }
                 }
 
                 for (int i = 0; i < editors.size(); i++) {
-                    if (!(compareEditor(editors.get(i).getNameEditor(), editors.get(i).getSurnameEditor()))) { //se nome e cognome non ci sono gia'
+                    if (!(compareEditor(editors.get(i).getName(), editors.get(i).getSurname()))) { //se nome e cognome non ci sono gia'
                         preparedStmt = c.prepareStatement("INSERT INTO EDITOR VALUES(?,?,?);");
                         //System.out.println("surname editor: " + editors.get(i).getSurnameEditor() + " name editor: " + editors.get(i).getNameEditor());
-                        preparedStmt.setString(2, editors.get(i).getSurnameEditor());
-                        preparedStmt.setString(3, editors.get(i).getNameEditor());
+                        preparedStmt.setString(2, editors.get(i).getSurname());
+                        preparedStmt.setString(3, editors.get(i).getName());
                         preparedStmt.executeUpdate();
                     }
                 }
@@ -121,11 +121,11 @@ public class Database {
         }
     }
 
-    public void insertIntoDBArticle(int year, String pages, String dblp, String title, String volume, String shortTitle,
+    public boolean insertIntoDBArticle(int year, String pages, String dblp, String title, String volume, String shortTitle,
                                     String url, String doi, String journal) {
         try {
             if (c == null || c.isClosed())
-                return;
+                return false;
             if (!existsDblp(dblp)) {
                 PreparedStatement preparedStmt = c.prepareStatement("INSERT INTO ARTICLE VALUES(?,?,?,?,?,?,?,?,?);");
                 preparedStmt.setInt(1, year);
@@ -140,10 +140,10 @@ public class Database {
                 preparedStmt.executeUpdate();
 
                 for (int i = 0; i < authors.size(); i++) {
-                    if (!(compareAuthor(authors.get(i).getNameAuthor(), authors.get(i).getSurnameAuthor()))) { //se nome e cognome non ci sono gia'
+                    if (!(compareAuthor(authors.get(i).getName(), authors.get(i).getSurname()))) { //se nome e cognome non ci sono gia'
                         preparedStmt = c.prepareStatement("INSERT INTO AUTHOR VALUES(?,?,?);");
-                        preparedStmt.setString(2, authors.get(i).getSurnameAuthor());
-                        preparedStmt.setString(3, authors.get(i).getNameAuthor());
+                        preparedStmt.setString(2, authors.get(i).getSurname());
+                        preparedStmt.setString(3, authors.get(i).getName());
                         preparedStmt.executeUpdate();
                     }
                 }
@@ -157,9 +157,11 @@ public class Database {
 
                 preparedStmt.close();
             }
+
         } catch (Exception e) {
             e.printStackTrace();
         }
+        return true;
     }
 
     public void calculateAuthor(String author) {
@@ -305,7 +307,7 @@ public class Database {
                         authors = new ArrayList<>();
                         readingAuthorArticle(dblp, authors);
                         String journal = rs.getString("JOURNAL");
-                        filteredArticlesArticle.add(new Article(Utility.article, year, pages, dblp, title, volume, shortTitle, url, journal, doi, authors));
+                        filteredArticlesArticle.add(new Article(Utility.article, year, pages, dblp, title, volume, shortTitle, url, journal, doi, authors,new ArrayList<Editor>()));
                     }
                     conto++;
                 }
@@ -475,7 +477,7 @@ public class Database {
                 if (!oldDblp.equalsIgnoreCase(dblp)) {
                     ArrayList<Author> aut = new ArrayList<>();
                     readingAuthorArticle(dblp, aut);
-                    Article a = new Article(Utility.article, year, pages, dblp, title, volume, shortTitle, url, journal, doi, aut);
+                    Article a = new Article(Utility.article, year, pages, dblp, title, volume, shortTitle, url, journal, doi, aut,new ArrayList<Editor>());
                     filteredArticlesArticle.add(a);
                 }
                 oldDblp = dblp;
@@ -580,7 +582,7 @@ public class Database {
                 int id = rs.getInt("ID");
                 String name = rs.getString("NAME");
                 String surname = rs.getString("SURNAME");
-                if (name.equalsIgnoreCase(author.getNameAuthor()) && surname.equalsIgnoreCase(author.getSurnameAuthor()))
+                if (name.equalsIgnoreCase(author.getName()) && surname.equalsIgnoreCase(author.getSurname()))
                     return id;
             }
             stmt.close();
@@ -601,7 +603,7 @@ public class Database {
                 int id = rs.getInt("ID");
                 String name = rs.getString("NAME");
                 String surname = rs.getString("SURNAME");
-                if (name.equalsIgnoreCase(editor.getNameEditor()) && surname.equalsIgnoreCase(editor.getSurnameEditor()))
+                if (name.equalsIgnoreCase(editor.getName()) && surname.equalsIgnoreCase(editor.getSurname()))
                     return id;
             }
             stmt.close();
@@ -663,7 +665,7 @@ public class Database {
                     ArrayList<Author> aut = new ArrayList<>();
                     readingAuthorArticle(dblp, aut);
                     String journal2 = rs.getString("JOURNAL");
-                    filteredArticlesArticle.add(new Article(Utility.article, year2, pages, dblp, title2, volume, shortTitle, url, journal2, doi, aut));
+                    filteredArticlesArticle.add(new Article(Utility.article, year2, pages, dblp, title2, volume, shortTitle, url, journal2, doi, aut,new ArrayList<Editor>()));
                     System.out.println("YEAR: " + year2 + " PAGES: " + pages + " TITLE: " + title2 + " VOLUME: " + volume + " SHORT TITLE: " + shortTitle + " URL: " + url +
                             " ADDRESS: " + " DOI: " + doi + " DBLP: " + dblp);
                 }

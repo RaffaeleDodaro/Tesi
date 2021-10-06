@@ -49,10 +49,10 @@ public class ArticleController implements Initializable {
     @FXML
     private GridPane grdpane;
 
-    private ArrayList<TextField> allTextField=new ArrayList<TextField>();
+    private ArrayList<TextField> allTextField = new ArrayList<TextField>();
 
     @FXML
-    void anotherBibtex(ActionEvent event)  throws IOException {
+    void anotherBibtex(ActionEvent event) throws IOException {
         Stage stage = (Stage) btnAnotherBibtex.getScene().getWindow();
         FXMLLoader fxmlLoader = new FXMLLoader(Main.class.getResource("ChooseFile.fxml"));
         Pane root = (Pane) fxmlLoader.load();
@@ -65,63 +65,69 @@ public class ArticleController implements Initializable {
 
     @FXML
     void save(ActionEvent event) throws ClassNotFoundException {
-        Database db = new Database();
-        Utility u = new Utility();
-        File file=new FileHandler().getFile();
-        GenericParser gp=GenericParser.getInstance();
+        Database db = Database.getInstance();
+        File file = new FileHandler().getFile();
+        GenericParser gp = GenericParser.getInstance();
 
         db.getAuthors().clear();
 
-        for(int i=0;i<allTextField.size();i+=2)
-            db.getAuthors().add(new Author(allTextField.get(i).getText(),allTextField.get(i+1).getText()));
+        for (int i = 0; i < allTextField.size(); i += 2)
+            db.getAuthors().add(new Author(allTextField.get(i).getText(), allTextField.get(i + 1).getText()));
 
-        db.openConnection(u.article);
+        db.openConnection(Utility.article);
         db.createTableArticle();
-        if(!txtShortTitle.getText().equalsIgnoreCase("") && !txtJournal.getText().equalsIgnoreCase(""))
-            db.insertIntoDBArticle(gp.getYear(),gp.getPages(),gp.getDblp(),txtTitle.getText(),gp.getVolume(),txtShortTitle.getText(),gp.getUrl()
-                ,gp.getDoi(),txtJournal.getText());
-        else if(txtShortTitle.getText().equalsIgnoreCase(""))
-            JOptionPane.showMessageDialog(null,"Insert short title", "ERROR", JOptionPane.INFORMATION_MESSAGE);
-        else if(txtJournal.getText().equalsIgnoreCase(""))
-            JOptionPane.showMessageDialog(null,"Insert journal", "ERROR", JOptionPane.INFORMATION_MESSAGE);
+        if (!txtShortTitle.getText().equalsIgnoreCase("") && !txtJournal.getText().equalsIgnoreCase("")) {
+            if (db.insertIntoDBArticle(gp.getYear(), gp.getPages(), gp.getDblp(), txtTitle.getText(), gp.getVolume(), txtShortTitle.getText(), gp.getUrl()
+                    , gp.getDoi(), txtJournal.getText())) {
+                db.closeConnection();
+                btnSave.setVisible(false);
+                JOptionPane.showMessageDialog(null, "Article saved correctly ", "Saved", JOptionPane.INFORMATION_MESSAGE);
+            } else
+                JOptionPane.showMessageDialog(null, "Article exists in database", "Error", JOptionPane.INFORMATION_MESSAGE);
+        } else if (txtShortTitle.getText().equalsIgnoreCase(""))
+            JOptionPane.showMessageDialog(null, "Insert short title", "ERROR", JOptionPane.INFORMATION_MESSAGE);
+        else if (txtJournal.getText().
 
-        db.closeConnection();
+                equalsIgnoreCase(""))
+            JOptionPane.showMessageDialog(null, "Insert journal", "ERROR", JOptionPane.INFORMATION_MESSAGE);
+
+
     }
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-        GenericParser gp= GenericParser.getInstance();
+        GenericParser gp = GenericParser.getInstance();
 
         txtJournal.setText(gp.getJournal());
         txtTitle.setText(gp.getTitle());
         txtShortTitle.setText(gp.getTitle());
-        Database db=Database.getInstance();
+        Database db = Database.getInstance();
         db.getAuthors().clear();
         db.calculateAuthor(gp.getAuthor());
 
-        for(int i = 0; i<db.getAuthors().size(); i++)
-            loadAuthors(i,db);
+        grdpane.getChildren().clear();
+        for (int i = 0; i < db.getAuthors().size(); i++)
+            loadAuthors(i, db);
     }
 
-    private void loadAuthors(int i, Database db)
-    {
+    private void loadAuthors(int i, Database db) {
         Label labelAuthor = new Label();
-        labelAuthor.setFont(new Font("System",27));
+        labelAuthor.setFont(new Font("System", 27));
         labelAuthor.setText("Author");
 
         Label labelName = new Label();
-        labelName.setFont(new Font("System",27));
+        labelName.setFont(new Font("System", 27));
         labelName.setText("Name");
 
         Label labelSurname = new Label();
-        labelSurname.setFont(new Font("System",27));
+        labelSurname.setFont(new Font("System", 27));
         labelSurname.setText("Surname");
 
-        TextField name = new TextField(db.getAuthors().get(i).getNameAuthor());
-        name.setFont(new Font("System",12));
+        TextField name = new TextField(db.getAuthors().get(i).getName());
+        name.setFont(new Font("System", 12));
 
-        TextField surname = new TextField(db.getAuthors().get(i).getSurnameAuthor());
-        surname.setFont(new Font("System",12));
+        TextField surname = new TextField(db.getAuthors().get(i).getSurname());
+        surname.setFont(new Font("System", 12));
 
         Pane paneAuthor = new Pane();
         Pane paneLabelName = new Pane();

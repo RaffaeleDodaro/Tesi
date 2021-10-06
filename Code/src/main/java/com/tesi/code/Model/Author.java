@@ -3,6 +3,7 @@ package com.tesi.code.Model;
 public class Author {
     private String name;
     private String surname;
+    //private int id;
 
     public Author(String surname, String name) {
         this.name = name;
@@ -10,19 +11,11 @@ public class Author {
         //this.id = id;
     }
 
-    public String getNameAuthor() {
+    public String getName() {
         return name;
     }
 
-    public void setNameAuthor(String nameAuthor) {
-        this.name = nameAuthor;
-    }
-
-    public String getSurnameAuthor() {
+    public String getSurname() {
         return surname;
-    }
-
-    public void setSurnameAuthor(String surnameAuthor) {
-        this.surname = surnameAuthor;
     }
 }
