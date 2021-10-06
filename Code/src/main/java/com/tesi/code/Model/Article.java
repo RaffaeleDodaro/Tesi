@@ -17,8 +17,8 @@ public class Article {
     private String journal;
     private ArrayList<Author> allAuthors;
     private String type;
-    private BooleanProperty check=new SimpleBooleanProperty(this,"check");
-    
+    private BooleanProperty check = new SimpleBooleanProperty(this, "check");
+
     public Article(String type, int year, String pages, String dblp, String title, int volume, String shortTitle, String url, String journal, String doi, ArrayList<Author> allAuthors) {
         this.type = type;
         this.year = year;
@@ -51,7 +51,6 @@ public class Article {
     }
 
     public ArrayList<Author> getAllAuthors() {
-        System.out.println("RIGA 56 article size: " + allAuthors.size());
         return allAuthors;
     }
 

@@ -67,13 +67,13 @@ public class ExportController implements Initializable {
     @FXML
     private TableView<Article> tblViewArticle;
 
-    private ArrayList<Article> savedArticle = new ArrayList<>();
-    private ArrayList<inProceedings> savedInProceedings = new ArrayList<>();
+    private final ArrayList<Article> savedArticle = new ArrayList<>();
+    private final ArrayList<inProceedings> savedInProceedings = new ArrayList<>();
 
     @FXML
     void filterByArticle(ActionEvent event) {
         String title = txtArticleTitle.getText();
-        String journal = txtArticleTitle.getText();
+        String journal = txtArticleJournal.getText();
         int year = cbArticleYear.getValue();
 
         Database db = Database.getInstance();
@@ -117,8 +117,7 @@ public class ExportController implements Initializable {
     void filterByType(ActionEvent event) {
         Database db = Database.getInstance();
         db.cleanAll();
-        tblViewinProceedings.getItems().clear();
-        tblViewArticle.getItems().clear();
+
         if (cbChooseType.getValue().equalsIgnoreCase(Utility.inProceedings)) {
             db.openConnection(Utility.inProceedings);
             db.filterByTypeInProceedings();
@@ -127,10 +126,7 @@ public class ExportController implements Initializable {
         } else {
             db.openConnection(Utility.article);
             db.filterByTypeArticle();
-            db = Database.getInstance();
             ArrayList<Article> filteredArticle = db.getFilteredArticlesArticle();
-            System.out.println("RIGA 132 exportcontroller: " + filteredArticle.get(0).getAllAuthors().size() + " "
-                    + filteredArticle.size());
             showArticles(filteredArticle);
         }
         db.closeConnection();
@@ -168,13 +164,10 @@ public class ExportController implements Initializable {
                 for (int i = 0; i < tblViewArticle.getItems().size(); i++) {
                     if (tblViewArticle.getItems().get(i).isCheck().getValue()) {
                         if (!existsArticle(tblViewArticle.getItems().get(i))) {
-                            System.out.println("QUIIII");
                             savedArticle.add(tblViewArticle.getItems().get(i));
-                            System.out.println("savedArticle.get(0).getAllAuthors().size(): "
-                                    + savedArticle.get(0).getAllAuthors().size() + " "
-                                    + tblViewArticle.getItems().get(i).getTitle());
-                            // System.out.println(tblViewArticle.getItems().get(i).getAllAuthors().get(0).getNameAuthor());
-                            // System.out.println(tblViewArticle.getItems().get(i).getTitle());
+//                            System.out.println("savedArticle.get(0).getAllAuthors().size(): "+ savedArticle.get(0).getAllAuthors().size() + " " + tblViewArticle.getItems().get(i).getTitle());
+//                            System.out.println(tblViewArticle.getItems().get(i).getAllAuthors().get(0).getNameAuthor());
+//                            System.out.println(tblViewArticle.getItems().get(i).getTitle());
                         }
                     }
                 }
@@ -182,10 +175,9 @@ public class ExportController implements Initializable {
                 saveArticle(bOut);
                 bOut.append("\n\n-------INPROCEEDINGS-------\n");
                 for (int i = 0; i < tblViewinProceedings.getItems().size(); i++)
-                    if (tblViewinProceedings.getItems().get(i).isCheck().getValue()) {
+                    if (tblViewinProceedings.getItems().get(i).isCheck().getValue())
                         if (!existsInProceedings(tblViewinProceedings.getItems().get(i), savedInProceedings))
                             savedInProceedings.add((inProceedings) tblViewinProceedings.getItems().get(i));
-                    }
                 saveInProceedings(bOut);
                 bOut.close();
             }
@@ -193,22 +185,23 @@ public class ExportController implements Initializable {
     }
 
     private boolean existsArticle(Article a) {
-        for (int i = 0; i < savedArticle.size(); i++)
-            if (savedArticle.get(i).getDblp().equals(a.getDblp()))
+        for (Article article : savedArticle)
+            if (article.getDblp().equals(a.getDblp()))
                 return true;
         return false;
     }
 
     private boolean existsInProceedings(Article a, ArrayList<inProceedings> savedArticle) {
-        for (int i = 0; i < savedArticle.size(); i++)
-            if (savedArticle.get(i).getDblp().equals(a.getDblp()))
+        for (inProceedings inProceedings : savedArticle)
+            if (inProceedings.getDblp().equals(a.getDblp()))
                 return true;
         return false;
     }
 
     private void showInProceedings(ArrayList<Article> filteredArticle, Database db) {
-
         tblViewinProceedings.getItems().clear();
+        tblViewinProceedings.getColumns().clear();
+        tblViewinProceedings.refresh();
 
         ObservableList<Article> fxlist = FXCollections.observableList(filteredArticle);
 
@@ -266,29 +259,34 @@ public class ExportController implements Initializable {
         tblViewinProceedings.getColumns().add(column11);
         tblViewinProceedings.getColumns().add(column12);
 
+        /*for (Article article : fxlist) {
+            for (int j = 0; j < article.getAllAuthors().size(); j++) {
+                TableColumn<Article, String> column13 = new TableColumn<>("Author's " + Utility.name);
+                String name = article.getAllAuthors().get(j).getNameAuthor();
+                column13.setCellValueFactory(c -> new SimpleStringProperty(name));
+                System.out.println("\n" + "Name: " + name);
+
+                TableColumn<Article, String> column14 = new TableColumn<>("Author's " + Utility.surname);
+                String surname = article.getAllAuthors().get(j).getSurnameAuthor();
+                column14.setCellValueFactory(c -> new SimpleStringProperty(surname));
+                System.out.println("Surname: " + surname);
+
+                tblViewinProceedings.getColumns().add(column13);
+                tblViewinProceedings.getColumns().add(column14);
+            }
+        }*/
+
         for (Article a : fxlist)
             tblViewinProceedings.getItems().add(a);
 
-        /*
-         * for (int j = 0; j < db.getAllAuthors().size(); j++) { TableColumn<Article,
-         * String> column13 = new TableColumn<>("Author's " + Utility.name); String name
-         * = db.getAllAuthors().get(j).getNameAuthor(); column13.setCellValueFactory(new
-         * PropertyValueFactory<>("arraylistToString"));
-         * System.out.println("\n"+"Name: " + name);
-         * 
-         * TableColumn<Article, String> column14 = new TableColumn<>("Author's " +
-         * Utility.surname); String surname =
-         * db.getAllAuthors().get(j).getSurnameAuthor(); column14.setCellValueFactory(c
-         * -> new SimpleStringProperty(surname)); System.out.println("Surname: " +
-         * surname);
-         * 
-         * tblViewinProceedings.getColumns().add(column13);
-         * tblViewinProceedings.getColumns().add(column14); }
-         */
+
     }
 
     private void showArticles(ArrayList<Article> filteredArticle) {
+
         tblViewArticle.getItems().clear();
+        tblViewArticle.getColumns().clear();
+        tblViewArticle.refresh();
 
         ObservableList<Article> fxlist = FXCollections.observableList(filteredArticle);
         int i = 0;
@@ -336,40 +334,40 @@ public class ExportController implements Initializable {
         tblViewArticle.getColumns().add(column9);
 
         /*for (int j = 0; j < fxlist.get(i).getAllAuthors().size(); j++) {
-            TableColumn<Article, String> column10 = new TableColumn<>("Author's " + Utility.name);
+            TableColumn<Article, String> column13 = new TableColumn<>("Author's " + Utility.name);
             String name = fxlist.get(i).getAllAuthors().get(j).getNameAuthor();
-            column10.setCellValueFactory(new PropertyValueFactory<>("Name"));
+            column13.setCellValueFactory(c -> new SimpleStringProperty(name));
             System.out.println("\n" + "Name: " + name);
 
-            TableColumn<Article, String> column11 = new TableColumn<>("Author's " + Utility.surname);
+            TableColumn<Article, String> column14 = new TableColumn<>("Author's " + Utility.surname);
             String surname = fxlist.get(i).getAllAuthors().get(j).getSurnameAuthor();
-            column11.setCellValueFactory(new PropertyValueFactory<>("Surname"));
+            column14.setCellValueFactory(c -> new SimpleStringProperty(surname));
             System.out.println("Surname: " + surname);
 
-            tblViewArticle.getColumns().add(column10);
-            tblViewArticle.getColumns().add(column11);
+            tblViewArticle.getColumns().add(column13);
+            tblViewArticle.getColumns().add(column14);
         }*/
 
-        for (Article a : fxlist) {
-            System.out.println("size exportcontroller showarticle: " + a.getAllAuthors().size());
+
+        for (Article a : fxlist)
             tblViewArticle.getItems().add(a);
-        }
-        i+=1;
+
+        i += 1;
     }
 
     private void saveArticle(BufferedWriter bOut) throws IOException {
-        for (int i = 0; i < savedArticle.size(); i++) {
-            int year = savedArticle.get(i).getYear();
-            String pages = savedArticle.get(i).getPages();
-            String dblp = savedArticle.get(i).getDblp();
-            String title = savedArticle.get(i).getTitle();
-            int volume = savedArticle.get(i).getVolume();
-            String shortTitle = savedArticle.get(i).getShortTitle();
-            String url = savedArticle.get(i).getUrl();
-            String doi = savedArticle.get(i).getDoi();
-            String journal = savedArticle.get(i).getJournal();
-            String type = savedArticle.get(i).getType();
-            ArrayList<Author> allAuthors = savedArticle.get(i).getAllAuthors();
+        for (Article article : savedArticle) {
+            int year = article.getYear();
+            String pages = article.getPages();
+            String dblp = article.getDblp();
+            String title = article.getTitle();
+            int volume = article.getVolume();
+            String shortTitle = article.getShortTitle();
+            String url = article.getUrl();
+            String doi = article.getDoi();
+            String journal = article.getJournal();
+            String type = article.getType();
+            ArrayList<Author> allAuthors = article.getAllAuthors();
             System.out.println("size exportcontroller savearticle: " + allAuthors.size());
             bOut.append("year: " + year + "\npages: " + pages + "\ndblp: " + dblp + "\ntitle: " + title + "\nvolume: "
                     + volume + "\nShort title: " + shortTitle + "\nurl: " + url + "\ndoi: " + doi + "\njournal: "
@@ -385,24 +383,24 @@ public class ExportController implements Initializable {
     }
 
     private void saveInProceedings(BufferedWriter printWriter) throws IOException {
-        for (int i = 0; i < savedInProceedings.size(); i++) {
-            if (savedInProceedings.get(i) instanceof inProceedings) {
-                int year = savedInProceedings.get(i).getYear();
-                String pages = savedInProceedings.get(i).getPages();
-                String dblp = savedInProceedings.get(i).getDblp();
-                String title = savedInProceedings.get(i).getTitle();
-                int volume = savedInProceedings.get(i).getVolume();
-                String shortTitle = savedInProceedings.get(i).getShortTitle();
-                String url = savedInProceedings.get(i).getUrl();
-                String doi = savedInProceedings.get(i).getDoi();
-                String type = savedInProceedings.get(i).getType();
-                String publisher = ((inProceedings) savedInProceedings.get(i)).getPublisher();
-                String series = ((inProceedings) savedInProceedings.get(i)).getSeries();
-                String address = ((inProceedings) savedInProceedings.get(i)).getAddress();
-                String booktitle = ((inProceedings) savedInProceedings.get(i)).getBooktitle();
-                ArrayList<Editor> allEditor = ((inProceedings) savedInProceedings.get(i)).getAllEditors();
+        for (inProceedings savedInProceeding : savedInProceedings) {
+            if (savedInProceeding instanceof inProceedings) {
+                int year = savedInProceeding.getYear();
+                String pages = savedInProceeding.getPages();
+                String dblp = savedInProceeding.getDblp();
+                String title = savedInProceeding.getTitle();
+                int volume = savedInProceeding.getVolume();
+                String shortTitle = savedInProceeding.getShortTitle();
+                String url = savedInProceeding.getUrl();
+                String doi = savedInProceeding.getDoi();
+                String type = savedInProceeding.getType();
+                String publisher = ((inProceedings) savedInProceeding).getPublisher();
+                String series = ((inProceedings) savedInProceeding).getSeries();
+                String address = ((inProceedings) savedInProceeding).getAddress();
+                String booktitle = ((inProceedings) savedInProceeding).getBooktitle();
+                ArrayList<Editor> allEditor = ((inProceedings) savedInProceeding).getAllEditors();
                 // BooleanProperty check = tblViewinProceedings.getItems().get(i).isCheck();
-                ArrayList<Author> allAuthors = savedInProceedings.get(i).getAllAuthors();
+                ArrayList<Author> allAuthors = savedInProceeding.getAllAuthors();
                 printWriter.append("year: " + year + "\npages: " + pages + "\ndblp: " + dblp + "\ntitle: " + title
                         + "\nvolume: " + volume + "\nShort title: " + shortTitle + "\nurl: " + url + "\ndoi: " + doi
                         + "\npublisher" + publisher + "\ntype: " + type + "\nseries: " + series + "\naddress: "

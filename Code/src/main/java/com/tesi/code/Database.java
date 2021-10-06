@@ -265,24 +265,21 @@ public class Database {
                         "ORDER BY ARTICLE.DBLP;");
                 stmt.setString(1, "%" + name + "%");
             } else if (name.equalsIgnoreCase("")) {
-                stmt = c.prepareStatement("SELECT * FROM ARTICLE,AUTHOR,WRITTENBY " +
-                        "WHERE UPPER(AUTHOR.SURNAME) LIKE UPPER(?) " +
-                        "GROUP BY ARTICLE.DBLP " +
-                        "ORDER BY ARTICLE.DBLP;");
+                System.out.println("QUIIIIII");
+                stmt = c.prepareStatement("SELECT * FROM ARTICLE,AUTHOR,WRITTENBY" +
+                        " WHERE UPPER(AUTHOR.SURNAME) LIKE UPPER(?) " +
+                        " AND WRITTENBY.DBLP==ARTICLE.DBLP" +
+                        " AND AUTHOR.ID==WRITTENBY.IDAUTHOR" +
+                        " GROUP BY ARTICLE.DBLP" +
+                        " ORDER BY ARTICLE.DBLP;");
                 stmt.setString(1, "%" + surname + "%");
             } else if (surname.equalsIgnoreCase("") && name.equalsIgnoreCase("")) {
                 JOptionPane.showMessageDialog(null, "Insert name and surname", "ERROR", JOptionPane.INFORMATION_MESSAGE);
                 return;
-            } else if (surname.equalsIgnoreCase("")) {
-                JOptionPane.showMessageDialog(null, "Insert surname", "ERROR", JOptionPane.INFORMATION_MESSAGE);
-                return;
-            } else if (name.equalsIgnoreCase("")) {
-                JOptionPane.showMessageDialog(null, "Insert name", "ERROR", JOptionPane.INFORMATION_MESSAGE);
-                return;
             }
 
             ResultSet rs = stmt.executeQuery();
-            int conto=0;
+            int conto = 0;
             while (rs.next()) {
                 int year = rs.getInt("YEAR");
                 String pages = rs.getString("PAGES");
@@ -301,12 +298,12 @@ public class Database {
                         String bookTitle = rs.getString("BOOKTITLE");
                         authors = new ArrayList<>();
                         editors = new ArrayList<>();
-                        readingAuthorInProceedings(dblp,authors);
-                        readingEditorInProceedings(dblp,editors);
+                        readingAuthorInProceedings(dblp, authors);
+                        readingEditorInProceedings(dblp, editors);
                         filteredArticlesInProceedings.add(new inProceedings(Utility.inProceedings, year, pages, dblp, title, volume, shortTitle, url, bookTitle, doi, authors, publisher, series, address, editors));
                     } else {
                         authors = new ArrayList<>();
-                        readingAuthorArticle(dblp,authors);
+                        readingAuthorArticle(dblp, authors);
                         String journal = rs.getString("JOURNAL");
                         filteredArticlesArticle.add(new Article(Utility.article, year, pages, dblp, title, volume, shortTitle, url, journal, doi, authors));
                     }
@@ -322,7 +319,7 @@ public class Database {
 
     }
 
-    public void readingAuthorInProceedings(String dblp,ArrayList<Author> author) {
+    public void readingAuthorInProceedings(String dblp, ArrayList<Author> author) {
         try {
             if (c == null || c.isClosed())
                 return;
@@ -347,7 +344,7 @@ public class Database {
         }
     }
 
-    public void readingEditorInProceedings(String dblp,ArrayList<Editor> editor) {
+    public void readingEditorInProceedings(String dblp, ArrayList<Editor> editor) {
         try {
             if (c == null || c.isClosed())
                 return;
@@ -436,8 +433,8 @@ public class Database {
                 if (!oldDblp.equalsIgnoreCase(dblp)) {
                     authors = new ArrayList<>();
                     editors = new ArrayList<>();
-                    readingAuthorInProceedings(dblp,authors);
-                    readingEditorInProceedings(dblp,editors);
+                    readingAuthorInProceedings(dblp, authors);
+                    readingEditorInProceedings(dblp, editors);
                     filteredArticlesInProceedings.add(new inProceedings(Utility.inProceedings, year, pages, dblp, title, volume, shortTitle, url, booktitle, doi, authors, publisher, series, address, editors));
                     System.out.println("YEAR: " + year + " PAGES: " + pages + " TITLE: " + title + " VOLUME: " + volume + " SHORT TITLE: " + shortTitle + " URL: " + url +
                             " DOI: " + doi + " DBLP: " + dblp + " nameAuthor: " + nameAuthor + " surnameAuthor: " + surnameAuthor + " nameEditor: "
@@ -623,27 +620,33 @@ public class Database {
 
             String oldDblp = "";
             if (!title.equalsIgnoreCase("") && !journal.equalsIgnoreCase("")) {
-                System.out.println("!title and !journal");
-                stmt = c.prepareStatement("SELECT * FROM ARTICLE,AUTHOR " +
-                        "WHERE UPPER(ARTICLE.TITLE) LIKE UPPER(?) AND UPPER(ARTICLE.JOURNAL) LIKE UPPER(?) AND ARTICLE.YEAR==(?)" +
-                        "GROUP BY ARTICLE.DBLP " +
-                        "ORDER BY ARTICLE.DBLP;");
+                System.out.println("RIGA 623 !title and !journal");
+                stmt = c.prepareStatement("SELECT * FROM ARTICLE,AUTHOR" +
+                        " WHERE UPPER(ARTICLE.TITLE) LIKE UPPER(?)" +
+                        " AND UPPER(ARTICLE.JOURNAL) LIKE UPPER(?)" +
+                        " AND ARTICLE.YEAR==(?)" +
+                        " GROUP BY ARTICLE.DBLP" +
+                        " ORDER BY ARTICLE.DBLP;");
 
                 stmt.setString(1, "%" + title + "%");
                 stmt.setString(2, "%" + journal + "%");
                 stmt.setInt(3, year);
             } else if (title.equalsIgnoreCase("")) {
-                stmt = c.prepareStatement("SELECT * FROM ARTICLE,AUTHOR " +
-                        "WHERE UPPER(ARTICLE.JOURNAL) LIKE UPPER(?) " +
-                        "GROUP BY ARTICLE.DBLP " +
-                        "ORDER BY ARTICLE.DBLP;");
+                stmt = c.prepareStatement("SELECT * FROM ARTICLE,AUTHOR" +
+                        " WHERE UPPER(ARTICLE.JOURNAL) LIKE UPPER(?)" +
+                        " AND ARTICLE.YEAR==(?)" +
+                        " GROUP BY ARTICLE.DBLP " +
+                        " ORDER BY ARTICLE.DBLP;");
                 stmt.setString(1, "%" + journal + "%");
+                stmt.setInt(2, year);
             } else if (journal.equalsIgnoreCase("")) {
                 stmt = c.prepareStatement("SELECT * FROM ARTICLE,AUTHOR " +
                         "WHERE UPPER(ARTICLE.TITLE) LIKE UPPER(?) " +
-                        "GROUP BY ARTICLE.DBLP " +
-                        "ORDER BY ARTICLE.DBLP;");
+                        " AND ARTICLE.YEAR==(?)" +
+                        " GROUP BY ARTICLE.DBLP" +
+                        " ORDER BY ARTICLE.DBLP;");
                 stmt.setString(1, "%" + title + "%");
+                stmt.setInt(2, year);
             }
 
             ResultSet rs = stmt.executeQuery();
@@ -658,7 +661,7 @@ public class Database {
                 String doi = rs.getString("DOI");
                 if (!oldDblp.equals(dblp)) {
                     ArrayList<Author> aut = new ArrayList<>();
-                    readingAuthorArticle(dblp,aut);
+                    readingAuthorArticle(dblp, aut);
                     String journal2 = rs.getString("JOURNAL");
                     filteredArticlesArticle.add(new Article(Utility.article, year2, pages, dblp, title2, volume, shortTitle, url, journal2, doi, aut));
                     System.out.println("YEAR: " + year2 + " PAGES: " + pages + " TITLE: " + title2 + " VOLUME: " + volume + " SHORT TITLE: " + shortTitle + " URL: " + url +
@@ -717,8 +720,8 @@ public class Database {
 
                     authors = new ArrayList<>();
                     editors = new ArrayList<>();
-                    readingAuthorArticle(dblp,authors);
-                    readingEditorInProceedings(dblp,editors);
+                    readingAuthorArticle(dblp, authors);
+                    readingEditorInProceedings(dblp, editors);
                     filteredArticlesInProceedings.add(new inProceedings(Utility.inProceedings, year2, pages, dblp, title2, volume, shortTitle, url, bookTitle, doi, authors, publisher, series, address, editors));
                     System.out.println("YEAR: " + year2 + " PAGES: " + pages + " TITLE: " + title2 + " VOLUME: " + volume + " SHORT TITLE: " + shortTitle + " URL: " + url +
                             " ADDRESS: " + " DOI: " + doi + " DBLP: " + dblp);
@@ -740,7 +743,6 @@ public class Database {
     }
 
     public ArrayList<Article> getFilteredArticlesArticle() {
-        System.out.println("RIGA 744 getFilteredArticlesArticle database: " + filteredArticlesArticle.size() + filteredArticlesArticle.get(0).getAllAuthors().size());
         return filteredArticlesArticle;
     }
 
