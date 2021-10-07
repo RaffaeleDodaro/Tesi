@@ -90,26 +90,31 @@ public class inProceedingsController implements Initializable {
         db.openConnection(Utility.inProceedings);
         db.createTableInProceedings();
         if (!txtShortTitle.getText().equalsIgnoreCase("") && !txtAddress.getText().equalsIgnoreCase(""))
-            db.insertIntoDBInProceedings(gp.getYear(), gp.getPages(), gp.getDblp(), txtTitle.getText(), gp.getVolume(), txtShortTitle.getText(), gp.getUrl(),
-                    txtAddress.getText(), gp.getPublisher(), gp.getSeries(), gp.getBooktitle(), gp.getDoi());
+            if (db.insertIntoDBInProceedings(gp.getYear(), gp.getPages(), gp.getDblp(), txtTitle.getText(), gp.getVolume(), txtShortTitle.getText(), gp.getUrl(),
+                    txtAddress.getText(), gp.getPublisher(), gp.getSeries(), gp.getBooktitle(), gp.getDoi())) {
+                db.closeConnection();
+                btnSave.setVisible(false);
+                JOptionPane.showMessageDialog(null, "Article correctly saved", "Saved", JOptionPane.INFORMATION_MESSAGE);
+            } else
+                JOptionPane.showMessageDialog(null, "Article exists in database", "Error", JOptionPane.INFORMATION_MESSAGE);
         else if (txtShortTitle.getText().equalsIgnoreCase(""))
             JOptionPane.showMessageDialog(null, "Insert short title", "ERROR", JOptionPane.INFORMATION_MESSAGE);
         else if (txtAddress.getText().equalsIgnoreCase(""))
             JOptionPane.showMessageDialog(null, "Insert address", "ERROR", JOptionPane.INFORMATION_MESSAGE);
-
-            db.closeConnection();
-        btnSave.setVisible(false);
-        JOptionPane.showMessageDialog(null, "Saved correctly article", "Saved", JOptionPane.INFORMATION_MESSAGE);
     }
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         GenericParser gp = GenericParser.getInstance();
-        Database db = Database.getInstance();
+
         txtBookTitle.setText(gp.getBooktitle());
         txtTitle.setText(gp.getTitle());
         txtShortTitle.setText(gp.getTitle());
         txtAddress.setText("");
+        Database db = Database.getInstance();
+        db.getAuthors().clear();
+        db.getEditors().clear();
+
         db.calculateAuthor(gp.getAuthor());
         db.calculateEditor(gp.getEditor());
 

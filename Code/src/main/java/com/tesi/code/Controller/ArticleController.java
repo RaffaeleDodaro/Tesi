@@ -81,17 +81,13 @@ public class ArticleController implements Initializable {
                     , gp.getDoi(), txtJournal.getText())) {
                 db.closeConnection();
                 btnSave.setVisible(false);
-                JOptionPane.showMessageDialog(null, "Article saved correctly ", "Saved", JOptionPane.INFORMATION_MESSAGE);
+                JOptionPane.showMessageDialog(null, "Article correctly saved", "Saved", JOptionPane.INFORMATION_MESSAGE);
             } else
                 JOptionPane.showMessageDialog(null, "Article exists in database", "Error", JOptionPane.INFORMATION_MESSAGE);
         } else if (txtShortTitle.getText().equalsIgnoreCase(""))
             JOptionPane.showMessageDialog(null, "Insert short title", "ERROR", JOptionPane.INFORMATION_MESSAGE);
-        else if (txtJournal.getText().
-
-                equalsIgnoreCase(""))
+        else if (txtJournal.getText().equalsIgnoreCase(""))
             JOptionPane.showMessageDialog(null, "Insert journal", "ERROR", JOptionPane.INFORMATION_MESSAGE);
-
-
     }
 
     @Override

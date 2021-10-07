@@ -71,6 +71,8 @@ public class ExportController implements Initializable {
 
     @FXML
     void filterByArticle(ActionEvent event) {
+        cleanTbl();
+
         String title = txtArticleTitle.getText();
         String journal = txtArticleJournal.getText();
         int year = cbArticleYear.getValue();
@@ -87,6 +89,7 @@ public class ExportController implements Initializable {
         db.closeConnection();
 
         showInProceedings(db.getFilteredArticlesInProceedings(), db);
+        System.out.println("db.getFilteredArticlesInProceedings() size: " + db.getFilteredArticlesInProceedings().size());
         showArticles(db.getFilteredArticlesArticle());
         db.cleanAll();
     }
@@ -95,8 +98,9 @@ public class ExportController implements Initializable {
     void filterByAuthor(ActionEvent event) {
         Database db = Database.getInstance();
         db.cleanAll();
-        tblViewinProceedings.getItems().clear();
-        tblViewArticle.getItems().clear();
+
+        cleanTbl();
+
         db.openConnection(Utility.inProceedings);
         db.findArticleByAuthorName(txtAuthorSurname.getText(), txtAuthorName.getText(), Utility.inProceedings);
         db.closeConnection();
@@ -116,6 +120,8 @@ public class ExportController implements Initializable {
     void filterByType(ActionEvent event) {
         Database db = Database.getInstance();
         db.cleanAll();
+
+        cleanTbl();
 
         if (cbChooseType.getValue().equalsIgnoreCase(Utility.inProceedings)) {
             db.openConnection(Utility.inProceedings);
@@ -192,6 +198,16 @@ public class ExportController implements Initializable {
         stage.show();
     }
 
+    private void cleanTbl() {
+        tblViewinProceedings.getItems().clear();
+        tblViewinProceedings.getColumns().clear();
+        tblViewinProceedings.refresh();
+
+        tblViewArticle.getItems().clear();
+        tblViewArticle.getColumns().clear();
+        tblViewArticle.refresh();
+    }
+
     private boolean existsArticle(Article a) {
         for (Article article : savedArticle)
             if (article.getDblp().equals(a.getDblp()))
@@ -207,13 +223,13 @@ public class ExportController implements Initializable {
     }
 
     private void showInProceedings(ArrayList<Article> filteredArticle, Database db) {
-        tblViewinProceedings.getItems().clear();
+        /*tblViewinProceedings.getItems().clear();
         tblViewinProceedings.getColumns().clear();
-        tblViewinProceedings.refresh();
+        tblViewinProceedings.refresh();*/
 
-        tblViewArticle.getItems().clear();
+        /*tblViewArticle.getItems().clear();
         tblViewArticle.getColumns().clear();
-        tblViewArticle.refresh();
+        tblViewArticle.refresh();*/
 
         ObservableList<Article> fxlist = FXCollections.observableList(filteredArticle);
 
@@ -287,13 +303,13 @@ public class ExportController implements Initializable {
     }
 
     private void showArticles(ArrayList<Article> filteredArticle) {
-        tblViewArticle.getItems().clear();
+        /*tblViewArticle.getItems().clear();
         tblViewArticle.getColumns().clear();
-        tblViewArticle.refresh();
+        tblViewArticle.refresh();*/
 
-        tblViewinProceedings.getItems().clear();
+        /*tblViewinProceedings.getItems().clear();
         tblViewinProceedings.getColumns().clear();
-        tblViewinProceedings.refresh();
+        tblViewinProceedings.refresh();*/
 
         ObservableList<Article> fxlist = FXCollections.observableList(filteredArticle);
 
