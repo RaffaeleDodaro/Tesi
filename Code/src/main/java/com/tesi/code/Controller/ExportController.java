@@ -87,9 +87,28 @@ public class ExportController implements Initializable {
         db.findArticleByInfoArticleInProceedings(title, year);
         db.closeConnection();
 
-        showInProceedings(db.getFilteredArticlesInProceedings(), db);
+        //prove per refiltering
+        if (db.getFilteredArticlesInProceedings().size() > 0 || db.getFilteredArticlesArticle().size() > 0) {
+            ArrayList<Article> refiltering = new ArrayList<>();
+            for (int i = 0; i < tblViewArticle.getItems().size(); i++)
+                if (tblViewArticle.getItems().get(i).isCheck().getValue())
+                    refiltering.add(tblViewArticle.getItems().get(i));
+
+            for (int i = 0; i < tblViewinProceedings.getItems().size(); i++)
+                if (tblViewinProceedings.getItems().get(i).isCheck().getValue())
+                    refiltering.add(tblViewinProceedings.getItems().get(i));
+
+            db.openConnection(Utility.inProceedings);
+            db.refilterByArticle(refiltering, txtArticleTitle.getText(), txtArticleJournal.getText(), cbArticleYear.getValue(), Utility.inProceedings);
+            db.closeConnection();
+
+            db.openConnection(Utility.article);
+            db.refilterByArticle(refiltering, txtArticleTitle.getText(), txtArticleJournal.getText(), cbArticleYear.getValue(), Utility.article);
+            db.closeConnection();
+        }
+
+        showInProceedings(db.getFilteredArticlesInProceedings());
         showArticles(db.getFilteredArticlesArticle());
-        db.cleanAll();
     }
 
     @FXML
@@ -107,10 +126,28 @@ public class ExportController implements Initializable {
         db.findArticleByAuthorName(txtAuthorSurname.getText(), txtAuthorName.getText(), Utility.article);
         db.closeConnection();
 
-        showInProceedings(db.getFilteredArticlesInProceedings(), db);
-        showArticles(db.getFilteredArticlesArticle());
-        db.cleanAll();
 
+        //prove per refiltering
+        if (db.getFilteredArticlesInProceedings().size() > 0 || db.getFilteredArticlesArticle().size() > 0) {
+            ArrayList<Article> refiltering = new ArrayList<>();
+            for (int i = 0; i < tblViewArticle.getItems().size(); i++)
+                if (tblViewArticle.getItems().get(i).isCheck().getValue())
+                    refiltering.add(tblViewArticle.getItems().get(i));
+
+            for (int i = 0; i < tblViewinProceedings.getItems().size(); i++)
+                if (tblViewinProceedings.getItems().get(i).isCheck().getValue())
+                    refiltering.add(tblViewinProceedings.getItems().get(i));
+
+            db.openConnection(Utility.inProceedings);
+            db.refilterByAuthor(refiltering, txtAuthorSurname.getText(), txtAuthorName.getText(), Utility.inProceedings);
+            db.closeConnection();
+
+            db.openConnection(Utility.article);
+            db.refilterByAuthor(refiltering, txtAuthorSurname.getText(), txtAuthorName.getText(), Utility.article);
+            db.closeConnection();
+        }
+        showInProceedings(db.getFilteredArticlesInProceedings());
+        showArticles(db.getFilteredArticlesArticle());
     }
 
     @FXML
@@ -121,15 +158,36 @@ public class ExportController implements Initializable {
         if (cbChooseType.getValue().equalsIgnoreCase(Utility.inProceedings)) {
             db.openConnection(Utility.inProceedings);
             db.filterByTypeInProceedings();
-            ArrayList<Article> filteredArticle = db.getFilteredArticlesInProceedings();
-            showInProceedings(filteredArticle, db);
+            showInProceedings(db.getFilteredArticlesInProceedings());
         } else {
             db.openConnection(Utility.article);
             db.filterByTypeArticle();
-            ArrayList<Article> filteredArticle = db.getFilteredArticlesArticle();
-            showArticles(filteredArticle);
+            showArticles(db.getFilteredArticlesArticle());
         }
         db.closeConnection();
+
+
+
+        /*prove per refiltering --> non vedo l'utilità di fare il refiltering qui
+        if (db.getFilteredArticlesInProceedings().size() > 0 || db.getFilteredArticlesArticle().size() > 0) {
+            ArrayList<Article> refiltering = new ArrayList<>();
+            for (int i = 0; i < tblViewArticle.getItems().size(); i++)
+                if (tblViewArticle.getItems().get(i).isCheck().getValue())
+                    refiltering.add(tblViewArticle.getItems().get(i));
+
+            for (int i = 0; i < tblViewinProceedings.getItems().size(); i++)
+                if (tblViewinProceedings.getItems().get(i).isCheck().getValue())
+                    refiltering.add(tblViewinProceedings.getItems().get(i));
+
+            db.openConnection(Utility.inProceedings);
+            db.refilterByArticle(refiltering, txtArticleTitle.getText(), txtArticleJournal.getText(), cbArticleYear.getValue(), Utility.inProceedings);
+            db.closeConnection();
+
+            db.openConnection(Utility.article);
+            db.refilterByArticle(refiltering, txtArticleTitle.getText(), txtArticleJournal.getText(), cbArticleYear.getValue(), Utility.article);
+            db.closeConnection();
+        }*/
+
     }
 
     @Override
@@ -198,11 +256,7 @@ public class ExportController implements Initializable {
         return false;
     }
 
-    private void showInProceedings(ArrayList<Article> filteredArticle, Database db) {
-        tblViewinProceedings.getItems().clear();
-        tblViewinProceedings.getColumns().clear();
-        tblViewinProceedings.refresh();
-
+    private void showInProceedings(ArrayList<Article> filteredArticle) {
         ObservableList<Article> fxlist = FXCollections.observableList(filteredArticle);
 
         TableColumn<Article, Boolean> column20 = new TableColumn<>("");
@@ -283,11 +337,6 @@ public class ExportController implements Initializable {
     }
 
     private void showArticles(ArrayList<Article> filteredArticle) {
-
-        tblViewArticle.getItems().clear();
-        tblViewArticle.getColumns().clear();
-        tblViewArticle.refresh();
-
         ObservableList<Article> fxlist = FXCollections.observableList(filteredArticle);
         int i = 0;
 
@@ -417,5 +466,4 @@ public class ExportController implements Initializable {
             }
         }
     }
-
 }
