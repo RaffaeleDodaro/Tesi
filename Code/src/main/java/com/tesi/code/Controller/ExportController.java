@@ -61,7 +61,7 @@ public class ExportController implements Initializable {
     private Button btnAnotherBibtex;
 
     @FXML
-    private TableView<Article> tblViewinProceedings;
+    private TableView<inProceedings> tblViewinProceedings;
 
     @FXML
     private TableView<Article> tblViewArticle;
@@ -71,17 +71,17 @@ public class ExportController implements Initializable {
 
     @FXML
     void filterByArticle(ActionEvent event) {
-        cleanTbl();
-
         String title = txtArticleTitle.getText();
         String journal = txtArticleJournal.getText();
         int year = cbArticleYear.getValue();
 
         Database db = Database.getInstance();
-        db.openConnection(Utility.article);
+
         db.cleanAll();
 
+        cleanTbl();
 
+        db.openConnection(Utility.article);
         db.findArticleByInfoArticleArticle(title, journal, year);
         db.closeConnection();
 
@@ -94,33 +94,80 @@ public class ExportController implements Initializable {
         showArticles(db.getFilteredArticlesArticle());
 
         System.out.println("tblViewinProceedings.getItems().size() " + tblViewinProceedings.getItems().size());
-        if (db.getFilteredArticlesInProceedings().size() > 0 || db.getFilteredArticlesArticle().size() > 0) {
-            ArrayList<Article> refiltering = new ArrayList<>();
-            for (int i = 0; i < tblViewArticle.getItems().size(); i++) {
-                //if (tblViewArticle.getItems().get(i).isCheck().getValue())
-                refiltering.add(tblViewArticle.getItems().get(i));
-                System.out.println("REFILTERING SIZE riga 101: " + refiltering.size());
+        System.out.println(cbChooseType.getValue());
+        if (cbChooseType.getValue().equalsIgnoreCase("all")) {
+
+
+            if (db.getFilteredArticlesInProceedings().size() > 0 || db.getFilteredArticlesArticle().size() > 0) {
+                ArrayList<Article> refilteringArticle = new ArrayList<>();
+                ArrayList<inProceedings> refilteringInProceedings = new ArrayList<>();
+                for (int i = 0; i < tblViewArticle.getItems().size(); i++) {
+                    //if (tblViewArticle.getItems().get(i).isCheck().getValue())
+                    refilteringArticle.add(tblViewArticle.getItems().get(i));
+                    System.out.println("REFILTERING SIZE riga 101: " + refilteringArticle.size());
+                }
+
+                for (int i = 0; i < tblViewinProceedings.getItems().size(); i++) {
+                    //if (tblViewinProceedings.getItems().get(i).isCheck().getValue())
+                    refilteringInProceedings.add(tblViewinProceedings.getItems().get(i));
+                    //System.out.println("PUBLISHER: " + tblViewinProceedings.getItems().get(i).getp);
+                    System.out.println("REFILTERING SIZE riga 108: " + refilteringInProceedings.size());
+                }
+
+                db.openConnection(Utility.inProceedings);
+                db.refilterByArticleInProceedings(refilteringInProceedings, txtArticleTitle.getText(), txtArticleJournal.getText(), cbArticleYear.getValue());
+                db.closeConnection();
+
+                db.openConnection(Utility.article);
+                db.refilterByArticleArticle(refilteringArticle, txtArticleTitle.getText(), txtArticleJournal.getText(), cbArticleYear.getValue());
+                db.closeConnection();
+
+
+                showArticles(db.getFilteredArticlesArticle());
+                showInProceedings(db.getFilteredArticlesInProceedings());
             }
+        } else if (cbChooseType.getValue().equalsIgnoreCase(Utility.article)) {
+            System.out.println("QUIIIIIIIIIII Riga 126");
+            tblViewinProceedings.getItems().clear();
+            tblViewinProceedings.getColumns().clear();
+            tblViewinProceedings.refresh();
+            if (db.getFilteredArticlesArticle().size() > 0) {
+                System.out.println("QUIIIIIIIIIII Riga 135");
+                ArrayList<Article> refilteringArticle = new ArrayList<>();
+                for (int i = 0; i < tblViewArticle.getItems().size(); i++) {
+                    //if (tblViewArticle.getItems().get(i).isCheck().getValue())
+                    refilteringArticle.add(tblViewArticle.getItems().get(i));
+                    System.out.println("REFILTERING SIZE riga 140: " + refilteringArticle.size());
+                }
+                db.openConnection(Utility.article);
+                db.refilterByArticleArticle(refilteringArticle, txtArticleTitle.getText(), txtArticleJournal.getText(), cbArticleYear.getValue());
+                db.closeConnection();
 
-            for (int i = 0; i < tblViewinProceedings.getItems().size(); i++) {
-                //if (tblViewinProceedings.getItems().get(i).isCheck().getValue())
-                refiltering.add(tblViewinProceedings.getItems().get(i));
-                //System.out.println("PUBLISHER: " + tblViewinProceedings.getItems().get(i).getp);
-                System.out.println("REFILTERING SIZE riga 108: " + refiltering.size());
+                showArticles(db.getFilteredArticlesArticle());
             }
+        } else if (cbChooseType.getValue().equalsIgnoreCase(Utility.inProceedings)) {
+            System.out.println("QUIIIIIIIIIII Riga 144");
+            tblViewArticle.getItems().clear();
+            tblViewArticle.getColumns().clear();
+            tblViewArticle.refresh();
 
-            db.openConnection(Utility.inProceedings);
-            db.refilterByArticle(refiltering, txtArticleTitle.getText(), txtArticleJournal.getText(), cbArticleYear.getValue(), Utility.inProceedings);
-            db.closeConnection();
+            if (db.getFilteredArticlesInProceedings().size() > 0) {
+                ArrayList<inProceedings> refilteringInProceedings = new ArrayList<>();
 
-            db.openConnection(Utility.article);
-            db.refilterByArticle(refiltering, txtArticleTitle.getText(), txtArticleJournal.getText(), cbArticleYear.getValue(), Utility.article);
-            db.closeConnection();
+                for (int i = 0; i < tblViewinProceedings.getItems().size(); i++) {
+                    //if (tblViewinProceedings.getItems().get(i).isCheck().getValue())
+                    refilteringInProceedings.add(tblViewinProceedings.getItems().get(i));
+                    //System.out.println("PUBLISHER: " + tblViewinProceedings.getItems().get(i).getp);
+                    System.out.println("REFILTERING SIZE riga 108: " + refilteringInProceedings.size());
+                }
+
+                db.openConnection(Utility.inProceedings);
+                db.refilterByArticleInProceedings(refilteringInProceedings, txtArticleTitle.getText(), txtArticleJournal.getText(), cbArticleYear.getValue());
+                db.closeConnection();
+
+                showInProceedings(db.getFilteredArticlesInProceedings());
+            }
         }
-
-        cleanTbl();
-        showInProceedings(db.getFilteredArticlesInProceedings());
-        showArticles(db.getFilteredArticlesArticle());
     }
 
     @FXML
@@ -140,25 +187,26 @@ public class ExportController implements Initializable {
         db.closeConnection();
 
 
-        //prove per refiltering
-        if (db.getFilteredArticlesInProceedings().size() > 0 || db.getFilteredArticlesArticle().size() > 0) {
-            ArrayList<Article> refiltering = new ArrayList<>();
+//        prove per refiltering
+        /*if (db.getFilteredArticlesInProceedings().size() > 0 || db.getFilteredArticlesArticle().size() > 0) {
+            ArrayList<Article> refilteringArticle = new ArrayList<>();
+            ArrayList<inProceedings> refilteringInProceedings = new ArrayList<>();
             for (int i = 0; i < tblViewArticle.getItems().size(); i++)
                 if (tblViewArticle.getItems().get(i).isCheck().getValue())
-                    refiltering.add(tblViewArticle.getItems().get(i));
+                    refilteringArticle.add(tblViewArticle.getItems().get(i));
 
             for (int i = 0; i < tblViewinProceedings.getItems().size(); i++)
                 if (tblViewinProceedings.getItems().get(i).isCheck().getValue())
-                    refiltering.add(tblViewinProceedings.getItems().get(i));
+                    refilteringInProceedings.add(tblViewinProceedings.getItems().get(i));
 
             db.openConnection(Utility.inProceedings);
-            db.refilterByAuthor(refiltering, txtAuthorSurname.getText(), txtAuthorName.getText(), Utility.inProceedings);
+            db.refilterByAuthorInProceedings(refilteringInProceedings, txtAuthorSurname.getText(), txtAuthorName.getText(), Utility.inProceedings);
             db.closeConnection();
 
             db.openConnection(Utility.article);
-            db.refilterByAuthor(refiltering, txtAuthorSurname.getText(), txtAuthorName.getText(), Utility.article);
+            db.refilterByAuthorArticle(refilteringArticle, txtAuthorSurname.getText(), txtAuthorName.getText(), Utility.article);
             db.closeConnection();
-        }
+        }*/
         showInProceedings(db.getFilteredArticlesInProceedings());
         showArticles(db.getFilteredArticlesArticle());
     }
@@ -167,12 +215,22 @@ public class ExportController implements Initializable {
     void filterByType(ActionEvent event) {
         Database db = Database.getInstance();
         db.cleanAll();
+        cleanTbl();
 
         if (cbChooseType.getValue().equalsIgnoreCase(Utility.inProceedings)) {
             db.openConnection(Utility.inProceedings);
             db.filterByTypeInProceedings();
             showInProceedings(db.getFilteredArticlesInProceedings());
-        } else {
+        } else if (cbChooseType.getValue().equalsIgnoreCase(Utility.article)) {
+            db.openConnection(Utility.article);
+            db.filterByTypeArticle();
+            showArticles(db.getFilteredArticlesArticle());
+        } else if (cbChooseType.getValue().equalsIgnoreCase("all")) {
+            db.openConnection(Utility.inProceedings);
+            db.filterByTypeInProceedings();
+            showInProceedings(db.getFilteredArticlesInProceedings());
+            db.closeConnection();
+
             db.openConnection(Utility.article);
             db.filterByTypeArticle();
             showArticles(db.getFilteredArticlesArticle());
@@ -205,7 +263,8 @@ public class ExportController implements Initializable {
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-        cbChooseType.setValue(Utility.inProceedings);
+        cbChooseType.setValue("ALL");
+        cbChooseType.getItems().add("ALL");
         cbChooseType.getItems().add(Utility.inProceedings);
         cbChooseType.getItems().add(Utility.article);
 
@@ -288,7 +347,7 @@ public class ExportController implements Initializable {
         return false;
     }
 
-    private void showInProceedings(ArrayList<Article> filteredArticle) {
+    private void showInProceedings(ArrayList<inProceedings> filteredArticle) {
         /*tblViewinProceedings.getItems().clear();
         tblViewinProceedings.getColumns().clear();
         tblViewinProceedings.refresh();*/
@@ -297,53 +356,52 @@ public class ExportController implements Initializable {
         tblViewArticle.getColumns().clear();
         tblViewArticle.refresh();*/
 
-        ObservableList<Article> fxlist = FXCollections.observableList(filteredArticle);
+        ObservableList<inProceedings> fxlist = FXCollections.observableList(filteredArticle);
 
-        TableColumn<Article, Boolean> column20 = new TableColumn<>("");
+        TableColumn<inProceedings, Boolean> column20 = new TableColumn<>("");
         column20.setCellValueFactory(features -> features.getValue().checkProperty());
         column20.setCellFactory(CheckBoxTableCell.forTableColumn(column20));
 
-        TableColumn<Article, Integer> column1 = new TableColumn<>(Utility.year);
+        TableColumn<inProceedings, Integer> column1 = new TableColumn<>(Utility.year);
         column1.setCellValueFactory(new PropertyValueFactory<>("year"));
 
-        TableColumn<Article, String> column2 = new TableColumn<>(Utility.dblp);
+        TableColumn<inProceedings, String> column2 = new TableColumn<>(Utility.dblp);
         column2.setCellValueFactory(new PropertyValueFactory<>("dblp"));
 
-        TableColumn<Article, String> column3 = new TableColumn<>(Utility.pages);
+        TableColumn<inProceedings, String> column3 = new TableColumn<>(Utility.pages);
         column3.setCellValueFactory(new PropertyValueFactory<>("pages"));
 
-        TableColumn<Article, String> column4 = new TableColumn<>(Utility.publisher);
+        TableColumn<inProceedings, String> column4 = new TableColumn<>(Utility.publisher);
         column4.setCellValueFactory(new PropertyValueFactory<>("publisher"));
 
-        TableColumn<Article, String> column5 = new TableColumn<>(Utility.series);
+        TableColumn<inProceedings, String> column5 = new TableColumn<>(Utility.series);
         column5.setCellValueFactory(new PropertyValueFactory<>("series"));
 
-        TableColumn<Article, String> column6 = new TableColumn<>(Utility.volume);
+        TableColumn<inProceedings, String> column6 = new TableColumn<>(Utility.volume);
         column6.setCellValueFactory(new PropertyValueFactory<>("volume"));
 
-        TableColumn<Article, String> column7 = new TableColumn<>(Utility.shortTitle);
+        TableColumn<inProceedings, String> column7 = new TableColumn<>(Utility.shortTitle);
         column7.setCellValueFactory(new PropertyValueFactory<>("shortTitle"));
 
-        TableColumn<Article, String> column8 = new TableColumn<>(Utility.url);
+        TableColumn<inProceedings, String> column8 = new TableColumn<>(Utility.url);
         column8.setCellValueFactory(new PropertyValueFactory<>("url"));
 
-        TableColumn<Article, String> column9 = new TableColumn<>(Utility.doi);
+        TableColumn<inProceedings, String> column9 = new TableColumn<>(Utility.doi);
         column9.setCellValueFactory(new PropertyValueFactory<>("doi"));
 
-        TableColumn<Article, String> column10 = new TableColumn<>(Utility.address);
+        TableColumn<inProceedings, String> column10 = new TableColumn<>(Utility.address);
         column10.setCellValueFactory(new PropertyValueFactory<>("address"));
 
-        TableColumn<Article, String> column11 = new TableColumn<>(Utility.booktitle);
+        TableColumn<inProceedings, String> column11 = new TableColumn<>(Utility.booktitle);
         column11.setCellValueFactory(new PropertyValueFactory<>("booktitle"));
 
-        TableColumn<Article, String> column12 = new TableColumn<>(Utility.title);
+        TableColumn<inProceedings, String> column12 = new TableColumn<>(Utility.title);
         column12.setCellValueFactory(new PropertyValueFactory<>("title"));
 
-
-        TableColumn<Article, String> column13 = new TableColumn<>("Author: " + Utility.name + " " + Utility.surname);
+        TableColumn<inProceedings, String> column13 = new TableColumn<>("Author: " + Utility.name + " " + Utility.surname);
         column13.setCellValueFactory(new PropertyValueFactory<>("allAuthorNameAndSurname"));
 
-        TableColumn<Article, String> column14 = new TableColumn<>("Editor: " + Utility.name + " " + Utility.surname);
+        TableColumn<inProceedings, String> column14 = new TableColumn<>("Editor: " + Utility.name + " " + Utility.surname);
         column14.setCellValueFactory(new PropertyValueFactory<>("allEditorNameAndSurname"));
 
         tblViewinProceedings.getColumns().add(column20);
@@ -362,7 +420,7 @@ public class ExportController implements Initializable {
         tblViewinProceedings.getColumns().add(column13);
         tblViewinProceedings.getColumns().add(column14);
 
-        for (Article a : fxlist) {
+        for (inProceedings a : fxlist) {
             tblViewinProceedings.getItems().add(a);
             //System.out.println("PUBLISHER RIGA 367 ");
         }

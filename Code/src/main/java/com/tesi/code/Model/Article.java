@@ -97,7 +97,7 @@ public class Article {
         for (Editor a : allEditors)
             s.append(a.getName()).append(" ").append(a.getSurname()).append(", ");
 
-        return s.deleteCharAt(s.length() - 1).toString();
+        return s.deleteCharAt(s.length() - 2).toString();
     }
 
     public String getAllAuthorNameAndSurname() {
@@ -106,7 +106,7 @@ public class Article {
         for (Author a : allAuthors)
             s.append(a.getName()).append(" ").append(a.getSurname()).append(", ");
 
-        return s.deleteCharAt(s.length() - 1).toString();
+        return s.deleteCharAt(s.length() - 2).toString();
     }
 
 }
