@@ -14,6 +14,7 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
+import javafx.scene.layout.RowConstraints;
 import javafx.scene.text.Font;
 import javafx.stage.Stage;
 
@@ -41,7 +42,7 @@ public class inProceedingsController implements Initializable {
     private Button btnSave;
 
     @FXML
-    private GridPane grdpane;
+    private GridPane grdAuthor;
 
     @FXML
     private Button btnAnotherBibtex;
@@ -89,37 +90,44 @@ public class inProceedingsController implements Initializable {
         db.openConnection(Utility.inProceedings);
         db.createTableInProceedings();
         if (!txtShortTitle.getText().equalsIgnoreCase("") && !txtAddress.getText().equalsIgnoreCase(""))
-            db.insertIntoDBInProceedings(gp.getYear(), gp.getPages(), gp.getDblp(), txtTitle.getText(), gp.getVolume(), txtShortTitle.getText(), gp.getUrl(),
-                    txtAddress.getText(), gp.getPublisher(), gp.getSeries(), gp.getBooktitle(), gp.getDoi());
+            if (db.insertIntoDBInProceedings(gp.getYear(), gp.getPages(), gp.getDblp(), txtTitle.getText(), gp.getVolume(), txtShortTitle.getText(), gp.getUrl(),
+                    txtAddress.getText(), gp.getPublisher(), gp.getSeries(), gp.getBooktitle(), gp.getDoi())) {
+                db.closeConnection();
+                btnSave.setVisible(false);
+                JOptionPane.showMessageDialog(null, "Article correctly saved", "Saved", JOptionPane.INFORMATION_MESSAGE);
+            } else
+                JOptionPane.showMessageDialog(null, "Article exists in database", "Error", JOptionPane.INFORMATION_MESSAGE);
         else if (txtShortTitle.getText().equalsIgnoreCase(""))
             JOptionPane.showMessageDialog(null, "Insert short title", "ERROR", JOptionPane.INFORMATION_MESSAGE);
         else if (txtAddress.getText().equalsIgnoreCase(""))
             JOptionPane.showMessageDialog(null, "Insert address", "ERROR", JOptionPane.INFORMATION_MESSAGE);
-        else {
-            db.filterByTypeInProceedings();
-            //db.readingAuthorInProceedings();
-            db.closeConnection();
-        }
     }
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         GenericParser gp = GenericParser.getInstance();
+
         txtBookTitle.setText(gp.getBooktitle());
         txtTitle.setText(gp.getTitle());
         txtShortTitle.setText(gp.getTitle());
         txtAddress.setText("");
         Database db = Database.getInstance();
+        db.getAuthors().clear();
+        db.getEditors().clear();
+
         db.calculateAuthor(gp.getAuthor());
         db.calculateEditor(gp.getEditor());
+
+        grdAuthor.getChildren().clear();
+        grdEditor.getChildren().clear();
         for (int i = 0; i < db.getAuthors().size(); i++)
             loadAuthors(i, db);
         for (int i = 0; i < db.getEditors().size(); i++)
             loadEditors(i, db);
-        db.closeConnection();
     }
 
     private void loadEditors(int i, Database db) {
+
         Label labelEditor = new Label();
         labelEditor.setFont(new Font("System", 27));
         labelEditor.setText("Editor");
@@ -132,10 +140,10 @@ public class inProceedingsController implements Initializable {
         labelSurname.setFont(new Font("System", 27));
         labelSurname.setText("Surname");
 
-        TextField name = new TextField(db.getEditors().get(i).getNameEditor());
+        TextField name = new TextField(db.getEditors().get(i).getName());
         name.setFont(new Font("System", 12));
 
-        TextField surname = new TextField(db.getEditors().get(i).getSurnameEditor());
+        TextField surname = new TextField(db.getEditors().get(i).getSurname());
         surname.setFont(new Font("System", 12));
 
         Pane paneEditor = new Pane();
@@ -168,6 +176,8 @@ public class inProceedingsController implements Initializable {
         grdEditor.add(paneLabelSurname, 3, i);
         grdEditor.add(paneShowSurname, 4, i);
 
+        grdEditor.getRowConstraints().add(new RowConstraints(30));
+
         allTextEditor.add(surname);
         allTextEditor.add(name);
     }
@@ -186,10 +196,10 @@ public class inProceedingsController implements Initializable {
         labelSurname.setFont(new Font("System", 27));
         labelSurname.setText("Surname");
 
-        TextField name = new TextField(db.getAuthors().get(i).getNameAuthor());
+        TextField name = new TextField(db.getAuthors().get(i).getName());
         name.setFont(new Font("System", 12));
 
-        TextField surname = new TextField(db.getAuthors().get(i).getSurnameAuthor());
+        TextField surname = new TextField(db.getAuthors().get(i).getSurname());
         surname.setFont(new Font("System", 12));
 
         Pane paneAuthor = new Pane();
@@ -216,11 +226,13 @@ public class inProceedingsController implements Initializable {
         paneLabelName.getChildren().add(labelName);
         paneShowSurname.getChildren().add(surname);
 
-        grdpane.add(paneAuthor, 0, i);
-        grdpane.add(paneLabelName, 1, i);
-        grdpane.add(paneShowName, 2, i);
-        grdpane.add(paneLabelSurname, 3, i);
-        grdpane.add(paneShowSurname, 4, i);
+        grdAuthor.add(paneAuthor, 0, i);
+        grdAuthor.add(paneLabelName, 1, i);
+        grdAuthor.add(paneShowName, 2, i);
+        grdAuthor.add(paneLabelSurname, 3, i);
+        grdAuthor.add(paneShowSurname, 4, i);
+
+        grdAuthor.getRowConstraints().add(new RowConstraints(30));
 
         allTextAuthor.add(surname);
         allTextAuthor.add(name);

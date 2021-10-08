@@ -82,21 +82,21 @@ public class Database {
 
 
                 for (int i = 0; i < authors.size(); i++) {
-                    if (!(compareAuthor(authors.get(i).getNameAuthor(), authors.get(i).getSurnameAuthor()))) { //se nome e cognome non ci sono gia'
+                    if (!(compareAuthor(authors.get(i).getName(), authors.get(i).getSurname()))) { //se nome e cognome non ci sono gia'
                         preparedStmt = c.prepareStatement("INSERT INTO AUTHOR VALUES(?,?,?);");
                         //System.out.println("surname author: " + authors.get(i).getSurnameAuthor() + " name author: " + authors.get(i).getNameAuthor());
-                        preparedStmt.setString(2, authors.get(i).getSurnameAuthor());
-                        preparedStmt.setString(3, authors.get(i).getNameAuthor());
+                        preparedStmt.setString(2, authors.get(i).getSurname());
+                        preparedStmt.setString(3, authors.get(i).getName());
                         preparedStmt.executeUpdate();
                     }
                 }
 
                 for (int i = 0; i < editors.size(); i++) {
-                    if (!(compareEditor(editors.get(i).getNameEditor(), editors.get(i).getSurnameEditor()))) { //se nome e cognome non ci sono gia'
+                    if (!(compareEditor(editors.get(i).getName(), editors.get(i).getSurname()))) { //se nome e cognome non ci sono gia'
                         preparedStmt = c.prepareStatement("INSERT INTO EDITOR VALUES(?,?,?);");
                         //System.out.println("surname editor: " + editors.get(i).getSurnameEditor() + " name editor: " + editors.get(i).getNameEditor());
-                        preparedStmt.setString(2, editors.get(i).getSurnameEditor());
-                        preparedStmt.setString(3, editors.get(i).getNameEditor());
+                        preparedStmt.setString(2, editors.get(i).getSurname());
+                        preparedStmt.setString(3, editors.get(i).getName());
                         preparedStmt.executeUpdate();
                     }
                 }
@@ -115,7 +115,8 @@ public class Database {
                     preparedStmt.executeUpdate();
                 }
                 preparedStmt.close();
-            } else return false;
+            }
+            else return false;
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -141,10 +142,10 @@ public class Database {
                 preparedStmt.executeUpdate();
 
                 for (int i = 0; i < authors.size(); i++) {
-                    if (!(compareAuthor(authors.get(i).getNameAuthor(), authors.get(i).getSurnameAuthor()))) { //se nome e cognome non ci sono gia'
+                    if (!(compareAuthor(authors.get(i).getName(), authors.get(i).getSurname()))) { //se nome e cognome non ci sono gia'
                         preparedStmt = c.prepareStatement("INSERT INTO AUTHOR VALUES(?,?,?);");
-                        preparedStmt.setString(2, authors.get(i).getSurnameAuthor());
-                        preparedStmt.setString(3, authors.get(i).getNameAuthor());
+                        preparedStmt.setString(2, authors.get(i).getSurname());
+                        preparedStmt.setString(3, authors.get(i).getName());
                         preparedStmt.executeUpdate();
                     }
                 }
@@ -157,7 +158,8 @@ public class Database {
                 }
 
                 preparedStmt.close();
-            } else return false;
+            }
+            else return false;
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -307,7 +309,7 @@ public class Database {
                         authors = new ArrayList<>();
                         readingAuthorArticle(dblp, authors);
                         String journal = rs.getString("JOURNAL");
-                        filteredArticlesArticle.add(new Article(Utility.article, year, pages, dblp, title, volume, shortTitle, url, journal, doi, authors, new ArrayList<Editor>()));
+                        filteredArticlesArticle.add(new Article(Utility.article, year, pages, dblp, title, volume, shortTitle, url, journal, doi, authors,new ArrayList<Editor>()));
                     }
                     conto++;
                 }
@@ -403,6 +405,8 @@ public class Database {
             if (c == null || c.isClosed())
                 return;
             Statement stmt = c.createStatement();
+
+            //if(filteredArticlesInProceedings.size()==0) {
             ResultSet rs = stmt.executeQuery(
                     "SELECT DISTINCT ARTICLE.DBLP,YEAR,PAGES,TITLE,VOLUME," +
                             "SHORT_TITLE,URL,ADDRESS,PUBLISHER,SERIES,BOOKTITLE,DOI,AUTHOR.SURNAME,AUTHOR.NAME," +
@@ -449,19 +453,7 @@ public class Database {
             //else {
             //rifiltraggio
 
-                //lista di autori
-                if (!oldDblp.equalsIgnoreCase(dblp)) {
-                    authors = new ArrayList<>();
-                    editors = new ArrayList<>();
-                    readingAuthorInProceedings(dblp, authors);
-                    readingEditorInProceedings(dblp, editors);
-                    filteredArticlesInProceedings.add(new inProceedings(Utility.inProceedings, year, pages, dblp, title, volume, shortTitle, url, booktitle, doi, authors, publisher, series, address, editors));
-                    System.out.println("YEAR: " + year + " PAGES: " + pages + " TITLE: " + title + " VOLUME: " + volume + " SHORT TITLE: " + shortTitle + " URL: " + url +
-                            " DOI: " + doi + " DBLP: " + dblp + " nameAuthor: " + nameAuthor + " surnameAuthor: " + surnameAuthor + " nameEditor: "
-                            + nameEditor + " surnameEditor: " + surnameEditor);
-                }
-                oldDblp = dblp;
-            
+            //}
             stmt.close();
         } catch (Exception e) {
             e.printStackTrace();
@@ -495,7 +487,7 @@ public class Database {
                 if (!oldDblp.equalsIgnoreCase(dblp)) {
                     ArrayList<Author> aut = new ArrayList<>();
                     readingAuthorArticle(dblp, aut);
-                    Article a = new Article(Utility.article, year, pages, dblp, title, volume, shortTitle, url, journal, doi, aut, new ArrayList<Editor>());
+                    Article a = new Article(Utility.article, year, pages, dblp, title, volume, shortTitle, url, journal, doi, aut,new ArrayList<Editor>());
                     filteredArticlesArticle.add(a);
                 }
                 oldDblp = dblp;
@@ -600,7 +592,7 @@ public class Database {
                 int id = rs.getInt("ID");
                 String name = rs.getString("NAME");
                 String surname = rs.getString("SURNAME");
-                if (name.equalsIgnoreCase(author.getNameAuthor()) && surname.equalsIgnoreCase(author.getSurnameAuthor()))
+                if (name.equalsIgnoreCase(author.getName()) && surname.equalsIgnoreCase(author.getSurname()))
                     return id;
             }
             stmt.close();
@@ -621,7 +613,7 @@ public class Database {
                 int id = rs.getInt("ID");
                 String name = rs.getString("NAME");
                 String surname = rs.getString("SURNAME");
-                if (name.equalsIgnoreCase(editor.getNameEditor()) && surname.equalsIgnoreCase(editor.getSurnameEditor()))
+                if (name.equalsIgnoreCase(editor.getName()) && surname.equalsIgnoreCase(editor.getSurname()))
                     return id;
             }
             stmt.close();
@@ -683,11 +675,7 @@ public class Database {
                     ArrayList<Author> aut = new ArrayList<>();
                     readingAuthorArticle(dblp, aut);
                     String journal2 = rs.getString("JOURNAL");
-<<<<<<< Updated upstream
-                    filteredArticlesArticle.add(new Article(Utility.article, year2, pages, dblp, title2, volume, shortTitle, url, journal2, doi, aut));
-=======
-                    filteredArticlesArticle.add(new Article(Utility.article, year2, pages, dblp, title2, volume, shortTitle, url, journal2, doi, aut, new ArrayList<Editor>()));
->>>>>>> Stashed changes
+                    filteredArticlesArticle.add(new Article(Utility.article, year2, pages, dblp, title2, volume, shortTitle, url, journal2, doi, aut,new ArrayList<Editor>()));
                     System.out.println("YEAR: " + year2 + " PAGES: " + pages + " TITLE: " + title2 + " VOLUME: " + volume + " SHORT TITLE: " + shortTitle + " URL: " + url +
                             " ADDRESS: " + " DOI: " + doi + " DBLP: " + dblp);
                 }
@@ -848,6 +836,7 @@ public class Database {
             filteredArticlesInProceedings.clear();
             filteredArticlesArticle.clear();
             for (Article a : refiltering) {
+                System.out.println("QUIIII " + refiltering.size());
                 if (type.equalsIgnoreCase(Utility.article)) {
                     if (!title.equalsIgnoreCase("") && !journal.equalsIgnoreCase("")) {
                         stmt = c.prepareStatement("SELECT * FROM ARTICLE,AUTHOR,WRITTENBY" +

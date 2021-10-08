@@ -18,8 +18,9 @@ public class Article {
     private ArrayList<Author> allAuthors;
     private String type;
     private BooleanProperty check = new SimpleBooleanProperty(this, "check");
+    private ArrayList<Editor> allEditors;
 
-    public Article(String type, int year, String pages, String dblp, String title, int volume, String shortTitle, String url, String journal, String doi, ArrayList<Author> allAuthors) {
+    public Article(String type, int year, String pages, String dblp, String title, int volume, String shortTitle, String url, String journal, String doi, ArrayList<Author> allAuthors, ArrayList<Editor> allEditors) {
         this.type = type;
         this.year = year;
         this.pages = pages;
@@ -31,15 +32,11 @@ public class Article {
         this.doi = doi;
         this.allAuthors = allAuthors;
         this.journal = journal;
+        this.allEditors = allEditors;
     }
-
 
     public BooleanProperty checkProperty() {
         return check;
-    }
-
-    public void setCheck(boolean check) {
-        this.check.set(check);
     }
 
     public BooleanProperty isCheck() {
@@ -62,24 +59,12 @@ public class Article {
         return year;
     }
 
-    public void setYear(int year) {
-        this.year = year;
-    }
-
     public String getPages() {
         return pages;
     }
 
-    public void setPages(String pages) {
-        this.pages = pages;
-    }
-
     public String getDblp() {
         return dblp;
-    }
-
-    public void setDblp(String dblp) {
-        this.dblp = dblp;
     }
 
     public String getTitle() {
@@ -94,31 +79,34 @@ public class Article {
         return volume;
     }
 
-    public void setVolume(int volume) {
-        this.volume = volume;
-    }
-
     public String getShortTitle() {
         return shortTitle;
-    }
-
-    public void setShortTitle(String shortTitle) {
-        this.shortTitle = shortTitle;
     }
 
     public String getUrl() {
         return url;
     }
 
-    public void setUrl(String url) {
-        this.url = url;
-    }
-
     public String getDoi() {
         return doi;
     }
 
-    public void setDoi(String doi) {
-        this.doi = doi;
+    public String getAllEditorNameAndSurname() {
+        StringBuilder s = new StringBuilder();
+
+        for (Editor a : allEditors)
+            s.append(a.getName()).append(" ").append(a.getSurname()).append(", ");
+
+        return s.deleteCharAt(s.length() - 1).toString();
     }
+
+    public String getAllAuthorNameAndSurname() {
+        StringBuilder s = new StringBuilder();
+
+        for (Author a : allAuthors)
+            s.append(a.getName()).append(" ").append(a.getSurname()).append(", ");
+
+        return s.deleteCharAt(s.length() - 1).toString();
+    }
+
 }

@@ -8,12 +8,12 @@
 
 <Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="442.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.tesi.code.Controller.MainController">
    <children>
-      <Button fx:id="btnChooseFile" layoutX="342.0" layoutY="14.0" mnemonicParsing="false" onAction="#chooseFile" text="Carica da file">
+      <Button fx:id="btnChooseFile" layoutX="342.0" layoutY="14.0" mnemonicParsing="false" onAction="#chooseFile" text="Load from file">
          <font>
             <Font size="32.0" />
          </font>
       </Button>
-      <Button fx:id="btnLoad" layoutX="236.0" layoutY="349.0" mnemonicParsing="false" onAction="#load" text="Carica">
+      <Button fx:id="btnLoad" layoutX="236.0" layoutY="349.0" mnemonicParsing="false" onAction="#load" text="Load">
          <font>
             <Font size="32.0" />
          </font>

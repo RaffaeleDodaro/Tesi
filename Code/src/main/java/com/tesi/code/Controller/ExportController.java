@@ -1,32 +1,28 @@
 package com.tesi.code.Controller;
 
 import com.tesi.code.Database;
+import com.tesi.code.Main;
 import com.tesi.code.Model.Article;
 import com.tesi.code.Model.Author;
 import com.tesi.code.Model.Editor;
-import com.tesi.code.Parser.GenericParser;
 import com.tesi.code.Utility;
-import javafx.beans.property.BooleanProperty;
-import javafx.beans.property.SimpleBooleanProperty;
-import javafx.beans.property.SimpleStringProperty;
-import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
-import javafx.geometry.Pos;
+import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.CheckBoxTableCell;
 import javafx.scene.control.cell.PropertyValueFactory;
 import com.tesi.code.Model.inProceedings;
+import javafx.scene.layout.Pane;
 import javafx.stage.FileChooser;
-import javafx.util.Callback;
+import javafx.stage.Stage;
 
-import javax.swing.*;
 import java.io.*;
 import java.net.URL;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.ResourceBundle;
 
@@ -62,6 +58,9 @@ public class ExportController implements Initializable {
     private Button btnFilterByType;
 
     @FXML
+    private Button btnAnotherBibtex;
+
+    @FXML
     private TableView<Article> tblViewinProceedings;
 
     @FXML
@@ -72,6 +71,8 @@ public class ExportController implements Initializable {
 
     @FXML
     void filterByArticle(ActionEvent event) {
+        cleanTbl();
+
         String title = txtArticleTitle.getText();
         String journal = txtArticleJournal.getText();
         int year = cbArticleYear.getValue();
@@ -79,6 +80,7 @@ public class ExportController implements Initializable {
         Database db = Database.getInstance();
         db.openConnection(Utility.article);
         db.cleanAll();
+
 
         db.findArticleByInfoArticleArticle(title, journal, year);
         db.closeConnection();
@@ -88,15 +90,24 @@ public class ExportController implements Initializable {
         db.closeConnection();
 
         //prove per refiltering
+        showInProceedings(db.getFilteredArticlesInProceedings());
+        showArticles(db.getFilteredArticlesArticle());
+
+        System.out.println("tblViewinProceedings.getItems().size() " + tblViewinProceedings.getItems().size());
         if (db.getFilteredArticlesInProceedings().size() > 0 || db.getFilteredArticlesArticle().size() > 0) {
             ArrayList<Article> refiltering = new ArrayList<>();
-            for (int i = 0; i < tblViewArticle.getItems().size(); i++)
-                if (tblViewArticle.getItems().get(i).isCheck().getValue())
-                    refiltering.add(tblViewArticle.getItems().get(i));
+            for (int i = 0; i < tblViewArticle.getItems().size(); i++) {
+                //if (tblViewArticle.getItems().get(i).isCheck().getValue())
+                refiltering.add(tblViewArticle.getItems().get(i));
+                System.out.println("REFILTERING SIZE riga 101: " + refiltering.size());
+            }
 
-            for (int i = 0; i < tblViewinProceedings.getItems().size(); i++)
-                if (tblViewinProceedings.getItems().get(i).isCheck().getValue())
-                    refiltering.add(tblViewinProceedings.getItems().get(i));
+            for (int i = 0; i < tblViewinProceedings.getItems().size(); i++) {
+                //if (tblViewinProceedings.getItems().get(i).isCheck().getValue())
+                refiltering.add(tblViewinProceedings.getItems().get(i));
+                //System.out.println("PUBLISHER: " + tblViewinProceedings.getItems().get(i).getp);
+                System.out.println("REFILTERING SIZE riga 108: " + refiltering.size());
+            }
 
             db.openConnection(Utility.inProceedings);
             db.refilterByArticle(refiltering, txtArticleTitle.getText(), txtArticleJournal.getText(), cbArticleYear.getValue(), Utility.inProceedings);
@@ -107,6 +118,7 @@ public class ExportController implements Initializable {
             db.closeConnection();
         }
 
+        cleanTbl();
         showInProceedings(db.getFilteredArticlesInProceedings());
         showArticles(db.getFilteredArticlesArticle());
     }
@@ -115,8 +127,9 @@ public class ExportController implements Initializable {
     void filterByAuthor(ActionEvent event) {
         Database db = Database.getInstance();
         db.cleanAll();
-        tblViewinProceedings.getItems().clear();
-        tblViewArticle.getItems().clear();
+
+        cleanTbl();
+
         db.openConnection(Utility.inProceedings);
         db.findArticleByAuthorName(txtAuthorSurname.getText(), txtAuthorName.getText(), Utility.inProceedings);
         db.closeConnection();
@@ -223,9 +236,6 @@ public class ExportController implements Initializable {
                     if (tblViewArticle.getItems().get(i).isCheck().getValue()) {
                         if (!existsArticle(tblViewArticle.getItems().get(i))) {
                             savedArticle.add(tblViewArticle.getItems().get(i));
-//                            System.out.println("savedArticle.get(0).getAllAuthors().size(): "+ savedArticle.get(0).getAllAuthors().size() + " " + tblViewArticle.getItems().get(i).getTitle());
-//                            System.out.println(tblViewArticle.getItems().get(i).getAllAuthors().get(0).getNameAuthor());
-//                            System.out.println(tblViewArticle.getItems().get(i).getTitle());
                         }
                     }
                 }
@@ -240,6 +250,28 @@ public class ExportController implements Initializable {
                 bOut.close();
             }
         }
+    }
+
+    @FXML
+    void anotherBibtex(ActionEvent event) throws IOException {
+        Stage stage = (Stage) btnAnotherBibtex.getScene().getWindow();
+        FXMLLoader fxmlLoader = new FXMLLoader(Main.class.getResource("ChooseFile.fxml"));
+        Pane root = (Pane) fxmlLoader.load();
+        Scene scene = new Scene(root, 600, 442);
+        stage.setTitle("Tesi");
+        stage.setScene(scene);
+        stage.setResizable(false);
+        stage.show();
+    }
+
+    private void cleanTbl() {
+        tblViewinProceedings.getItems().clear();
+        tblViewinProceedings.getColumns().clear();
+        tblViewinProceedings.refresh();
+
+        tblViewArticle.getItems().clear();
+        tblViewArticle.getColumns().clear();
+        tblViewArticle.refresh();
     }
 
     private boolean existsArticle(Article a) {
@@ -257,6 +289,14 @@ public class ExportController implements Initializable {
     }
 
     private void showInProceedings(ArrayList<Article> filteredArticle) {
+        /*tblViewinProceedings.getItems().clear();
+        tblViewinProceedings.getColumns().clear();
+        tblViewinProceedings.refresh();*/
+
+        /*tblViewArticle.getItems().clear();
+        tblViewArticle.getColumns().clear();
+        tblViewArticle.refresh();*/
+
         ObservableList<Article> fxlist = FXCollections.observableList(filteredArticle);
 
         TableColumn<Article, Boolean> column20 = new TableColumn<>("");
@@ -299,6 +339,13 @@ public class ExportController implements Initializable {
         TableColumn<Article, String> column12 = new TableColumn<>(Utility.title);
         column12.setCellValueFactory(new PropertyValueFactory<>("title"));
 
+
+        TableColumn<Article, String> column13 = new TableColumn<>("Author: " + Utility.name + " " + Utility.surname);
+        column13.setCellValueFactory(new PropertyValueFactory<>("allAuthorNameAndSurname"));
+
+        TableColumn<Article, String> column14 = new TableColumn<>("Editor: " + Utility.name + " " + Utility.surname);
+        column14.setCellValueFactory(new PropertyValueFactory<>("allEditorNameAndSurname"));
+
         tblViewinProceedings.getColumns().add(column20);
         tblViewinProceedings.getColumns().add(column1);
         tblViewinProceedings.getColumns().add(column2);
@@ -312,33 +359,25 @@ public class ExportController implements Initializable {
         tblViewinProceedings.getColumns().add(column10);
         tblViewinProceedings.getColumns().add(column11);
         tblViewinProceedings.getColumns().add(column12);
+        tblViewinProceedings.getColumns().add(column13);
+        tblViewinProceedings.getColumns().add(column14);
 
-        /*for (Article article : fxlist) {
-            for (int j = 0; j < article.getAllAuthors().size(); j++) {
-                TableColumn<Article, String> column13 = new TableColumn<>("Author's " + Utility.name);
-                String name = article.getAllAuthors().get(j).getNameAuthor();
-                column13.setCellValueFactory(c -> new SimpleStringProperty(name));
-                System.out.println("\n" + "Name: " + name);
-
-                TableColumn<Article, String> column14 = new TableColumn<>("Author's " + Utility.surname);
-                String surname = article.getAllAuthors().get(j).getSurnameAuthor();
-                column14.setCellValueFactory(c -> new SimpleStringProperty(surname));
-                System.out.println("Surname: " + surname);
-
-                tblViewinProceedings.getColumns().add(column13);
-                tblViewinProceedings.getColumns().add(column14);
-            }
-        }*/
-
-        for (Article a : fxlist)
+        for (Article a : fxlist) {
             tblViewinProceedings.getItems().add(a);
-
-
+            //System.out.println("PUBLISHER RIGA 367 ");
+        }
     }
 
     private void showArticles(ArrayList<Article> filteredArticle) {
+        /*tblViewArticle.getItems().clear();
+        tblViewArticle.getColumns().clear();
+        tblViewArticle.refresh();*/
+
+        /*tblViewinProceedings.getItems().clear();
+        tblViewinProceedings.getColumns().clear();
+        tblViewinProceedings.refresh();*/
+
         ObservableList<Article> fxlist = FXCollections.observableList(filteredArticle);
-        int i = 0;
 
         TableColumn<Article, Boolean> column20 = new TableColumn<>("");
         column20.setCellValueFactory(features -> features.getValue().checkProperty());
@@ -371,6 +410,9 @@ public class ExportController implements Initializable {
         TableColumn<Article, String> column9 = new TableColumn<>(Utility.doi);
         column9.setCellValueFactory(new PropertyValueFactory<>("doi"));
 
+        TableColumn<Article, String> column10 = new TableColumn<>("Author: " + Utility.name + " " + Utility.surname);
+        column10.setCellValueFactory(new PropertyValueFactory<>("allAuthorNameAndSurname"));
+
         tblViewArticle.getColumns().add(column20);
         tblViewArticle.getColumns().add(column1);
         tblViewArticle.getColumns().add(column2);
@@ -381,27 +423,10 @@ public class ExportController implements Initializable {
         tblViewArticle.getColumns().add(column7);
         tblViewArticle.getColumns().add(column8);
         tblViewArticle.getColumns().add(column9);
-
-        /*for (int j = 0; j < fxlist.get(i).getAllAuthors().size(); j++) {
-            TableColumn<Article, String> column13 = new TableColumn<>("Author's " + Utility.name);
-            String name = fxlist.get(i).getAllAuthors().get(j).getNameAuthor();
-            column13.setCellValueFactory(c -> new SimpleStringProperty(name));
-            System.out.println("\n" + "Name: " + name);
-
-            TableColumn<Article, String> column14 = new TableColumn<>("Author's " + Utility.surname);
-            String surname = fxlist.get(i).getAllAuthors().get(j).getSurnameAuthor();
-            column14.setCellValueFactory(c -> new SimpleStringProperty(surname));
-            System.out.println("Surname: " + surname);
-
-            tblViewArticle.getColumns().add(column13);
-            tblViewArticle.getColumns().add(column14);
-        }*/
-
+        tblViewArticle.getColumns().add(column10);
 
         for (Article a : fxlist)
             tblViewArticle.getItems().add(a);
-
-        i += 1;
     }
 
     private void saveArticle(BufferedWriter bOut) throws IOException {
@@ -422,10 +447,10 @@ public class ExportController implements Initializable {
                     + volume + "\nShort title: " + shortTitle + "\nurl: " + url + "\ndoi: " + doi + "\njournal: "
                     + journal + "\ntype: " + type);
             for (int j = 0; j < allAuthors.size(); j++) {
-                bOut.append("\nAutore " + j + ": " + allAuthors.get(j).getNameAuthor() + " "
-                        + allAuthors.get(j).getSurnameAuthor());
-                System.out.println(("\nAutore " + j + ": " + allAuthors.get(j).getNameAuthor() + " "
-                        + allAuthors.get(j).getSurnameAuthor()));
+                bOut.append("\nAutore " + j + ": " + allAuthors.get(j).getName() + " "
+                        + allAuthors.get(j).getSurname());
+                System.out.println(("\nAutore " + j + ": " + allAuthors.get(j).getName() + " "
+                        + allAuthors.get(j).getSurname()));
             }
             bOut.append("\n*************************\n");
         }
@@ -455,12 +480,12 @@ public class ExportController implements Initializable {
                         + "\npublisher" + publisher + "\ntype: " + type + "\nseries: " + series + "\naddress: "
                         + address + "\nbook title: " + booktitle);
                 for (int j = 0; j < allAuthors.size(); j++) {
-                    printWriter.append("\nAutore " + j + ": " + allAuthors.get(j).getNameAuthor() + " "
-                            + allAuthors.get(j).getSurnameAuthor());
+                    printWriter.append("\nAutore " + j + ": " + allAuthors.get(j).getName() + " "
+                            + allAuthors.get(j).getSurname());
                 }
                 for (int j = 0; j < allEditor.size(); j++) {
-                    printWriter.append("\nEditore " + j + ": " + allEditor.get(j).getNameEditor() + " "
-                            + allEditor.get(j).getSurnameEditor());
+                    printWriter.append("\nEditore " + j + ": " + allEditor.get(j).getName() + " "
+                            + allEditor.get(j).getSurname());
                 }
                 printWriter.append("\n*************************\n");
             }
