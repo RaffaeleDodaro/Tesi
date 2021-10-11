@@ -94,19 +94,23 @@ public class Article {
     public String getAllEditorNameAndSurname() {
         StringBuilder s = new StringBuilder();
 
-        for (Editor a : allEditors)
+        for (Editor a : allEditors) {
+//            System.out.println("ARTICLE riga 99: " +a.getName() + a.getSurname());
             s.append(a.getName()).append(" ").append(a.getSurname()).append(", ");
-
-        return s.deleteCharAt(s.length() - 2).toString();
+//            System.out.println("ARTICLE riga 100: " + s +" ");
+        }
+        return s.deleteCharAt(s.length()-2).toString();
     }
 
     public String getAllAuthorNameAndSurname() {
         StringBuilder s = new StringBuilder();
 
-        for (Author a : allAuthors)
+        for (Author a : allAuthors) {
+//            System.out.println("ARTICLE riga 108: " + a.getName() + a.getSurname());
             s.append(a.getName()).append(" ").append(a.getSurname()).append(", ");
-
-        return s.deleteCharAt(s.length() - 2).toString();
+//            System.out.println("ARTICLE riga 110: " + s);
+        }
+        return s.deleteCharAt(s.length()-2).toString();
     }
 
 }
