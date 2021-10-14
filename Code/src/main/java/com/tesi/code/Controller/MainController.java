@@ -48,22 +48,16 @@ public class MainController {
     @FXML
     void load(ActionEvent event) throws IOException {
         GenericParser gp = GenericParser.getInstance();
-        if (loaded == true || txtTextArea.getText() != "") {
-            if (!(txtTextArea.getText().equalsIgnoreCase(""))) {
+        if (loaded || !txtTextArea.getText().equalsIgnoreCase("")) {
+            if (!txtTextArea.getText().equalsIgnoreCase(""))
                 gp.parsering(null, txtTextArea.getText());
-                if (gp.getType().equalsIgnoreCase(Utility.inProceedings))
-                    loadTypeBib(Utility.inProceedings);
-                else
-                    loadTypeBib(Utility.article);
-            } else {
+            else
                 gp.parsering(file, "");
-                System.out.println(gp.getAuthor());
-                if (gp.getType().equalsIgnoreCase(Utility.inProceedings))
-                    loadTypeBib(Utility.inProceedings);
-                else
-                    loadTypeBib(Utility.article);
-            }
-            System.out.println("u.article: " + Utility.article + " p.getType: " + gp.getType());
+
+            if (gp.getType().equalsIgnoreCase(Utility.inProceedings))
+                loadTypeBib(Utility.inProceedings);
+            else
+                loadTypeBib(Utility.article);
         }
     }
 
