@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.scene.control.Button?>
+<?import javafx.scene.control.CheckBox?>
 <?import javafx.scene.control.ChoiceBox?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.TableView?>
@@ -16,7 +17,7 @@
       <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#1f93ff00" height="171.0" layoutX="293.0" layoutY="49.0" stroke="BLACK" strokeType="INSIDE" width="303.0" />
       <ChoiceBox fx:id="cbChooseType" layoutX="217.0" layoutY="10.0" prefWidth="150.0" />
       <Label layoutX="91.0" layoutY="14.0" text="Choose type:" />
-      <Button fx:id="btnSave" layoutX="25.0" layoutY="492.0" mnemonicParsing="false" onAction="#saveSelectedArticle" prefHeight="17.0" prefWidth="136.0" text="Save">
+      <Button fx:id="btnSave" layoutX="28.0" layoutY="538.0" mnemonicParsing="false" onAction="#saveSelectedArticle" prefHeight="17.0" prefWidth="136.0" text="Save">
          <font>
             <Font size="16.0" />
          </font>
@@ -29,21 +30,22 @@
       <TextField fx:id="txtArticleTitle" layoutX="441.0" layoutY="61.0" />
       <Button fx:id="btnFilterByArticle" layoutX="416.0" layoutY="179.0" mnemonicParsing="false" onAction="#filterByArticle" text="Filter by article" />
       <TextField fx:id="txtArticleJournal" layoutX="441.0" layoutY="105.0" />
-      <ChoiceBox fx:id="cbArticleYear" layoutX="440.0" layoutY="144.0" prefWidth="150.0" />
+      <ChoiceBox fx:id="cbArticleYear" layoutX="348.0" layoutY="147.0" prefWidth="150.0" />
       <Label layoutX="367.0" layoutY="65.0" text="Title:" />
       <Label layoutX="367.0" layoutY="109.0" text="Journal:" />
-      <Label layoutX="367.0" layoutY="148.0" text="Year:" />
+      <Label layoutX="308.0" layoutY="151.0" text="Year:" />
       <Button fx:id="btnFilterByType" layoutX="436.0" layoutY="10.0" mnemonicParsing="false" onAction="#filterByType" text="Filter by type" />
-      <TableView fx:id="tblViewinProceedings" editable="true" layoutX="25.0" layoutY="243.0" prefHeight="237.0" prefWidth="269.0" />
+      <TableView fx:id="tblViewinProceedings" editable="true" layoutX="28.0" layoutY="289.0" prefHeight="237.0" prefWidth="269.0" />
       <Label layoutX="67.0" layoutY="77.0" text="Name" />
       <Label layoutX="52.0" layoutY="126.0" text="Surname" />
-      <Label layoutX="102.0" layoutY="226.0" text="inProceedings:" />
-      <TableView fx:id="tblViewArticle" editable="true" layoutX="305.0" layoutY="243.0" prefHeight="237.0" prefWidth="269.0" />
-      <Label layoutX="402.0" layoutY="226.0" text="Article:" />
-      <Button fx:id="btnAnotherBibtex" layoutX="422.0" layoutY="492.0" mnemonicParsing="false" onAction="#anotherBibtex" text="Add another bibtex">
+      <Label layoutX="105.0" layoutY="272.0" text="inProceedings:" />
+      <TableView fx:id="tblViewArticle" editable="true" layoutX="308.0" layoutY="289.0" prefHeight="237.0" prefWidth="269.0" />
+      <Label layoutX="405.0" layoutY="272.0" text="Article:" />
+      <Button fx:id="btnAnotherBibtex" layoutX="425.0" layoutY="538.0" mnemonicParsing="false" onAction="#anotherBibtex" text="Add another bibtex">
          <font>
             <Font size="16.0" />
          </font>
       </Button>
+      <CheckBox fx:id="cbFilterByYear" layoutX="498.0" layoutY="151.0" mnemonicParsing="false" text="Filter by year?" />
    </children>
 </Pane>

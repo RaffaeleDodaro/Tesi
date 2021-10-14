@@ -67,6 +67,9 @@ public class ExportController implements Initializable {
     @FXML
     private TableView<Article> tblViewArticle;
 
+    @FXML
+    private CheckBox cbFilterByYear;
+
     private final ArrayList<Article> savedArticle = new ArrayList<>();
     private final ArrayList<inProceedings> savedInProceedings = new ArrayList<>();
 
@@ -82,69 +85,284 @@ public class ExportController implements Initializable {
             String journal = txtArticleJournal.getText();
             int year = cbArticleYear.getValue();
 
-            db.openConnection(Utility.article);
-            db.findArticleByInfoArticleArticle(title, journal, year);
-            db.closeConnection();
+            if (cbChooseType.getValue().equalsIgnoreCase(Utility.all)) {
+                db.openConnection(Utility.article);
+                if (cbFilterByYear.isSelected()) {
+                    if (db.findArticleByInfoArticleArticle(title, journal, year))
+                        showArticles(db.getFilteredArticlesArticle());
 
-            db.openConnection(Utility.inProceedings);
-            db.findArticleByInfoArticleInProceedings(title, year);
-            db.closeConnection();
+                } else {
+                    if (db.findArticleByInfoArticleArticle(title, journal, -1))
+                        showArticles(db.getFilteredArticlesArticle());
+                }
+                db.closeConnection();
 
-            //prove per refiltering
-            showInProceedings(db.getFilteredArticlesInProceedings());
-            showArticles(db.getFilteredArticlesArticle());
+
+                db.openConnection(Utility.inProceedings);
+                if (cbFilterByYear.isSelected()) {
+                    if (db.findArticleByInfoArticleInProceedings(title, year))
+                        showInProceedings(db.getFilteredArticlesInProceedings());
+                }
+
+                else {
+                    if (db.findArticleByInfoArticleInProceedings(title, -1))
+                        showInProceedings(db.getFilteredArticlesInProceedings());
+                }
+                db.closeConnection();
+            }
+
+            else if (cbChooseType.getValue().equalsIgnoreCase(Utility.inProceedings)) {
+                db.openConnection(Utility.inProceedings);
+
+                if (cbFilterByYear.isSelected())
+                {
+                    if(!journal.equalsIgnoreCase("") &&
+                            title.equalsIgnoreCase("")){
+                        JOptionPane.showMessageDialog(null, "I search only for year. inproceedings files have no journals", "ERROR", JOptionPane.INFORMATION_MESSAGE);
+                        if (db.findArticleByInfoArticleInProceedings(title, year))
+                            showInProceedings(db.getFilteredArticlesInProceedings());
+                    }
+
+
+                    if(!journal.equalsIgnoreCase("") &&
+                            !title.equalsIgnoreCase("")){
+                        JOptionPane.showMessageDialog(null, "I search for year and for title. inproceedings files have no journals", "ERROR", JOptionPane.INFORMATION_MESSAGE);
+                        if (db.findArticleByInfoArticleInProceedings(title, year))
+                            showInProceedings(db.getFilteredArticlesInProceedings());
+                    }
+                }
+
+                else {
+                    if(!journal.equalsIgnoreCase("") && title.equalsIgnoreCase("")) {
+                        JOptionPane.showMessageDialog(null, "Insert title for search...", "ERROR", JOptionPane.INFORMATION_MESSAGE);
+                    }
+
+
+                    else if(!journal.equalsIgnoreCase("") && !title.equalsIgnoreCase("")) {
+                        JOptionPane.showMessageDialog(null, "I search for title. inproceedings files have no journals", "ERROR", JOptionPane.INFORMATION_MESSAGE);
+
+                        if (db.findArticleByInfoArticleInProceedings(title, -1))
+                            showInProceedings(db.getFilteredArticlesInProceedings());
+                    }
+
+                    else if(journal.equalsIgnoreCase("") && !title.equalsIgnoreCase("")) {
+                        if (db.findArticleByInfoArticleInProceedings(title, -1))
+                            showInProceedings(db.getFilteredArticlesInProceedings());
+                    }
+                }
+                db.closeConnection();
+            }
+
+            else if (cbChooseType.getValue().equalsIgnoreCase(Utility.article)) {
+                db.openConnection(Utility.article);
+                if (cbFilterByYear.isSelected()) {
+
+                    if(!title.equalsIgnoreCase("") && !journal.equalsIgnoreCase("")) {
+                        if (db.findArticleByInfoArticleArticle(title, journal, year))
+                            showArticles(db.getFilteredArticlesArticle());
+                    }
+
+                    else if(title.equalsIgnoreCase("") && journal.equalsIgnoreCase("")) {
+                        JOptionPane.showMessageDialog(null, "Insert title and journal", "ERROR", JOptionPane.INFORMATION_MESSAGE);
+                    }
+
+                    else if(title.equalsIgnoreCase("")) {
+                        if (db.findArticleByInfoArticleArticle(title, journal, year))
+                            showArticles(db.getFilteredArticlesArticle());
+                    }
+
+                    else if(journal.equalsIgnoreCase("")) {
+                        if (db.findArticleByInfoArticleArticle(title, journal, year))
+                            showArticles(db.getFilteredArticlesArticle());
+                    }
+
+                }
+
+                else {
+                    if(!title.equalsIgnoreCase("") && !journal.equalsIgnoreCase("")) {
+                        if (db.findArticleByInfoArticleArticle(title, journal, -1))
+                            showArticles(db.getFilteredArticlesArticle());
+                    }
+
+                    else if(title.equalsIgnoreCase("") && journal.equalsIgnoreCase("")) {
+                        JOptionPane.showMessageDialog(null, "Insert title and journal", "ERROR", JOptionPane.INFORMATION_MESSAGE);
+                    }
+
+                    else if(title.equalsIgnoreCase("")) {
+                        if (db.findArticleByInfoArticleArticle(title, journal, -1))
+                            showArticles(db.getFilteredArticlesArticle());
+                    }
+
+                    else if(journal.equalsIgnoreCase("")) {
+                        if (db.findArticleByInfoArticleArticle(title, journal, -1))
+                            showArticles(db.getFilteredArticlesArticle());
+                    }
+                }
+                db.closeConnection();
+            }
         } else {
-            if (cbChooseType.getValue().equalsIgnoreCase("all")) {
-
+            if (cbChooseType.getValue().equalsIgnoreCase(Utility.all)) {
                 ArrayList<Article> refilteringArticle = new ArrayList<>(tblViewArticle.getItems());
-
                 ArrayList<inProceedings> refilteringInProceedings = new ArrayList<>(tblViewinProceedings.getItems());
 
                 cleanTbl();
 
                 db.openConnection(Utility.inProceedings);
-                db.refilterByArticleInProceedings(refilteringInProceedings, txtArticleTitle.getText(), cbArticleYear.getValue());
-                showInProceedings(db.getFilteredArticlesInProceedings());
+                if (cbFilterByYear.isSelected()) {
+                    
+                    if(txtArticleTitle.getText().equalsIgnoreCase("")) {
+                        JOptionPane.showMessageDialog(null, "Insert title", "ERROR", JOptionPane.INFORMATION_MESSAGE);
+                    }
+
+                    else if(!txtArticleTitle.getText().equalsIgnoreCase("")) {
+                        if (db.refilterByArticleInProceedings(refilteringInProceedings, txtArticleTitle.getText(), cbArticleYear.getValue()))
+                            showInProceedings(db.getFilteredArticlesInProceedings());
+                    }
+                } 
+                else {
+                    if(txtArticleTitle.getText().equalsIgnoreCase("")) {
+                        JOptionPane.showMessageDialog(null, "Insert title", "ERROR", JOptionPane.INFORMATION_MESSAGE);
+                    }
+                    else if(!txtArticleTitle.getText().equalsIgnoreCase("")) {
+                        if (db.refilterByArticleInProceedings(refilteringInProceedings, txtArticleTitle.getText(), -1))
+                            showInProceedings(db.getFilteredArticlesInProceedings());
+                    }
+                }
                 db.closeConnection();
 
+                
+                
                 db.openConnection(Utility.article);
-                db.refilterByArticleArticle(refilteringArticle, txtArticleTitle.getText(), txtArticleJournal.getText(), cbArticleYear.getValue());
-                showArticles(db.getFilteredArticlesArticle());
-                db.closeConnection();
+                if (cbFilterByYear.isSelected()) {
 
-                /*System.out.println("RIGA 113: " + db.getFilteredArticlesArticle().size());
-                System.out.println("RIGA 114: " + db.getFilteredArticlesInProceedings().size());
-                System.out.println("Author: " + db.getFilteredArticlesInProceedings().get(0).getAllAuthorNameAndSurname());
-                System.out.println("Editor: " + db.getFilteredArticlesInProceedings().get(0).getAllEditorNameAndSurname());*/
-            } else if (cbChooseType.getValue().equalsIgnoreCase(Utility.article)) {
+                    if(txtArticleTitle.getText().equalsIgnoreCase("") && txtArticleJournal.getText().equalsIgnoreCase("")) {
+                        JOptionPane.showMessageDialog(null, "Insert title and journal", "ERROR", JOptionPane.INFORMATION_MESSAGE);
+                    }
+
+                    else if(!txtArticleTitle.getText().equalsIgnoreCase("") && txtArticleJournal.getText().equalsIgnoreCase("")) {
+                        if (db.refilterByArticleArticle(refilteringArticle, txtArticleTitle.getText(), "", cbArticleYear.getValue()))
+                            showArticles(db.getFilteredArticlesArticle());
+                    }
+
+                    else if(txtArticleTitle.getText().equalsIgnoreCase("") && !txtArticleJournal.getText().equalsIgnoreCase("")) {
+                        if (db.refilterByArticleArticle(refilteringArticle, "", txtArticleJournal.getText(), cbArticleYear.getValue()))
+                            showArticles(db.getFilteredArticlesArticle());
+                    }
+
+                    else if(!txtArticleTitle.getText().equalsIgnoreCase("") && !txtArticleJournal.getText().equalsIgnoreCase("")) {
+                        if (db.refilterByArticleArticle(refilteringArticle, txtArticleTitle.getText(), txtArticleJournal.getText(), cbArticleYear.getValue()))
+                            showArticles(db.getFilteredArticlesArticle());
+                    }
+                }                 
+                else {
+                    if(txtArticleTitle.getText().equalsIgnoreCase("") && txtArticleJournal.getText().equalsIgnoreCase("")) {
+                        JOptionPane.showMessageDialog(null, "Insert title and journal", "ERROR", JOptionPane.INFORMATION_MESSAGE);
+                    }
+
+                    else if(!txtArticleTitle.getText().equalsIgnoreCase("") && txtArticleJournal.getText().equalsIgnoreCase("")) {
+                        if (db.refilterByArticleArticle(refilteringArticle, txtArticleTitle.getText(), "", -1))
+                            showArticles(db.getFilteredArticlesArticle());
+                    }
+
+                    else if(txtArticleTitle.getText().equalsIgnoreCase("") && !txtArticleJournal.getText().equalsIgnoreCase("")) {
+                        if (db.refilterByArticleArticle(refilteringArticle, "", txtArticleJournal.getText(), -1))
+                            showArticles(db.getFilteredArticlesArticle());
+                    }
+
+                    else if(!txtArticleTitle.getText().equalsIgnoreCase("") && !txtArticleJournal.getText().equalsIgnoreCase("")) {
+                        if (db.refilterByArticleArticle(refilteringArticle, txtArticleTitle.getText(), txtArticleJournal.getText(), -1))
+                            showArticles(db.getFilteredArticlesArticle());
+                    }
+                }
+
+                db.closeConnection();
+            
+            } 
+            
+            else if (cbChooseType.getValue().equalsIgnoreCase(Utility.article)) {
+                
                 if (tblViewArticle.getItems().size() > 0) {
                     ArrayList<Article> refilteringArticle = new ArrayList<>(tblViewArticle.getItems());
+                    
                     cleanTbl();
 
                     db.openConnection(Utility.article);
-                    if (!db.refilterByArticleArticle(refilteringArticle, txtArticleTitle.getText(), txtArticleJournal.getText(), cbArticleYear.getValue())) {
-                        JOptionPane.showMessageDialog(null, "You have already filtered by year. You cannot filter for a different year. Filter by type", "ERROR", JOptionPane.INFORMATION_MESSAGE);
-                        showArticles(refilteringArticle);
-                    } else
-                        showArticles(db.getFilteredArticlesArticle());
+                    
+                    if (cbFilterByYear.isSelected()) {
+                        if(txtArticleTitle.getText().equalsIgnoreCase("") && txtArticleJournal.getText().equalsIgnoreCase("")) {
+                            JOptionPane.showMessageDialog(null, "Insert title and journal", "ERROR", JOptionPane.INFORMATION_MESSAGE);
+                        }
 
-                    db.closeConnection();
+                        else if(!txtArticleTitle.getText().equalsIgnoreCase("") && txtArticleJournal.getText().equalsIgnoreCase("")) {
+                            if (db.refilterByArticleArticle(refilteringArticle, txtArticleTitle.getText(), "", cbArticleYear.getValue()))
+                                showArticles(db.getFilteredArticlesArticle());
+                        }
+
+                        else if(txtArticleTitle.getText().equalsIgnoreCase("") && !txtArticleJournal.getText().equalsIgnoreCase("")) {
+                            if (db.refilterByArticleArticle(refilteringArticle, "", txtArticleJournal.getText(), cbArticleYear.getValue()))
+                                showArticles(db.getFilteredArticlesArticle());
+                        }
+
+                        else if(!txtArticleTitle.getText().equalsIgnoreCase("") && !txtArticleJournal.getText().equalsIgnoreCase("")) {
+                            if (db.refilterByArticleArticle(refilteringArticle, txtArticleTitle.getText(), txtArticleJournal.getText(), cbArticleYear.getValue()))
+                                showArticles(db.getFilteredArticlesArticle());
+                        }
+                    } 
+                    
+                    else {
+                        if(txtArticleTitle.getText().equalsIgnoreCase("") && txtArticleJournal.getText().equalsIgnoreCase("")) {
+                            JOptionPane.showMessageDialog(null, "Insert title and journal", "ERROR", JOptionPane.INFORMATION_MESSAGE);
+                        }
+
+                        else if(!txtArticleTitle.getText().equalsIgnoreCase("") && txtArticleJournal.getText().equalsIgnoreCase("")) {
+                            if (db.refilterByArticleArticle(refilteringArticle, txtArticleTitle.getText(), "", -1))
+                                showArticles(db.getFilteredArticlesArticle());
+                        }
+
+                        else if(txtArticleTitle.getText().equalsIgnoreCase("") && !txtArticleJournal.getText().equalsIgnoreCase("")) {
+                            if (db.refilterByArticleArticle(refilteringArticle, "", txtArticleJournal.getText(), -1))
+                                showArticles(db.getFilteredArticlesArticle());
+                        }
+
+                        else if(!txtArticleTitle.getText().equalsIgnoreCase("") && !txtArticleJournal.getText().equalsIgnoreCase("")) {
+                            if (db.refilterByArticleArticle(refilteringArticle, txtArticleTitle.getText(), txtArticleJournal.getText(), -1))
+                                showArticles(db.getFilteredArticlesArticle());
+                        }
+                    }
                 }
+                db.closeConnection();
+
             } else if (cbChooseType.getValue().equalsIgnoreCase(Utility.inProceedings)) {
+                
                 if (tblViewinProceedings.getItems().size() > 0) {
+
                     ArrayList<inProceedings> refilteringInProceedings = new ArrayList<>(tblViewinProceedings.getItems());
-                    cleanTbl();
-
-                    for (inProceedings i : refilteringInProceedings)
-                        System.out.println(i.getDblp());
-
+                    
                     db.openConnection(Utility.inProceedings);
-                    if (!db.refilterByArticleInProceedings(refilteringInProceedings, txtArticleTitle.getText(), cbArticleYear.getValue())) {
-                        JOptionPane.showMessageDialog(null, "You have already filtered by year. You cannot filter for a different year. Filter by type", "ERROR", JOptionPane.INFORMATION_MESSAGE);
-                        showInProceedings(refilteringInProceedings);
-                    } else
-                        showInProceedings(db.getFilteredArticlesInProceedings());
+                    
+                    cleanTbl();
+                    
+                    if (cbFilterByYear.isSelected()) {
+                        if(!txtArticleJournal.getText().equalsIgnoreCase("") && txtArticleTitle.getText().equalsIgnoreCase("")) {
+                            JOptionPane.showMessageDialog(null, "I search only for year. inproceedings files have no journals", "ERROR", JOptionPane.INFORMATION_MESSAGE);
+                        }
 
+                        else if(!txtArticleJournal.getText().equalsIgnoreCase("") && !txtArticleTitle.getText().equalsIgnoreCase("")) {
+                            if (db.refilterByArticleInProceedings(refilteringInProceedings, txtArticleTitle.getText(), cbArticleYear.getValue()))
+                                showInProceedings(db.getFilteredArticlesInProceedings());
+                        }
+                    } 
+                    
+                    else { //se non ho spuntato l'anno
+                        if(txtArticleTitle.getText().equalsIgnoreCase("")) {
+                            JOptionPane.showMessageDialog(null, "Insert title or check year", "ERROR", JOptionPane.INFORMATION_MESSAGE);
+                        }
+                        else if(!txtArticleTitle.getText().equalsIgnoreCase("")) {
+                            if (db.refilterByArticleInProceedings(refilteringInProceedings, txtArticleTitle.getText(), -1))
+                                showInProceedings(db.getFilteredArticlesInProceedings());
+                        }
+                    }
+                    
                     db.closeConnection();
                 }
             }
@@ -156,16 +374,21 @@ public class ExportController implements Initializable {
         Database db = Database.getInstance();
         if (tblViewinProceedings.getItems().size() == 0 && tblViewArticle.getItems().size() == 0) {
             db.cleanAll();
-            cleanTbl();
+
             if (cbChooseType.getValue().equalsIgnoreCase(Utility.inProceedings)) {
                 db.openConnection(Utility.inProceedings);
                 db.findArticleByAuthorName(txtAuthorSurname.getText(), txtAuthorName.getText(), Utility.inProceedings);
                 db.closeConnection();
-            } else if (cbChooseType.getValue().equalsIgnoreCase(Utility.article)) {
+            }
+
+            else if (cbChooseType.getValue().equalsIgnoreCase(Utility.article)) {
                 db.openConnection(Utility.article);
                 db.findArticleByAuthorName(txtAuthorSurname.getText(), txtAuthorName.getText(), Utility.article);
                 db.closeConnection();
-            } else if (cbChooseType.getValue().equalsIgnoreCase("all")) {
+            }
+
+            else if (cbChooseType.getValue().equalsIgnoreCase(Utility.all)) {
+
                 db.openConnection(Utility.article);
                 db.findArticleByAuthorName(txtAuthorSurname.getText(), txtAuthorName.getText(), Utility.article);
                 db.closeConnection();
@@ -173,34 +396,36 @@ public class ExportController implements Initializable {
                 db.openConnection(Utility.inProceedings);
                 db.findArticleByAuthorName(txtAuthorSurname.getText(), txtAuthorName.getText(), Utility.inProceedings);
                 db.closeConnection();
-            }
-            showInProceedings(db.getFilteredArticlesInProceedings());
-            showArticles(db.getFilteredArticlesArticle());
-        }
-//        prove per refiltering
-        else {
 
-            if (cbChooseType.getValue().equalsIgnoreCase(Utility.inProceedings) || cbChooseType.getValue().equalsIgnoreCase("all")
-                    && tblViewinProceedings.getItems().size() > 0) {
-                ArrayList<inProceedings> refilteringInProceedings = new ArrayList<>(tblViewinProceedings.getItems());
-                db.openConnection(Utility.inProceedings);
-                db.refilterByAuthorInProceedings(refilteringInProceedings, txtAuthorSurname.getText(), txtAuthorName.getText());
-                db.closeConnection();
-                //cleanTbl();
-//                showInProceedings(db.getFilteredArticlesInProceedings());
             }
-            if (cbChooseType.getValue().equalsIgnoreCase(Utility.article) || cbChooseType.getValue().equalsIgnoreCase("all")
-                    && tblViewArticle.getItems().size() > 0) {
-                ArrayList<Article> refilteringArticle = new ArrayList<>(tblViewArticle.getItems());
-                db.openConnection(Utility.article);
-                db.refilterByAuthorArticle(refilteringArticle, txtAuthorSurname.getText(), txtAuthorName.getText());
-                db.closeConnection();
-//                cleanTbl();
-//                showArticles(db.getFilteredArticlesArticle());
-            }
+
             cleanTbl();
             showInProceedings(db.getFilteredArticlesInProceedings());
             showArticles(db.getFilteredArticlesArticle());
+        }
+        else { //se almeno una delle 2 tbl e' piena
+
+            if ((cbChooseType.getValue().equalsIgnoreCase(Utility.inProceedings) || cbChooseType.getValue().equalsIgnoreCase(Utility.all))
+                    && tblViewinProceedings.getItems().size() > 0) {
+
+                db.openConnection(Utility.inProceedings);
+                db.refilterByAuthorInProceedings(new ArrayList<inProceedings>(tblViewinProceedings.getItems()), txtAuthorSurname.getText(), txtAuthorName.getText());
+                db.closeConnection();
+
+            }
+
+            if ((cbChooseType.getValue().equalsIgnoreCase(Utility.article) || cbChooseType.getValue().equalsIgnoreCase(Utility.all))
+                    && tblViewArticle.getItems().size() > 0) {
+
+                db.openConnection(Utility.article);
+                db.refilterByAuthorArticle(new ArrayList<Article>(tblViewArticle.getItems()), txtAuthorSurname.getText(), txtAuthorName.getText());
+                db.closeConnection();
+
+            }
+            
+            cleanTbl();
+            showArticles(db.getFilteredArticlesArticle());
+            showInProceedings(db.getFilteredArticlesInProceedings());
         }
     }
 
@@ -218,7 +443,7 @@ public class ExportController implements Initializable {
             db.openConnection(Utility.article);
             db.filterByTypeArticle();
             showArticles(db.getFilteredArticlesArticle());
-        } else if (cbChooseType.getValue().equalsIgnoreCase("all")) {
+        } else if (cbChooseType.getValue().equalsIgnoreCase(Utility.all)) {
             db.openConnection(Utility.inProceedings);
             db.filterByTypeInProceedings();
             showInProceedings(db.getFilteredArticlesInProceedings());
@@ -256,8 +481,8 @@ public class ExportController implements Initializable {
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-        cbChooseType.setValue("ALL");
-        cbChooseType.getItems().add("ALL");
+        cbChooseType.setValue(Utility.all);
+        cbChooseType.getItems().add(Utility.all);
         cbChooseType.getItems().add(Utility.inProceedings);
         cbChooseType.getItems().add(Utility.article);
 
@@ -494,9 +719,9 @@ public class ExportController implements Initializable {
             String type = article.getType();
             ArrayList<Author> allAuthors = article.getAllAuthors();
             System.out.println("size exportcontroller savearticle: " + allAuthors.size());
-            bOut.append("year: " + year + "\npages: " + pages + "\ndblp: " + dblp + "\ntitle: " + title + "\nvolume: "
-                    + volume + "\nShort title: " + shortTitle + "\nurl: " + url + "\ndoi: " + doi + "\njournal: "
-                    + journal + "\ntype: " + type);
+            bOut.append("Year: " + year + "\nPages: " + pages + "\nDblp: " + dblp + "\nTitle: " + title + "\nVolume: "
+                    + volume + "\nShort title: " + shortTitle + "\nUrl: " + url + "\nDoi: " + doi + "\nJournal: "
+                    + journal + "\nType: " + type);
             for (int j = 0; j < allAuthors.size(); j++) {
                 bOut.append("\nAutore " + j + ": " + allAuthors.get(j).getName() + " "
                         + allAuthors.get(j).getSurname());
@@ -526,9 +751,9 @@ public class ExportController implements Initializable {
                 ArrayList<Editor> allEditor = ((inProceedings) savedInProceeding).getAllEditors();
                 // BooleanProperty check = tblViewinProceedings.getItems().get(i).isCheck();
                 ArrayList<Author> allAuthors = savedInProceeding.getAllAuthors();
-                printWriter.append("year: " + year + "\npages: " + pages + "\ndblp: " + dblp + "\ntitle: " + title
-                        + "\nvolume: " + volume + "\nShort title: " + shortTitle + "\nurl: " + url + "\ndoi: " + doi
-                        + "\npublisher" + publisher + "\ntype: " + type + "\nseries: " + series + "\naddress: "
+                printWriter.append("Year: " + year + "\nPages: " + pages + "\nDblp: " + dblp + "\nTitle: " + title
+                        + "\nVolume: " + volume + "\nShort title: " + shortTitle + "\nUrl: " + url + "\nDoi: " + doi
+                        + "\nPublisher: " + publisher + "\nType: " + type + "\nSeries: " + series + "\nAddress: "
                         + address + "\nbook title: " + booktitle);
                 for (int j = 0; j < allAuthors.size(); j++) {
                     printWriter.append("\nAutore " + j + ": " + allAuthors.get(j).getName() + " "

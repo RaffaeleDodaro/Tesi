@@ -259,7 +259,7 @@ public class Database {
             String oldDblp = "";
             if (!surname.equalsIgnoreCase("") && !name.equalsIgnoreCase("")) {
                 stmt = c.prepareStatement("SELECT * FROM ARTICLE,AUTHOR,WRITTENBY " +
-                        "WHERE UPPER(AUTHOR.NAME)UPPER(?)" +
+                        "WHERE UPPER(AUTHOR.NAME) LIKE UPPER(?)" +
                         " AND UPPER(AUTHOR.SURNAME) LIKE UPPER(?) " +
                         " AND WRITTENBY.DBLP==ARTICLE.DBLP" +
                         " AND AUTHOR.ID==WRITTENBY.IDAUTHOR" +
@@ -313,7 +313,7 @@ public class Database {
                         readingAuthorInProceedings(dblp, authors);
                         readingEditorInProceedings(dblp, editors);
                         filteredArticlesInProceedings.add(new inProceedings(Utility.inProceedings, year, pages, dblp, title, volume, shortTitle, url, bookTitle, doi, authors, publisher, series, address, editors));
-                    } else if (type.equalsIgnoreCase(Utility.article)){
+                    } else if (type.equalsIgnoreCase(Utility.article)) {
                         authors = new ArrayList<>();
                         readingAuthorArticle(dblp, authors);
                         String journal = rs.getString("JOURNAL");
@@ -632,42 +632,64 @@ public class Database {
         return -1;
     }
 
-    public void findArticleByInfoArticleArticle(String title, String journal, int year) {
+    public boolean findArticleByInfoArticleArticle(String title, String journal, int year) {
         try {
             if (c == null || c.isClosed())
-                return;
+                return false;
 
             PreparedStatement stmt = null;
 
             String oldDblp = "";
+            if (title.equalsIgnoreCase("") && journal.equalsIgnoreCase("") && year == -1) {
+                JOptionPane.showMessageDialog(null, "Check year or insert title or insert journal", "ERROR", JOptionPane.INFORMATION_MESSAGE);
+                return false;
+            }
             if (!title.equalsIgnoreCase("") && !journal.equalsIgnoreCase("")) {
                 System.out.println("RIGA 623 !title and !journal");
-                stmt = c.prepareStatement("SELECT * FROM ARTICLE,AUTHOR" +
-                        " WHERE UPPER(ARTICLE.TITLE) LIKE UPPER(?)" +
-                        " AND UPPER(ARTICLE.JOURNAL) LIKE UPPER(?)" +
-                        " AND ARTICLE.YEAR==(?)" +
-                        " GROUP BY ARTICLE.DBLP" +
-                        " ORDER BY ARTICLE.DBLP;");
-
+                if (year != -1) {
+                    stmt = c.prepareStatement("SELECT * FROM ARTICLE,AUTHOR" +
+                            " WHERE UPPER(ARTICLE.TITLE) LIKE UPPER(?)" +
+                            " AND UPPER(ARTICLE.JOURNAL) LIKE UPPER(?)" +
+                            " AND ARTICLE.YEAR==(?)" +
+                            " GROUP BY ARTICLE.DBLP" +
+                            " ORDER BY ARTICLE.DBLP;");
+                    stmt.setInt(3, year);
+                } else
+                    stmt = c.prepareStatement("SELECT * FROM ARTICLE,AUTHOR" +
+                            " WHERE UPPER(ARTICLE.TITLE) LIKE UPPER(?)" +
+                            " AND UPPER(ARTICLE.JOURNAL) LIKE UPPER(?)" +
+                            " GROUP BY ARTICLE.DBLP" +
+                            " ORDER BY ARTICLE.DBLP;");
                 stmt.setString(1, "%" + title + "%");
                 stmt.setString(2, "%" + journal + "%");
-                stmt.setInt(3, year);
             } else if (title.equalsIgnoreCase("")) {
-                stmt = c.prepareStatement("SELECT * FROM ARTICLE,AUTHOR" +
-                        " WHERE UPPER(ARTICLE.JOURNAL) LIKE UPPER(?)" +
-                        " AND ARTICLE.YEAR==(?)" +
-                        " GROUP BY ARTICLE.DBLP " +
-                        " ORDER BY ARTICLE.DBLP;");
+                if (year != -1) {
+                    stmt = c.prepareStatement("SELECT * FROM ARTICLE,AUTHOR" +
+                            " WHERE UPPER(ARTICLE.JOURNAL) LIKE UPPER(?)" +
+                            " AND ARTICLE.YEAR==(?)" +
+                            " GROUP BY ARTICLE.DBLP " +
+                            " ORDER BY ARTICLE.DBLP;");
+                    stmt.setInt(2, year);
+                } else
+                    stmt = c.prepareStatement("SELECT * FROM ARTICLE,AUTHOR" +
+                            " WHERE UPPER(ARTICLE.JOURNAL) LIKE UPPER(?)" +
+                            " GROUP BY ARTICLE.DBLP " +
+                            " ORDER BY ARTICLE.DBLP;");
                 stmt.setString(1, "%" + journal + "%");
-                stmt.setInt(2, year);
             } else if (journal.equalsIgnoreCase("")) {
-                stmt = c.prepareStatement("SELECT * FROM ARTICLE,AUTHOR " +
-                        "WHERE UPPER(ARTICLE.TITLE) LIKE UPPER(?) " +
-                        " AND ARTICLE.YEAR==(?)" +
-                        " GROUP BY ARTICLE.DBLP" +
-                        " ORDER BY ARTICLE.DBLP;");
+                if (year != -1) {
+                    stmt = c.prepareStatement("SELECT * FROM ARTICLE,AUTHOR " +
+                            "WHERE UPPER(ARTICLE.TITLE) LIKE UPPER(?) " +
+                            " AND ARTICLE.YEAR==(?)" +
+                            " GROUP BY ARTICLE.DBLP" +
+                            " ORDER BY ARTICLE.DBLP;");
+                    stmt.setInt(2, year);
+                } else
+                    stmt = c.prepareStatement("SELECT * FROM ARTICLE,AUTHOR " +
+                            "WHERE UPPER(ARTICLE.TITLE) LIKE UPPER(?) " +
+                            " GROUP BY ARTICLE.DBLP" +
+                            " ORDER BY ARTICLE.DBLP;");
                 stmt.setString(1, "%" + title + "%");
-                stmt.setInt(2, year);
             }
 
             ResultSet rs = stmt.executeQuery();
@@ -694,32 +716,44 @@ public class Database {
         } catch (Exception e) {
             e.printStackTrace();
         }
+        return true;
     }
 
-    public void findArticleByInfoArticleInProceedings(String title, int year) {
+    public boolean findArticleByInfoArticleInProceedings(String title, int year) {
         try {
             if (c == null || c.isClosed())
-                return;
+                return false;
 
             PreparedStatement stmt = null;
 
             String oldDblp = "";
             if (!title.equalsIgnoreCase("")) {
                 System.out.println("!title");
-                stmt = c.prepareStatement("SELECT * FROM ARTICLE,AUTHOR " +
-                        "WHERE UPPER(ARTICLE.TITLE) LIKE UPPER(?) AND ARTICLE.YEAR==(?)" +
-                        "GROUP BY ARTICLE.DBLP " +
-                        "ORDER BY ARTICLE.DBLP;");
-
+                if (year != -1) {
+                    stmt = c.prepareStatement("SELECT * FROM ARTICLE,AUTHOR " +
+                            "WHERE UPPER(ARTICLE.TITLE) LIKE UPPER(?)" +
+                            " AND ARTICLE.YEAR==(?)" +
+                            "GROUP BY ARTICLE.DBLP " +
+                            "ORDER BY ARTICLE.DBLP;");
+                    stmt.setInt(2, year);
+                } else
+                    stmt = c.prepareStatement("SELECT * FROM ARTICLE,AUTHOR " +
+                            "WHERE UPPER(ARTICLE.TITLE) LIKE UPPER(?)" +
+                            "GROUP BY ARTICLE.DBLP " +
+                            "ORDER BY ARTICLE.DBLP;");
                 stmt.setString(1, "%" + title + "%");
-                stmt.setInt(2, year);
             } else {
                 System.out.println("TITLE");
-                stmt = c.prepareStatement("SELECT * FROM ARTICLE,AUTHOR " +
-                        "WHERE ARTICLE.YEAR==(?) " +
-                        "GROUP BY ARTICLE.DBLP " +
-                        "ORDER BY ARTICLE.DBLP;");
-                stmt.setInt(1, year);
+                if (year != -1) {
+                    stmt = c.prepareStatement("SELECT * FROM ARTICLE,AUTHOR " +
+                            "WHERE ARTICLE.YEAR==(?) " +
+                            "GROUP BY ARTICLE.DBLP " +
+                            "ORDER BY ARTICLE.DBLP;");
+                    stmt.setInt(1, year);
+                } else {
+                    JOptionPane.showMessageDialog(null, "Check year or insert title", "ERROR", JOptionPane.INFORMATION_MESSAGE);
+                    return false;
+                }
             }
 
             ResultSet rs = stmt.executeQuery();
@@ -749,9 +783,11 @@ public class Database {
                 oldDblp = dblp;
             }
             stmt.close();
+
         } catch (Exception e) {
             e.printStackTrace();
         }
+        return true;
     }
 
     public ArrayList<Author> getAuthors() {
@@ -794,8 +830,8 @@ public class Database {
                             " ORDER BY ARTICLE.DBLP;");
 
                     stmt.setString(1, a.getDblp());
-                    stmt.setString(2, "%"+surname+"%");
-                    stmt.setString(3, "%"+name+"%");
+                    stmt.setString(2, "%" + surname + "%");
+                    stmt.setString(3, "%" + name + "%");
                 } else if (surname.equalsIgnoreCase("")) {
                     System.out.println("riga 800 ");
                     stmt = c.prepareStatement("SELECT * FROM ARTICLE,AUTHOR,WRITTENBY" +
@@ -807,7 +843,7 @@ public class Database {
                             " ORDER BY ARTICLE.DBLP;");
 
                     stmt.setString(1, a.getDblp());
-                    stmt.setString(2, "%" + name+"%");
+                    stmt.setString(2, "%" + name + "%");
                 } else if (name.equalsIgnoreCase("")) {
                     System.out.println("riga 812 ");
                     stmt = c.prepareStatement("SELECT * FROM ARTICLE,AUTHOR,WRITTENBY" +
@@ -819,7 +855,7 @@ public class Database {
                             " ORDER BY ARTICLE.DBLP;");
 
                     stmt.setString(1, a.getDblp());
-                    stmt.setString(2, "%"+surname+"%");
+                    stmt.setString(2, "%" + surname + "%");
                 }
                 ResultSet rs = stmt.executeQuery();
                 while (rs.next()) {
@@ -846,7 +882,7 @@ public class Database {
             filteredArticlesInProceedings.clear();
             //filteredArticlesArticle.clear();
 
-            System.out.println("CIAO 0: ");
+            System.out.println("CIAO 0: " + refiltering.size());
             for (inProceedings a : refiltering) {
                 if (!surname.equalsIgnoreCase("") && !name.equalsIgnoreCase("")) {
                     stmt = c.prepareStatement("SELECT * FROM ARTICLE,AUTHOR,WRITTENBY" +
@@ -863,7 +899,7 @@ public class Database {
                     stmt.setString(3, "%" + name + "%");
                 } else if (surname.equalsIgnoreCase("")) {
                     stmt = c.prepareStatement("SELECT * FROM ARTICLE,AUTHOR,WRITTENBY" +
-                            " WHERE UPPER(ARTICLE.DBLP)==(?)" +
+                            " WHERE ARTICLE.DBLP==(?)" +
                             " AND UPPER(AUTHOR.NAME) LIKE UPPER(?)" +
                             " AND WRITTENBY.DBLP==ARTICLE.DBLP" +
                             " AND WRITTENBY.IDAUTHOR==AUTHOR.ID" +
@@ -872,9 +908,10 @@ public class Database {
 
                     stmt.setString(1, a.getDblp());
                     stmt.setString(2, "%" + name + "%");
+
                 } else if (name.equalsIgnoreCase("")) {
                     stmt = c.prepareStatement("SELECT * FROM ARTICLE,AUTHOR,WRITTENBY" +
-                            " WHERE UPPER(ARTICLE.DBLP)==(?)" +
+                            " WHERE ARTICLE.DBLP==(?)" +
                             " AND UPPER(AUTHOR.SURNAME) LIKE UPPER(?)" +
                             " AND WRITTENBY.DBLP==ARTICLE.DBLP" +
                             " AND WRITTENBY.IDAUTHOR==AUTHOR.ID" +
@@ -911,42 +948,67 @@ public class Database {
             String oldDblp = "";
 //            filteredArticlesInProceedings.clear();
             filteredArticlesArticle.clear();
+
+            if (title.equalsIgnoreCase("") && journal.equalsIgnoreCase("") && year == -1) {
+                JOptionPane.showMessageDialog(null, "Check year or insert title or insert journal", "ERROR", JOptionPane.INFORMATION_MESSAGE);
+                return false;
+            }
+
             for (Article a : refiltering) {
                 if (!title.equalsIgnoreCase("") && !journal.equalsIgnoreCase("")) {
                     System.out.println("RIGA 899 " + a.getDblp());
-                    stmt = c.prepareStatement("SELECT * FROM ARTICLE,AUTHOR,WRITTENBY" +
+                    if (year != -1) {
+                        stmt = c.prepareStatement("SELECT * FROM ARTICLE,AUTHOR,WRITTENBY" +
+                                " WHERE ARTICLE.DBLP==(?)" +
+                                " AND UPPER(ARTICLE.TITLE) LIKE UPPER(?)" +
+                                " AND UPPER(ARTICLE.JOURNAL) LIKE UPPER(?)" +
+                                " AND ARTICLE.YEAR==(?)" +
+                                " GROUP BY ARTICLE.DBLP" +
+                                " ORDER BY ARTICLE.DBLP;");
+                        stmt.setInt(4, year);
+                    } else stmt = c.prepareStatement("SELECT * FROM ARTICLE,AUTHOR,WRITTENBY" +
                             " WHERE ARTICLE.DBLP==(?)" +
                             " AND UPPER(ARTICLE.TITLE) LIKE UPPER(?)" +
                             " AND UPPER(ARTICLE.JOURNAL) LIKE UPPER(?)" +
-                            " AND ARTICLE.YEAR==(?)" +
                             " GROUP BY ARTICLE.DBLP" +
                             " ORDER BY ARTICLE.DBLP;");
-
                     stmt.setString(1, a.getDblp());
                     stmt.setString(2, "%" + title + "%");
                     stmt.setString(3, "%" + journal + "%");
                     stmt.setInt(4, year);
                 } else if (journal.equalsIgnoreCase("")) {
-                    stmt = c.prepareStatement("SELECT * FROM ARTICLE,AUTHOR,WRITTENBY" +
-                            " WHERE UPPER(ARTICLE.TITLE) LIKE UPPER(?) " +
-                            " AND ARTICLE.DBLP==(?)" +
-                            " AND ARTICLE.YEAR==(?)" +
-                            " GROUP BY ARTICLE.DBLP" +
-                            " ORDER BY ARTICLE.DBLP;");
+                    if (year != -1) {
+                        stmt = c.prepareStatement("SELECT * FROM ARTICLE,AUTHOR,WRITTENBY" +
+                                " WHERE UPPER(ARTICLE.TITLE) LIKE UPPER(?) " +
+                                " AND ARTICLE.DBLP==(?)" +
+                                " AND ARTICLE.YEAR==(?)" +
+                                " GROUP BY ARTICLE.DBLP" +
+                                " ORDER BY ARTICLE.DBLP;");
+                        stmt.setInt(3, year);
+                    } else
+                        stmt = c.prepareStatement("SELECT * FROM ARTICLE,AUTHOR,WRITTENBY" +
+                                " WHERE UPPER(ARTICLE.TITLE) LIKE UPPER(?) " +
+                                " AND ARTICLE.DBLP==(?)" +
+                                " GROUP BY ARTICLE.DBLP" +
+                                " ORDER BY ARTICLE.DBLP;");
                     stmt.setString(1, "%" + title + "%");
                     stmt.setString(2, a.getDblp());
-                    stmt.setInt(3, year);
                 } else if (title.equalsIgnoreCase("")) {
-                    stmt = c.prepareStatement("SELECT * FROM ARTICLE,AUTHOR" +
+                    if (year != -1) {
+                        stmt = c.prepareStatement("SELECT * FROM ARTICLE,AUTHOR" +
+                                " WHERE UPPER(ARTICLE.JOURNAL) LIKE UPPER(?)" +
+                                " AND ARTICLE.DBLP==(?)" +
+                                " AND ARTICLE.YEAR==(?)" +
+                                " GROUP BY ARTICLE.DBLP " +
+                                " ORDER BY ARTICLE.DBLP;");
+                        stmt.setInt(3, year);
+                    } else stmt = c.prepareStatement("SELECT * FROM ARTICLE,AUTHOR" +
                             " WHERE UPPER(ARTICLE.JOURNAL) LIKE UPPER(?)" +
                             " AND ARTICLE.DBLP==(?)" +
-                            " AND ARTICLE.YEAR==(?)" +
                             " GROUP BY ARTICLE.DBLP " +
                             " ORDER BY ARTICLE.DBLP;");
-
                     stmt.setString(1, "%" + journal + "%");
                     stmt.setString(2, a.getDblp());
-                    stmt.setInt(3, year);
                 }
 
                 ResultSet rs = stmt.executeQuery();
@@ -971,33 +1033,49 @@ public class Database {
         try {
             if (c == null || c.isClosed())
                 return false;
+            if (title.equalsIgnoreCase("") && year == -1) {
+                JOptionPane.showMessageDialog(null, "Check year or insert title", "ERROR", JOptionPane.INFORMATION_MESSAGE);
+                return false;
+            }
             filteredArticlesInProceedings.clear();
             PreparedStatement stmt = null;
 
             String oldDblp = "";
             System.out.println("RIGA 962: " + refiltering.size());
+
             for (inProceedings a : refiltering) {
                 System.out.println("DATABASE RIGA 964");
                 if (!title.equalsIgnoreCase("")) {
-                    stmt = c.prepareStatement("SELECT * FROM ARTICLE,AUTHOR,WRITTENBY" +
+                    if (year != -1) {
+                        stmt = c.prepareStatement("SELECT * FROM ARTICLE,AUTHOR,WRITTENBY" +
+                                " WHERE ARTICLE.DBLP==(?)" +
+                                " AND UPPER(ARTICLE.TITLE) LIKE UPPER(?)" +
+                                " AND ARTICLE.YEAR==(?)" +
+                                " GROUP BY ARTICLE.DBLP" +
+                                " ORDER BY ARTICLE.DBLP;");
+                        stmt.setInt(3, year);
+                    } else stmt = c.prepareStatement("SELECT * FROM ARTICLE,AUTHOR,WRITTENBY" +
                             " WHERE ARTICLE.DBLP==(?)" +
                             " AND UPPER(ARTICLE.TITLE) LIKE UPPER(?)" +
-                            " AND ARTICLE.YEAR==(?)" +
                             " GROUP BY ARTICLE.DBLP" +
                             " ORDER BY ARTICLE.DBLP;");
-
                     stmt.setString(1, a.getDblp());
                     stmt.setString(2, "%" + title + "%");
-                    stmt.setInt(3, year);
                 } else {
                     System.out.println("DATABASE RIGA 977");
-                    stmt = c.prepareStatement("SELECT * FROM ARTICLE,AUTHOR " +
-                            " WHERE ARTICLE.YEAR==(?)" +
-                            " AND ARTICLE.DBLP==(?)" +
-                            " GROUP BY ARTICLE.DBLP" +
-                            " ORDER BY ARTICLE.DBLP;");
-                    stmt.setInt(1, year);
-                    stmt.setString(2, a.getDblp());
+                    if (year != -1) {
+                        stmt = c.prepareStatement("SELECT * FROM ARTICLE,AUTHOR " +
+                                " WHERE ARTICLE.DBLP==(?)" +
+                                " AND  ARTICLE.YEAR==(?)" +
+                                " GROUP BY ARTICLE.DBLP" +
+                                " ORDER BY ARTICLE.DBLP;");
+                        stmt.setInt(2, year);
+                    } else {
+                        JOptionPane.showMessageDialog(null, "Check year or insert title", "ERROR", JOptionPane.INFORMATION_MESSAGE);
+                        return false;
+                    }
+
+                    stmt.setString(1, a.getDblp());
                     System.out.println("RIGA 985: " + a.getDblp());
                 }
                 ResultSet rs = stmt.executeQuery();
