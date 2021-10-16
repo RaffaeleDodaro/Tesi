@@ -109,8 +109,8 @@ public class inProceedingsController implements Initializable {
 
         txtBookTitle.setText(gp.getBooktitle());
         txtTitle.setText(gp.getTitle());
-        txtShortTitle.setText(gp.getTitle());
-        txtAddress.setText("");
+        txtShortTitle.setText(gp.getBooktitle());
+        txtAddress.setText(gp.getBooktitle());
         Database db = Database.getInstance();
         db.getAuthors().clear();
         db.getEditors().clear();

@@ -96,7 +96,7 @@ public class ArticleController implements Initializable {
 
         txtJournal.setText(gp.getJournal());
         txtTitle.setText(gp.getTitle());
-        txtShortTitle.setText(gp.getTitle());
+        txtShortTitle.setText(gp.getJournal());
         Database db = Database.getInstance();
         db.getAuthors().clear();
         db.calculateAuthor(gp.getAuthor());
