@@ -23,4 +23,5 @@ public class Utility {
     public static final String address = "Address";
     public static final String booktitle = "BookTitle";
     public static final String publisher = "Publisher";
+    public static final String all="all";
 }

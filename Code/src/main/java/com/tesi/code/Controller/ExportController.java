@@ -21,9 +21,11 @@ import javafx.scene.layout.Pane;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 
+import javax.swing.*;
 import java.io.*;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Locale;
 import java.util.ResourceBundle;
 
 public class ExportController implements Initializable {
@@ -61,92 +63,143 @@ public class ExportController implements Initializable {
     private Button btnAnotherBibtex;
 
     @FXML
-    private TableView<Article> tblViewinProceedings;
+    private TableView<inProceedings> tblViewinProceedings;
 
     @FXML
     private TableView<Article> tblViewArticle;
+
+    @FXML
+    private CheckBox cbFilterByYear;
+
+    @FXML
+    private Button btnFilter;
 
     private final ArrayList<Article> savedArticle = new ArrayList<>();
     private final ArrayList<inProceedings> savedInProceedings = new ArrayList<>();
 
     @FXML
-    void filterByArticle(ActionEvent event) {
-        cleanTbl();
-
-        String title = txtArticleTitle.getText();
-        String journal = txtArticleJournal.getText();
-        int year = cbArticleYear.getValue();
-
+    void filter(ActionEvent event) {
+        type();
+        if(!txtArticleTitle.getText().equalsIgnoreCase("")||!txtArticleJournal.getText().equalsIgnoreCase("")
+                || cbFilterByYear.isSelected())
+        {
+            System.out.println("RIGA 85 :txtArticleTitle.getText(): "+txtArticleTitle.getText()+"\ntxtArticleTitle.getText() "+txtArticleJournal.getText()+"\ncbFilterByYear.isSelected() "+cbFilterByYear.isSelected());
+            article();
+        }
+        if(!txtAuthorName.getText().equalsIgnoreCase("")||!txtAuthorSurname.getText().equalsIgnoreCase(""))
+        {
+            System.out.println("RIGA 90");
+            author();
+        }
         Database db = Database.getInstance();
-        db.openConnection(Utility.article);
-        db.cleanAll();
-
-        db.findArticleByInfoArticleArticle(title, journal, year);
-        db.closeConnection();
-
-        db.openConnection(Utility.inProceedings);
-        db.findArticleByInfoArticleInProceedings(title, year);
-        db.closeConnection();
-
-        showInProceedings(db.getFilteredArticlesInProceedings(), db);
-        System.out.println("db.getFilteredArticlesInProceedings() size: " + db.getFilteredArticlesInProceedings().size());
         showArticles(db.getFilteredArticlesArticle());
-        db.cleanAll();
+        showInProceedings(db.getFilteredArticlesInProceedings());
+        //db.cleanAll();
     }
 
-    @FXML
-    void filterByAuthor(ActionEvent event) {
+    private void type() {
         Database db = Database.getInstance();
         db.cleanAll();
-
-        cleanTbl();
-
-        db.openConnection(Utility.inProceedings);
-        db.findArticleByAuthorName(txtAuthorSurname.getText(), txtAuthorName.getText(), Utility.inProceedings);
-        db.closeConnection();
-
-
-        db.openConnection(Utility.article);
-        db.findArticleByAuthorName(txtAuthorSurname.getText(), txtAuthorName.getText(), Utility.article);
-        db.closeConnection();
-
-        showInProceedings(db.getFilteredArticlesInProceedings(), db);
-        showArticles(db.getFilteredArticlesArticle());
-        db.cleanAll();
-
-    }
-
-    @FXML
-    void filterByType(ActionEvent event) {
-        Database db = Database.getInstance();
-        db.cleanAll();
-
         cleanTbl();
 
         if (cbChooseType.getValue().equalsIgnoreCase(Utility.inProceedings)) {
             db.openConnection(Utility.inProceedings);
             db.filterByTypeInProceedings();
-            ArrayList<Article> filteredArticle = db.getFilteredArticlesInProceedings();
-            showInProceedings(filteredArticle, db);
-        } else {
+            //showInProceedings(db.getFilteredArticlesInProceedings());
+        }
+        else if (cbChooseType.getValue().equalsIgnoreCase(Utility.article)) {
             db.openConnection(Utility.article);
             db.filterByTypeArticle();
-            ArrayList<Article> filteredArticle = db.getFilteredArticlesArticle();
-            showArticles(filteredArticle);
+            //showArticles(db.getFilteredArticlesArticle());
+        } else if (cbChooseType.getValue().equalsIgnoreCase(Utility.all)) {
+            db.openConnection(Utility.inProceedings);
+            db.filterByTypeInProceedings();
+            //showInProceedings(db.getFilteredArticlesInProceedings());
+            db.closeConnection();
+
+            db.openConnection(Utility.article);
+            db.filterByTypeArticle();
+            //showArticles(db.getFilteredArticlesArticle());
         }
         db.closeConnection();
     }
 
+    private void article() {
+        Database db = Database.getInstance();
+        String title = txtArticleTitle.getText();
+        String journal = txtArticleJournal.getText();
+        int year = cbArticleYear.getValue();
+
+
+        if (cbChooseType.getValue().equalsIgnoreCase(Utility.all)) {
+            db.openConnection(Utility.article);
+            if (cbFilterByYear.isSelected()) {
+                db.refilterByArticleArticle(title, journal, year);
+            } else {
+                db.refilterByArticleArticle(title, journal, -1);
+            }
+            db.closeConnection();
+
+
+            db.openConnection(Utility.inProceedings);
+            if (cbFilterByYear.isSelected()) {
+                db.refilterByArticleInProceedings(title, year);
+            } else {
+                db.refilterByArticleInProceedings(title, -1);
+            }
+            db.closeConnection();
+
+        } else if (cbChooseType.getValue().equalsIgnoreCase(Utility.inProceedings)) {
+            db.openConnection(Utility.inProceedings);
+
+            if (cbFilterByYear.isSelected()) {
+                db.refilterByArticleInProceedings(title, year);
+            } else
+                db.refilterByArticleInProceedings(title, -1);
+            db.closeConnection();
+
+        } else if (cbChooseType.getValue().equalsIgnoreCase(Utility.article)) {
+            db.openConnection(Utility.article);
+            if (cbFilterByYear.isSelected()) {
+                db.refilterByArticleArticle(title, journal, year);
+            } else {
+                db.refilterByArticleArticle(title, journal, -1);
+            }
+            db.closeConnection();
+        }
+    }
+
+    private void author() {
+        Database db = Database.getInstance();
+        if (cbChooseType.getValue().equalsIgnoreCase(Utility.all)) {
+            db.openConnection(Utility.inProceedings);
+            db.refilterByAuthorInProceedings(txtAuthorSurname.getText(), txtAuthorName.getText());
+            db.closeConnection();
+            db.openConnection(Utility.article);
+            db.refilterByAuthorArticle(txtAuthorSurname.getText(), txtAuthorName.getText());
+            db.closeConnection();
+        } else if (cbChooseType.getValue().equalsIgnoreCase(Utility.inProceedings)) {
+            db.openConnection(Utility.inProceedings);
+            db.refilterByAuthorInProceedings(txtAuthorSurname.getText(), txtAuthorName.getText());
+            db.closeConnection();
+        } else if (cbChooseType.getValue().equalsIgnoreCase(Utility.article)) {
+            db.openConnection(Utility.article);
+            db.refilterByAuthorArticle(txtAuthorSurname.getText(), txtAuthorName.getText());
+            db.closeConnection();
+        }
+    }
+
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-        cbChooseType.setValue(Utility.inProceedings);
+        cbChooseType.setValue(Utility.all.toUpperCase(Locale.ROOT));
+        cbChooseType.getItems().add(Utility.all.toUpperCase(Locale.ROOT));
         cbChooseType.getItems().add(Utility.inProceedings);
         cbChooseType.getItems().add(Utility.article);
 
         for (int i = 2010; i < 2031; i++)
             cbArticleYear.getItems().add(i);
 
-        cbArticleYear.setValue(2010);
+        cbArticleYear.setValue(2019);
         tblViewArticle.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
         tblViewinProceedings.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
     }
@@ -165,17 +218,12 @@ public class ExportController implements Initializable {
             if (file != null) {
                 BufferedWriter bOut = new BufferedWriter(new FileWriter(file));
 
-                bOut.append("-------ARTICLE-------\n");
-                for (int i = 0; i < tblViewArticle.getItems().size(); i++) {
-                    if (tblViewArticle.getItems().get(i).isCheck().getValue()) {
-                        if (!existsArticle(tblViewArticle.getItems().get(i))) {
+                for (int i = 0; i < tblViewArticle.getItems().size(); i++)
+                    if (tblViewArticle.getItems().get(i).isCheck().getValue())
+                        if (!existsArticle(tblViewArticle.getItems().get(i)))
                             savedArticle.add(tblViewArticle.getItems().get(i));
-                        }
-                    }
-                }
 
                 saveArticle(bOut);
-                bOut.append("\n\n-------INPROCEEDINGS-------\n");
                 for (int i = 0; i < tblViewinProceedings.getItems().size(); i++)
                     if (tblViewinProceedings.getItems().get(i).isCheck().getValue())
                         if (!existsInProceedings(tblViewinProceedings.getItems().get(i), savedInProceedings))
@@ -222,62 +270,54 @@ public class ExportController implements Initializable {
         return false;
     }
 
-    private void showInProceedings(ArrayList<Article> filteredArticle, Database db) {
-        /*tblViewinProceedings.getItems().clear();
-        tblViewinProceedings.getColumns().clear();
-        tblViewinProceedings.refresh();*/
+    private void showInProceedings(ArrayList<inProceedings> filteredInProceedings) {
 
-        /*tblViewArticle.getItems().clear();
-        tblViewArticle.getColumns().clear();
-        tblViewArticle.refresh();*/
+        ObservableList<inProceedings> fxlist = FXCollections.observableList(filteredInProceedings);
 
-        ObservableList<Article> fxlist = FXCollections.observableList(filteredArticle);
-
-        TableColumn<Article, Boolean> column20 = new TableColumn<>("");
+        TableColumn<inProceedings, Boolean> column20 = new TableColumn<>("");
         column20.setCellValueFactory(features -> features.getValue().checkProperty());
         column20.setCellFactory(CheckBoxTableCell.forTableColumn(column20));
 
-        TableColumn<Article, Integer> column1 = new TableColumn<>(Utility.year);
+        TableColumn<inProceedings, Integer> column1 = new TableColumn<>(Utility.year);
         column1.setCellValueFactory(new PropertyValueFactory<>("year"));
 
-        TableColumn<Article, String> column2 = new TableColumn<>(Utility.dblp);
+        TableColumn<inProceedings, String> column2 = new TableColumn<>(Utility.dblp);
         column2.setCellValueFactory(new PropertyValueFactory<>("dblp"));
 
-        TableColumn<Article, String> column3 = new TableColumn<>(Utility.pages);
+        TableColumn<inProceedings, String> column3 = new TableColumn<>(Utility.pages);
         column3.setCellValueFactory(new PropertyValueFactory<>("pages"));
 
-        TableColumn<Article, String> column4 = new TableColumn<>(Utility.publisher);
+        TableColumn<inProceedings, String> column4 = new TableColumn<>(Utility.publisher);
         column4.setCellValueFactory(new PropertyValueFactory<>("publisher"));
 
-        TableColumn<Article, String> column5 = new TableColumn<>(Utility.series);
+        TableColumn<inProceedings, String> column5 = new TableColumn<>(Utility.series);
         column5.setCellValueFactory(new PropertyValueFactory<>("series"));
 
-        TableColumn<Article, String> column6 = new TableColumn<>(Utility.volume);
+        TableColumn<inProceedings, String> column6 = new TableColumn<>(Utility.volume);
         column6.setCellValueFactory(new PropertyValueFactory<>("volume"));
 
-        TableColumn<Article, String> column7 = new TableColumn<>(Utility.shortTitle);
+        TableColumn<inProceedings, String> column7 = new TableColumn<>(Utility.shortTitle);
         column7.setCellValueFactory(new PropertyValueFactory<>("shortTitle"));
 
-        TableColumn<Article, String> column8 = new TableColumn<>(Utility.url);
+        TableColumn<inProceedings, String> column8 = new TableColumn<>(Utility.url);
         column8.setCellValueFactory(new PropertyValueFactory<>("url"));
 
-        TableColumn<Article, String> column9 = new TableColumn<>(Utility.doi);
+        TableColumn<inProceedings, String> column9 = new TableColumn<>(Utility.doi);
         column9.setCellValueFactory(new PropertyValueFactory<>("doi"));
 
-        TableColumn<Article, String> column10 = new TableColumn<>(Utility.address);
+        TableColumn<inProceedings, String> column10 = new TableColumn<>(Utility.address);
         column10.setCellValueFactory(new PropertyValueFactory<>("address"));
 
-        TableColumn<Article, String> column11 = new TableColumn<>(Utility.booktitle);
+        TableColumn<inProceedings, String> column11 = new TableColumn<>(Utility.booktitle);
         column11.setCellValueFactory(new PropertyValueFactory<>("booktitle"));
 
-        TableColumn<Article, String> column12 = new TableColumn<>(Utility.title);
+        TableColumn<inProceedings, String> column12 = new TableColumn<>(Utility.title);
         column12.setCellValueFactory(new PropertyValueFactory<>("title"));
 
-
-        TableColumn<Article, String> column13 = new TableColumn<>("Author: " + Utility.name + " " + Utility.surname);
+        TableColumn<inProceedings, String> column13 = new TableColumn<>("Author: " + Utility.name + " " + Utility.surname);
         column13.setCellValueFactory(new PropertyValueFactory<>("allAuthorNameAndSurname"));
 
-        TableColumn<Article, String> column14 = new TableColumn<>("Editor: " + Utility.name + " " + Utility.surname);
+        TableColumn<inProceedings, String> column14 = new TableColumn<>("Editor: " + Utility.name + " " + Utility.surname);
         column14.setCellValueFactory(new PropertyValueFactory<>("allEditorNameAndSurname"));
 
         tblViewinProceedings.getColumns().add(column20);
@@ -296,20 +336,11 @@ public class ExportController implements Initializable {
         tblViewinProceedings.getColumns().add(column13);
         tblViewinProceedings.getColumns().add(column14);
 
-        for (Article a : fxlist)
+        for (inProceedings a : fxlist)
             tblViewinProceedings.getItems().add(a);
-
-
     }
 
     private void showArticles(ArrayList<Article> filteredArticle) {
-        /*tblViewArticle.getItems().clear();
-        tblViewArticle.getColumns().clear();
-        tblViewArticle.refresh();*/
-
-        /*tblViewinProceedings.getItems().clear();
-        tblViewinProceedings.getColumns().clear();
-        tblViewinProceedings.refresh();*/
 
         ObservableList<Article> fxlist = FXCollections.observableList(filteredArticle);
 
@@ -374,23 +405,28 @@ public class ExportController implements Initializable {
             String url = article.getUrl();
             String doi = article.getDoi();
             String journal = article.getJournal();
-            String type = article.getType();
             ArrayList<Author> allAuthors = article.getAllAuthors();
-            System.out.println("size exportcontroller savearticle: " + allAuthors.size());
-            bOut.append("year: " + year + "\npages: " + pages + "\ndblp: " + dblp + "\ntitle: " + title + "\nvolume: "
-                    + volume + "\nShort title: " + shortTitle + "\nurl: " + url + "\ndoi: " + doi + "\njournal: "
-                    + journal + "\ntype: " + type);
-            for (int j = 0; j < allAuthors.size(); j++) {
-                bOut.append("\nAutore " + j + ": " + allAuthors.get(j).getName() + " "
-                        + allAuthors.get(j).getSurname());
-                System.out.println(("\nAutore " + j + ": " + allAuthors.get(j).getName() + " "
-                        + allAuthors.get(j).getSurname()));
-            }
-            bOut.append("\n*************************\n");
+            StringBuilder s = new StringBuilder();
+            for (Author allAuthor : allAuthors)
+                s.append(allAuthor.getName() + " {" + allAuthor.getSurname() + "} and \n               ");
+
+            s.delete(s.length() - 21, s.length());
+            bOut.append("@article{DBLP:" + dblp + ",\n" +
+                    "  author      = {" + s + "},\n" +
+                    "  title       = {" + title + "},\n" +
+                    "  short title = {" + shortTitle + "},\n" +
+                    "  journal     = {" + journal + "},\n" +
+                    "  volume      = {" + volume + "},\n" +
+                    "  pages       = {" + pages + "},\n" +
+                    "  year        = {" + year + "},\n" +
+                    "  url         = {" + url + "},\n" +
+                    "  doi         = {" + doi + "},\n" +
+                    "}");
+            bOut.append("\n\n*************************\n\n");
         }
     }
 
-    private void saveInProceedings(BufferedWriter printWriter) throws IOException {
+    private void saveInProceedings(BufferedWriter bOut) throws IOException {
         for (inProceedings savedInProceeding : savedInProceedings) {
             if (savedInProceeding instanceof inProceedings) {
                 int year = savedInProceeding.getYear();
@@ -401,29 +437,42 @@ public class ExportController implements Initializable {
                 String shortTitle = savedInProceeding.getShortTitle();
                 String url = savedInProceeding.getUrl();
                 String doi = savedInProceeding.getDoi();
-                String type = savedInProceeding.getType();
                 String publisher = ((inProceedings) savedInProceeding).getPublisher();
                 String series = ((inProceedings) savedInProceeding).getSeries();
                 String address = ((inProceedings) savedInProceeding).getAddress();
                 String booktitle = ((inProceedings) savedInProceeding).getBooktitle();
-                ArrayList<Editor> allEditor = ((inProceedings) savedInProceeding).getAllEditors();
-                // BooleanProperty check = tblViewinProceedings.getItems().get(i).isCheck();
+                ArrayList<Editor> allEditors = ((inProceedings) savedInProceeding).getAllEditors();
                 ArrayList<Author> allAuthors = savedInProceeding.getAllAuthors();
-                printWriter.append("year: " + year + "\npages: " + pages + "\ndblp: " + dblp + "\ntitle: " + title
-                        + "\nvolume: " + volume + "\nShort title: " + shortTitle + "\nurl: " + url + "\ndoi: " + doi
-                        + "\npublisher" + publisher + "\ntype: " + type + "\nseries: " + series + "\naddress: "
-                        + address + "\nbook title: " + booktitle);
-                for (int j = 0; j < allAuthors.size(); j++) {
-                    printWriter.append("\nAutore " + j + ": " + allAuthors.get(j).getName() + " "
-                            + allAuthors.get(j).getSurname());
-                }
-                for (int j = 0; j < allEditor.size(); j++) {
-                    printWriter.append("\nEditore " + j + ": " + allEditor.get(j).getName() + " "
-                            + allEditor.get(j).getSurname());
-                }
-                printWriter.append("\n*************************\n");
+
+                StringBuilder s = new StringBuilder();
+                StringBuilder e = new StringBuilder();
+                for (Author allAuthor : allAuthors)
+                    s.append(allAuthor.getName() + " {" + allAuthor.getSurname() + "} and \n               ");
+
+                for (Editor allEditor : allEditors)
+                    e.append(allEditor.getName() + " {" + allEditor.getSurname() + "} and \n               ");
+
+                s.delete(s.length() - 21, s.length());
+                e.delete(e.length() - 21, e.length());
+
+                bOut.append("@inproceedings{DBLP:" + dblp + ",\n" +
+                        "  author      = {" + s + "},\n" +
+                        "  editor      = {" + e + "},\n" +
+                        "  title       = {" + title + "},\n" +
+                        "  short title = {" + shortTitle + "},\n" +
+                        "  booktitle   = {" + booktitle + "},\n" +
+                        "  series      = {" + series + "},\n" +
+                        "  volume      = {" + volume + "},\n" +
+                        "  pages       = {" + pages + "},\n" +
+                        "  publisher   = {" + publisher + "},\n" +
+                        "  year        = {" + year + "},\n" +
+                        "  url         = {" + url + "},\n" +
+                        "  doi         = {" + doi + "},\n" +
+                        "  address     = {" + address + "},\n" +
+                        "}");
+
+                bOut.append("\n\n*************************\n\n");
             }
         }
     }
-
 }
