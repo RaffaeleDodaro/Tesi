@@ -44,6 +44,6 @@
          </font>
       </Button>
       <CheckBox fx:id="cbFilterByYear" layoutX="498.0" layoutY="151.0" mnemonicParsing="false" text="Filter by year?" />
-      <Button fx:id="btnFilter" layoutX="250.0" layoutY="239.0" mnemonicParsing="false" onAction="#filter" text="Filter by type" />
+      <Button fx:id="btnFilter" layoutX="272.0" layoutY="239.0" mnemonicParsing="false" onAction="#filter" text="Filter" />
    </children>
 </Pane>

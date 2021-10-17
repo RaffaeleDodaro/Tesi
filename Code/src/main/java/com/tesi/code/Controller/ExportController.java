@@ -80,21 +80,16 @@ public class ExportController implements Initializable {
     @FXML
     void filter(ActionEvent event) {
         type();
-        if(!txtArticleTitle.getText().equalsIgnoreCase("")||!txtArticleJournal.getText().equalsIgnoreCase("")
+        if (!txtArticleTitle.getText().equalsIgnoreCase("") || !txtArticleJournal.getText().equalsIgnoreCase("")
                 || cbFilterByYear.isSelected())
-        {
-            System.out.println("RIGA 85 :txtArticleTitle.getText(): "+txtArticleTitle.getText()+"\ntxtArticleTitle.getText() "+txtArticleJournal.getText()+"\ncbFilterByYear.isSelected() "+cbFilterByYear.isSelected());
-            article();
-        }
-        if(!txtAuthorName.getText().equalsIgnoreCase("")||!txtAuthorSurname.getText().equalsIgnoreCase(""))
-        {
-            System.out.println("RIGA 90");
+           article();
+
+        if (!txtAuthorName.getText().equalsIgnoreCase("") || !txtAuthorSurname.getText().equalsIgnoreCase(""))
             author();
-        }
+
         Database db = Database.getInstance();
         showArticles(db.getFilteredArticlesArticle());
         showInProceedings(db.getFilteredArticlesInProceedings());
-        //db.cleanAll();
     }
 
     private void type() {
@@ -105,21 +100,16 @@ public class ExportController implements Initializable {
         if (cbChooseType.getValue().equalsIgnoreCase(Utility.inProceedings)) {
             db.openConnection(Utility.inProceedings);
             db.filterByTypeInProceedings();
-            //showInProceedings(db.getFilteredArticlesInProceedings());
-        }
-        else if (cbChooseType.getValue().equalsIgnoreCase(Utility.article)) {
+        } else if (cbChooseType.getValue().equalsIgnoreCase(Utility.article)) {
             db.openConnection(Utility.article);
             db.filterByTypeArticle();
-            //showArticles(db.getFilteredArticlesArticle());
         } else if (cbChooseType.getValue().equalsIgnoreCase(Utility.all)) {
             db.openConnection(Utility.inProceedings);
             db.filterByTypeInProceedings();
-            //showInProceedings(db.getFilteredArticlesInProceedings());
             db.closeConnection();
 
             db.openConnection(Utility.article);
             db.filterByTypeArticle();
-            //showArticles(db.getFilteredArticlesArticle());
         }
         db.closeConnection();
     }
@@ -130,41 +120,37 @@ public class ExportController implements Initializable {
         String journal = txtArticleJournal.getText();
         int year = cbArticleYear.getValue();
 
-
         if (cbChooseType.getValue().equalsIgnoreCase(Utility.all)) {
             db.openConnection(Utility.article);
-            if (cbFilterByYear.isSelected()) {
+            if (cbFilterByYear.isSelected())
                 db.refilterByArticleArticle(title, journal, year);
-            } else {
+            else
                 db.refilterByArticleArticle(title, journal, -1);
-            }
             db.closeConnection();
 
 
             db.openConnection(Utility.inProceedings);
-            if (cbFilterByYear.isSelected()) {
+            if (cbFilterByYear.isSelected())
                 db.refilterByArticleInProceedings(title, year);
-            } else {
+            else
                 db.refilterByArticleInProceedings(title, -1);
-            }
             db.closeConnection();
 
         } else if (cbChooseType.getValue().equalsIgnoreCase(Utility.inProceedings)) {
             db.openConnection(Utility.inProceedings);
 
-            if (cbFilterByYear.isSelected()) {
+            if (cbFilterByYear.isSelected())
                 db.refilterByArticleInProceedings(title, year);
-            } else
+            else
                 db.refilterByArticleInProceedings(title, -1);
             db.closeConnection();
 
         } else if (cbChooseType.getValue().equalsIgnoreCase(Utility.article)) {
             db.openConnection(Utility.article);
-            if (cbFilterByYear.isSelected()) {
+            if (cbFilterByYear.isSelected())
                 db.refilterByArticleArticle(title, journal, year);
-            } else {
+            else
                 db.refilterByArticleArticle(title, journal, -1);
-            }
             db.closeConnection();
         }
     }
@@ -175,6 +161,7 @@ public class ExportController implements Initializable {
             db.openConnection(Utility.inProceedings);
             db.refilterByAuthorInProceedings(txtAuthorSurname.getText(), txtAuthorName.getText());
             db.closeConnection();
+
             db.openConnection(Utility.article);
             db.refilterByAuthorArticle(txtAuthorSurname.getText(), txtAuthorName.getText());
             db.closeConnection();
