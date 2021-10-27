@@ -24,7 +24,7 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.ResourceBundle;
 
-public class inProceedingsController implements Initializable {
+public class InProceedingsController implements Initializable {
 
     @FXML
     private TextField txtBookTitle;
@@ -122,8 +122,26 @@ public class inProceedingsController implements Initializable {
         grdEditor.getChildren().clear();
         for (int i = 0; i < db.getAuthors().size(); i++)
             loadAuthors(i, db);
+        //grdEditor.setLayoutY(grdAuthor.getLayoutY()+(grdAuthor.getPrefHeight()*2));
+
+        //grdEditor.setLayoutY(grdAuthor.getPrefHeight()*2+10.0);
+
         for (int i = 0; i < db.getEditors().size(); i++)
             loadEditors(i, db);
+
+        System.out.println("grdAuthor.getLayoutY(): "+grdAuthor.getLayoutY()+" grdEditor.getLayoutY(): "+grdEditor.getLayoutY());
+
+
+        grdEditor.setLayoutY(grdAuthor.getLayoutY()+grdAuthor.getLayoutY()+10);
+
+        System.out.println("grdAuthor.getLayoutY()(200): "+grdAuthor.getLayoutY()+"\n"+
+                "grdAuthor.getLayoutY(): "+grdAuthor.getLayoutY()+"\n"+
+                "grdEditor.getWidth()(200+...): " + grdAuthor.getWidth());
+        //btnSave.setLayoutX(grdEditor.getHeight()+5.0);
+        //btnAnotherBibtex.setLayoutX(grdEditor.getHeight()+5.0);
+//        grdEditor.setLayoutX(grdAuthor.getLayoutX()+5.0);
+//        btnSave.setLayoutY(grdEditor.getLayoutX()+5.0);
+//        btnAnotherBibtex.setLayoutY(grdEditor.getLayoutX()+5.0);
     }
 
     private void loadEditors(int i, Database db) {
@@ -236,5 +254,7 @@ public class inProceedingsController implements Initializable {
 
         allTextAuthor.add(surname);
         allTextAuthor.add(name);
+
+
     }
 }

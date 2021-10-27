@@ -9,7 +9,9 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextArea;
+import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 
@@ -55,7 +57,8 @@ public class MainController {
                 gp.parsering(file, "");
 
             if (gp.getType().equalsIgnoreCase(Utility.inProceedings))
-                loadTypeBib(Utility.inProceedings);
+                //loadTypeBib(Utility.inProceedings);
+                loadProve("prove");
             else
                 loadTypeBib(Utility.article);
         }
@@ -66,6 +69,17 @@ public class MainController {
         FXMLLoader fxmlLoader = new FXMLLoader(Main.class.getResource(type + ".fxml"));
         Pane root = (Pane) fxmlLoader.load();
         Scene scene = new Scene(root, 600, 800);
+        stage.setTitle(type);
+        stage.setScene(scene);
+        stage.setResizable(false);
+        stage.show();
+    }
+
+    private void loadProve(String type) throws IOException {
+        Stage stage = (Stage) btnLoad.getScene().getWindow();
+        FXMLLoader fxmlLoader = new FXMLLoader(Main.class.getResource(type + ".fxml"));
+        ScrollPane root =  fxmlLoader.load();
+        Scene scene = new Scene(root, 600, 400);
         stage.setTitle(type);
         stage.setScene(scene);
         stage.setResizable(false);
