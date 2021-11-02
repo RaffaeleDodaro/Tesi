@@ -17,6 +17,7 @@ import javafx.stage.Stage;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Locale;
 
 public class MainController {
     private boolean loaded = false;
@@ -36,7 +37,7 @@ public class MainController {
 
     @FXML
     void export(ActionEvent event) throws IOException {
-        loadTypeBib("export");
+        load("export");
     }
 
     @FXML
@@ -58,30 +59,29 @@ public class MainController {
 
             if (gp.getType().equalsIgnoreCase(Utility.inProceedings))
                 //loadTypeBib(Utility.inProceedings);
-                loadProve("prove");
+                load(Utility.inProceedings);
             else
-                loadTypeBib(Utility.article);
+                load(Utility.article);
         }
     }
 
-    private void loadTypeBib(String type) throws IOException {
-        Stage stage = (Stage) btnLoad.getScene().getWindow();
-        FXMLLoader fxmlLoader = new FXMLLoader(Main.class.getResource(type + ".fxml"));
-        Pane root = (Pane) fxmlLoader.load();
-        Scene scene = new Scene(root, 600, 800);
-        stage.setTitle(type);
-        stage.setScene(scene);
-        stage.setResizable(false);
-        stage.show();
-    }
 
-    private void loadProve(String type) throws IOException {
+
+    private void load(String type) throws IOException {
         Stage stage = (Stage) btnLoad.getScene().getWindow();
         FXMLLoader fxmlLoader = new FXMLLoader(Main.class.getResource(type + ".fxml"));
-        ScrollPane root =  fxmlLoader.load();
-        Scene scene = new Scene(root, 913, 568);
-        stage.setTitle(type);
-        stage.setScene(scene);
+
+        if (!type.equalsIgnoreCase("export")) {
+            ScrollPane root = fxmlLoader.load();
+            Scene scene = new Scene(root, 710, 350);
+            stage.setScene(scene);
+        } else {
+            Pane root = (Pane) fxmlLoader.load();
+            Scene scene = new Scene(root, 600, 600);
+            stage.setScene(scene);
+        }
+
+        stage.setTitle(type.toUpperCase(Locale.ROOT));
         stage.setResizable(false);
         stage.show();
     }

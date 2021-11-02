@@ -13,6 +13,7 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
+import javafx.scene.layout.RowConstraints;
 import javafx.scene.text.Font;
 import javafx.stage.Stage;
 
@@ -47,7 +48,7 @@ public class ArticleController implements Initializable {
     private TextField txtAuthor;
 
     @FXML
-    private GridPane grdpane;
+    private GridPane grd;
 
     private ArrayList<TextField> allTextField = new ArrayList<TextField>();
 
@@ -101,22 +102,22 @@ public class ArticleController implements Initializable {
         db.getAuthors().clear();
         db.calculateAuthor(gp.getAuthor());
 
-        grdpane.getChildren().clear();
+        grd.getChildren().clear();
         for (int i = 0; i < db.getAuthors().size(); i++)
             loadAuthors(i, db);
     }
 
     private void loadAuthors(int i, Database db) {
-        Label labelAuthor = new Label();
-        labelAuthor.setFont(new Font("System", 27));
-        labelAuthor.setText("Author");
+        Label labelType = new Label();
+        labelType.setFont(new Font("System", 12));
+        labelType.setText("Author");
 
         Label labelName = new Label();
-        labelName.setFont(new Font("System", 27));
+        labelName.setFont(new Font("System", 12));
         labelName.setText("Name");
 
         Label labelSurname = new Label();
-        labelSurname.setFont(new Font("System", 27));
+        labelSurname.setFont(new Font("System", 12));
         labelSurname.setText("Surname");
 
         TextField name = new TextField(db.getAuthors().get(i).getName());
@@ -125,35 +126,12 @@ public class ArticleController implements Initializable {
         TextField surname = new TextField(db.getAuthors().get(i).getSurname());
         surname.setFont(new Font("System", 12));
 
-        Pane paneAuthor = new Pane();
-        Pane paneLabelName = new Pane();
-        Pane paneShowName = new Pane();
-        Pane paneLabelSurname = new Pane();
-        Pane paneShowSurname = new Pane();
-
-        paneAuthor.setPrefWidth(50);
-        paneAuthor.setPrefHeight(50);
-
-        paneShowName.setPrefWidth(366);
-        paneShowName.setPrefHeight(25);
-
-        paneLabelName.setPrefWidth(366);
-        paneLabelName.setPrefHeight(25);
-
-        paneLabelSurname.setPrefWidth(366);
-        paneLabelSurname.setPrefHeight(25);
-
-        paneAuthor.getChildren().add(labelAuthor);
-        paneShowName.getChildren().add(name);
-        paneLabelSurname.getChildren().add(labelSurname);
-        paneLabelName.getChildren().add(labelName);
-        paneShowSurname.getChildren().add(surname);
-
-        grdpane.add(paneAuthor, 0, i);
-        grdpane.add(paneLabelName, 1, i);
-        grdpane.add(paneShowName, 2, i);
-        grdpane.add(paneLabelSurname, 3, i);
-        grdpane.add(paneShowSurname, 4, i);
+        grd.add(labelType, 0, i);
+        grd.add(labelName, 1, i);
+        grd.add(name, 2, i);
+        grd.add(labelSurname, 3, i);
+        grd.add(surname, 4, i);
+        grd.getRowConstraints().add(new RowConstraints(40));
 
         allTextField.add(surname);
         allTextField.add(name);

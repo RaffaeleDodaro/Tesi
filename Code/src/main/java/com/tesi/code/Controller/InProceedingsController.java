@@ -22,6 +22,7 @@ import javax.swing.*;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Locale;
 import java.util.ResourceBundle;
 
 public class InProceedingsController implements Initializable {
@@ -42,9 +43,6 @@ public class InProceedingsController implements Initializable {
     private Button btnSave;
 
     @FXML
-    private GridPane grdAuthor;
-
-    @FXML
     private Button btnAnotherBibtex;
 
     @FXML
@@ -53,12 +51,12 @@ public class InProceedingsController implements Initializable {
     @FXML
     private TextField txtAuthor;
 
+    @FXML
+    private GridPane grd;
+
     private ArrayList<TextField> allTextAuthor = new ArrayList<TextField>();
 
     private ArrayList<TextField> allTextEditor = new ArrayList<TextField>();
-
-    @FXML
-    private GridPane grdEditor;
 
     @FXML
     void anotherBibtex(ActionEvent event) throws IOException {
@@ -66,7 +64,7 @@ public class InProceedingsController implements Initializable {
         FXMLLoader fxmlLoader = new FXMLLoader(Main.class.getResource("ChooseFile.fxml"));
         Pane root = (Pane) fxmlLoader.load();
         Scene scene = new Scene(root, 600, 442);
-        stage.setTitle("Tesi");
+        stage.setTitle("Tesi".toUpperCase(Locale.ROOT));
         stage.setScene(scene);
         stage.setResizable(false);
         stage.show();
@@ -79,13 +77,12 @@ public class InProceedingsController implements Initializable {
 
         db.getAuthors().clear();
         db.getEditors().clear();
+
         for (int i = 0; i < allTextAuthor.size(); i += 2)
             db.getAuthors().add(new Author(allTextAuthor.get(i).getText(), allTextAuthor.get(i + 1).getText()));
 
-
-        for (int i = 0; i < allTextEditor.size(); i += 2) {
+        for (int i = 0; i < allTextEditor.size(); i += 2)
             db.getEditors().add(new Editor(allTextEditor.get(i + 1).getText(), allTextEditor.get(i).getText()));
-        }
 
         db.openConnection(Utility.inProceedings);
         db.createTableInProceedings();
@@ -101,6 +98,7 @@ public class InProceedingsController implements Initializable {
             JOptionPane.showMessageDialog(null, "Insert short title", "ERROR", JOptionPane.INFORMATION_MESSAGE);
         else if (txtAddress.getText().equalsIgnoreCase(""))
             JOptionPane.showMessageDialog(null, "Insert address", "ERROR", JOptionPane.INFORMATION_MESSAGE);
+        db.closeConnection();
     }
 
     @Override
@@ -118,95 +116,56 @@ public class InProceedingsController implements Initializable {
         db.calculateAuthor(gp.getAuthor());
         db.calculateEditor(gp.getEditor());
 
-//        grdAuthor.getChildren().clear();
-        grdEditor.getChildren().clear();
+        grd.getChildren().clear();
 
         for (int i = 0; i < db.getAuthors().size(); i++)
             load(i, db, "Author", 0);
         for (int i = 0; i < db.getEditors().size(); i++)
             load(i, db, "Editor", db.getAuthors().size() + i);
-
-        //System.out.println("grdAuthor.getLayoutY(): "+grdAuthor.getLayoutY()+" grdEditor.getLayoutY(): "+grdEditor.getLayoutY());
-
-
-        //grdEditor.setLayoutY(grdAuthor.getLayoutY() + grdAuthor.getLayoutY() + 10);
-
-//        System.out.println("grdAuthor.getLayoutY()(200): "+grdAuthor.getLayoutY()+"\n"+
-//                "grdAuthor.getLayoutY(): "+grdAuthor.getLayoutY()+"\n"+
-//                "grdEditor.getWidth()(200+...): " + grdAuthor.getWidth());
-        //btnSave.setLayoutX(grdEditor.getHeight()+5.0);
-        //btnAnotherBibtex.setLayoutX(grdEditor.getHeight()+5.0);
-//        grdEditor.setLayoutX(grdAuthor.getLayoutX()+5.0);
-//        btnSave.setLayoutY(grdEditor.getLayoutX()+5.0);
-//        btnAnotherBibtex.setLayoutY(grdEditor.getLayoutX()+5.0);
     }
 
     private void load(int i, Database db, String type, int sum) {
-
-        Label labelEditor = new Label();
-        labelEditor.setFont(new Font("System", 27));
-        labelEditor.setText(type);
+        Label labelType = new Label();
+        labelType.setFont(new Font("System", 12));
+        labelType.setText(type);
 
         Label labelName = new Label();
-        labelName.setFont(new Font("System", 27));
-        labelName.setText("Name");
+        labelName.setFont(new Font("System", 12));
+        labelName.setText(Utility.name);
 
         Label labelSurname = new Label();
-        labelSurname.setFont(new Font("System", 27));
-        labelSurname.setText("Surname");
+        labelSurname.setFont(new Font("System", 12));
+        labelSurname.setText(Utility.surname);
+
         TextField name;
         TextField surname;
-        if (type.equalsIgnoreCase("Editor")) {
-            name = new TextField(db.getEditors().get(i).getName());
-            surname = new TextField(db.getEditors().get(i).getSurname());
-        } else {
+        if (type.equalsIgnoreCase(Utility.author)) {
             name = new TextField(db.getAuthors().get(i).getName());
             surname = new TextField(db.getAuthors().get(i).getSurname());
+        } else {
+            name = new TextField(db.getEditors().get(i).getName());
+            surname = new TextField(db.getEditors().get(i).getSurname());
         }
         name.setFont(new Font("System", 12));
         surname.setFont(new Font("System", 12));
-
-        Pane paneEditor = new Pane();
-        Pane paneLabelName = new Pane();
-        Pane paneShowName = new Pane();
-        Pane paneLabelSurname = new Pane();
-        Pane paneShowSurname = new Pane();
-
-        paneEditor.setPrefWidth(50);
-        paneEditor.setPrefHeight(50);
-
-        paneShowName.setPrefWidth(366);
-        paneShowName.setPrefHeight(25);
-
-        paneLabelName.setPrefWidth(366);
-        paneLabelName.setPrefHeight(25);
-
-        paneLabelSurname.setPrefWidth(366);
-        paneLabelSurname.setPrefHeight(25);
-
-        paneEditor.getChildren().add(labelEditor);
-        paneShowName.getChildren().add(name);
-        paneLabelSurname.getChildren().add(labelSurname);
-        paneLabelName.getChildren().add(labelName);
-        paneShowSurname.getChildren().add(surname);
-
-        if (type.equalsIgnoreCase("Author")) {
-            grdEditor.addRow(i, paneEditor);
-            grdEditor.addRow(i, paneLabelName);
-            grdEditor.addRow(i, paneShowName);
-            grdEditor.addRow(i, paneLabelSurname);
-            grdEditor.addRow(i, paneShowSurname);
-        } else {
-            grdEditor.addRow(sum, paneEditor);
-            grdEditor.addRow(sum, paneLabelName);
-            grdEditor.addRow(sum, paneShowName);
-            grdEditor.addRow(sum, paneLabelSurname);
-            grdEditor.addRow(sum, paneShowSurname);
+        if (type.equalsIgnoreCase(Utility.author)) {
+            grd.add(labelType, 0, i);
+            grd.add(labelName, 1, i);
+            grd.add(name, 2, i);
+            grd.add(labelSurname, 3, i);
+            grd.add(surname, 4, i);
         }
+        else
+        {
+            grd.add(labelType, 0, sum);
+            grd.add(labelName, 1, sum);
+            grd.add(name, 2, sum);
+            grd.add(labelSurname, 3, sum);
+            grd.add(surname, 4, sum);
 
-        grdEditor.getRowConstraints().add(new RowConstraints(30));
-
-        if (type.equalsIgnoreCase("Author")) {
+        }
+        grd.getRowConstraints().add(new RowConstraints(40));
+        if (type.equalsIgnoreCase(Utility.author)) {
             allTextAuthor.add(surname);
             allTextAuthor.add(name);
         } else {

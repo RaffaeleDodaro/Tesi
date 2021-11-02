@@ -102,9 +102,9 @@ public class Database {
                 System.out.println("database editor: " + editors.size());
                 for (int i = 0; i < authors.size(); i++) {
                     preparedStmt = c.prepareStatement("INSERT INTO WRITTENBY VALUES(?,?);");
+                    System.out.println("DBLP: " + dblp);
                     preparedStmt.setString(1, dblp);
                     preparedStmt.setInt(2, recuperateIdAuthor(authors.get(i)));
-                    System.out.println("DBLP: " + dblp);
                     preparedStmt.executeUpdate();
                 }
 
