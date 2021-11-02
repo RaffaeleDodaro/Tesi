@@ -79,7 +79,7 @@ public class MainController {
         Stage stage = (Stage) btnLoad.getScene().getWindow();
         FXMLLoader fxmlLoader = new FXMLLoader(Main.class.getResource(type + ".fxml"));
         ScrollPane root =  fxmlLoader.load();
-        Scene scene = new Scene(root, 600, 400);
+        Scene scene = new Scene(root, 913, 568);
         stage.setTitle(type);
         stage.setScene(scene);
         stage.setResizable(false);
