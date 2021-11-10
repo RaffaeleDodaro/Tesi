@@ -9,51 +9,51 @@
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
-<ScrollPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.tesi.code.Controller.InProceedingsController">
+<ScrollPane maxHeight="447.0" maxWidth="647.0" minHeight="-Infinity" minWidth="-Infinity" prefHeight="447.0" prefWidth="647.0" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.tesi.code.Controller.InProceedingsController">
    <content>
-      <AnchorPane minHeight="0.0" minWidth="0.0">
+      <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="429.0" prefWidth="628.0">
          <children>
             <TextField fx:id="txtBookTitle" layoutX="245.0" layoutY="20.0" prefHeight="25.0" prefWidth="366.0" />
-            <TextField fx:id="txtTitle" layoutX="245.0" layoutY="48.0" prefHeight="25.0" prefWidth="366.0" />
-            <TextField fx:id="txtShortTitle" layoutX="245.0" layoutY="85.0" prefHeight="25.0" prefWidth="366.0" />
-            <TextField fx:id="txtAddress" layoutX="245.0" layoutY="122.0" prefHeight="13.0" prefWidth="366.0" />
+            <TextField fx:id="txtTitle" layoutX="245.0" layoutY="56.0" prefHeight="25.0" prefWidth="366.0" />
+            <TextField fx:id="txtShortTitle" layoutX="245.0" layoutY="97.0" prefHeight="25.0" prefWidth="366.0" />
+            <TextField fx:id="txtAddress" layoutX="246.0" layoutY="137.0" prefHeight="13.0" prefWidth="366.0" />
             <Text layoutX="28.0" layoutY="43.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Book title">
                <font>
-                  <Font size="27.0" />
+                  <Font name="MS Outlook" size="27.0" />
                </font>
             </Text>
-            <Text layoutX="28.0" layoutY="71.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Title">
+            <Text layoutX="28.0" layoutY="79.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Title">
                <font>
-                  <Font size="27.0" />
+                  <Font name="MS Outlook" size="27.0" />
                </font>
             </Text>
-            <Text layoutX="27.0" layoutY="109.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Short title">
+            <Text layoutX="27.0" layoutY="121.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Short title">
                <font>
-                  <Font size="27.0" />
+                  <Font name="MS Outlook" size="27.0" />
                </font>
             </Text>
-            <Text layoutX="27.0" layoutY="146.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Address">
+            <Text layoutX="28.0" layoutY="161.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Address">
                <font>
-                  <Font size="27.0" />
+                  <Font name="MS Outlook" size="27.0" />
                </font>
             </Text>
-            <Button fx:id="btnSave" layoutX="472.0" layoutY="172.0" mnemonicParsing="false" onAction="#save" prefHeight="45.0" prefWidth="78.0" text="Save">
+            <Button fx:id="btnSave" layoutX="105.0" layoutY="377.0" mnemonicParsing="false" onAction="#save" prefHeight="45.0" prefWidth="78.0" text="Save">
                <font>
                   <Font size="19.0" />
                </font>
             </Button>
-            <Button fx:id="btnAnotherBibtex" layoutX="472.0" layoutY="231.0" mnemonicParsing="false" onAction="#anotherBibtex" text="Add another bibtex">
+            <Button fx:id="btnAnotherBibtex" layoutX="393.0" layoutY="380.0" mnemonicParsing="false" onAction="#anotherBibtex" text="Add another bibtex">
                <font>
                   <Font size="19.0" />
                </font>
             </Button>
-            <GridPane fx:id="grd" layoutX="14.0" layoutY="172.0" prefHeight="133.0" prefWidth="445.0">
+            <GridPane fx:id="grd" layoutX="25.0" layoutY="166.0" prefHeight="133.0" prefWidth="578.0">
                <columnConstraints>
-                  <ColumnConstraints hgrow="ALWAYS" maxWidth="50.0" minWidth="10.0" prefWidth="50.0" />
-                  <ColumnConstraints hgrow="ALWAYS" maxWidth="42.0" minWidth="10.0" prefWidth="42.0" />
-                  <ColumnConstraints hgrow="ALWAYS" maxWidth="150.0" minWidth="10.0" prefWidth="150.0" />
-                  <ColumnConstraints hgrow="ALWAYS" maxWidth="50.0" minWidth="10.0" prefWidth="50.0" />
-                  <ColumnConstraints hgrow="ALWAYS" maxWidth="150.0" minWidth="10.0" prefWidth="150.0" />
+                  <ColumnConstraints hgrow="ALWAYS" maxWidth="82.0" minWidth="10.0" prefWidth="82.0" />
+                  <ColumnConstraints hgrow="ALWAYS" maxWidth="90.0" minWidth="10.0" prefWidth="90.0" />
+                  <ColumnConstraints hgrow="ALWAYS" maxWidth="150.0" minWidth="10.0" prefWidth="128.0" />
+                  <ColumnConstraints hgrow="ALWAYS" maxWidth="130.0" minWidth="10.0" prefWidth="130.0" />
+                  <ColumnConstraints hgrow="ALWAYS" maxWidth="150.0" minWidth="10.0" prefWidth="112.0" />
                </columnConstraints>
             </GridPane>
          </children></AnchorPane>

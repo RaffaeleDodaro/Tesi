@@ -109,22 +109,22 @@ public class ArticleController implements Initializable {
 
     private void loadAuthors(int i, Database db) {
         Label labelType = new Label();
-        labelType.setFont(new Font("System", 12));
-        labelType.setText("Author");
+        labelType.setFont(new Font("MS Outlook", 22));
+        labelType.setText("Author:");
 
         Label labelName = new Label();
-        labelName.setFont(new Font("System", 12));
-        labelName.setText("Name");
+        labelName.setFont(new Font("MS Outlook", 22));
+        labelName.setText(Utility.name);
 
         Label labelSurname = new Label();
-        labelSurname.setFont(new Font("System", 12));
-        labelSurname.setText("Surname");
+        labelSurname.setFont(new Font("MS Outlook", 22));
+        labelSurname.setText(Utility.surname);
 
         TextField name = new TextField(db.getAuthors().get(i).getName());
-        name.setFont(new Font("System", 12));
+        name.setFont(new Font("MS Outlook", 18));
 
         TextField surname = new TextField(db.getAuthors().get(i).getSurname());
-        surname.setFont(new Font("System", 12));
+        surname.setFont(new Font("MS Outlook", 18));
 
         grd.add(labelType, 0, i);
         grd.add(labelName, 1, i);

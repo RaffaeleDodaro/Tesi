@@ -126,15 +126,15 @@ public class InProceedingsController implements Initializable {
 
     private void load(int i, Database db, String type, int sum) {
         Label labelType = new Label();
-        labelType.setFont(new Font("System", 12));
-        labelType.setText(type);
+        labelType.setFont(new Font("MS Outlook", 18));
+        labelType.setText(type+":");
 
         Label labelName = new Label();
-        labelName.setFont(new Font("System", 12));
+        labelName.setFont(new Font("MS Outlook", 18));
         labelName.setText(Utility.name);
 
         Label labelSurname = new Label();
-        labelSurname.setFont(new Font("System", 12));
+        labelSurname.setFont(new Font("MS Outlook", 18));
         labelSurname.setText(Utility.surname);
 
         TextField name;
@@ -146,8 +146,8 @@ public class InProceedingsController implements Initializable {
             name = new TextField(db.getEditors().get(i).getName());
             surname = new TextField(db.getEditors().get(i).getSurname());
         }
-        name.setFont(new Font("System", 12));
-        surname.setFont(new Font("System", 12));
+        name.setFont(new Font("MS Outlook", 18));
+        surname.setFont(new Font("MS Outlook", 18));
         if (type.equalsIgnoreCase(Utility.author)) {
             grd.add(labelType, 0, i);
             grd.add(labelName, 1, i);

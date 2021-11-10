@@ -30,6 +30,9 @@ import java.util.ResourceBundle;
 
 public class ExportController implements Initializable {
     @FXML
+    private CheckBox cbSaveCompact;
+
+    @FXML
     private ChoiceBox<String> cbChooseType;
 
     @FXML
@@ -82,7 +85,7 @@ public class ExportController implements Initializable {
         type();
         if (!txtArticleTitle.getText().equalsIgnoreCase("") || !txtArticleJournal.getText().equalsIgnoreCase("")
                 || cbFilterByYear.isSelected())
-           article();
+            article();
 
         if (!txtAuthorName.getText().equalsIgnoreCase("") || !txtAuthorSurname.getText().equalsIgnoreCase(""))
             author();
@@ -398,18 +401,31 @@ public class ExportController implements Initializable {
                 s.append(allAuthor.getName() + " {" + allAuthor.getSurname() + "} and \n               ");
 
             s.delete(s.length() - 21, s.length());
-            bOut.append("@article{DBLP:" + dblp + ",\n" +
-                    "  author      = {" + s + "},\n" +
-                    "  title       = {" + title + "},\n" +
-                    "  short title = {" + shortTitle + "},\n" +
-                    "  journal     = {" + journal + "},\n" +
-                    "  volume      = {" + volume + "},\n" +
-                    "  pages       = {" + pages + "},\n" +
-                    "  year        = {" + year + "},\n" +
-                    "  url         = {" + url + "},\n" +
-                    "  doi         = {" + doi + "},\n" +
-                    "}");
-            bOut.append("\n\n*************************\n\n");
+            if (!cbSaveCompact.isSelected())
+                bOut.append("@article{DBLP:" + dblp + ",\n" +
+                        "  author      = {" + s + "},\n" +
+                        "  title       = {" + title + "},\n" +
+                        "  short title = {" + shortTitle + "},\n" +
+                        "  journal     = {" + journal + "},\n" +
+                        "  volume      = {" + volume + "},\n" +
+                        "  pages       = {" + pages + "},\n" +
+                        "  year        = {" + year + "},\n" +
+                        "  url         = {" + url + "},\n" +
+                        "  doi         = {" + doi + "},\n" +
+                        "}");
+            else
+                bOut.append("@article{DBLP:" + dblp + ",\n" +
+                        "  author      = {" + s + "},\n" +
+                        "  title       = {" + title + "},\n" +
+                        "  journal     = {" + shortTitle + "},\n" +
+                        "  volume      = {" + volume + "},\n" +
+                        "  pages       = {" + pages + "},\n" +
+                        "  year        = {" + year + "},\n" +
+                        "  url         = {" + url + "},\n" +
+                        "  doi         = {" + doi + "},\n" +
+                        "}");
+
+            bOut.append("\n\n\n\n");
         }
     }
 
@@ -442,24 +458,41 @@ public class ExportController implements Initializable {
                 s.delete(s.length() - 21, s.length());
                 e.delete(e.length() - 21, e.length());
 
-                bOut.append("@inproceedings{DBLP:" + dblp + ",\n" +
-                        "  author      = {" + s + "},\n" +
-                        "  editor      = {" + e + "},\n" +
-                        "  title       = {" + title + "},\n" +
-                        "  short title = {" + shortTitle + "},\n" +
-                        "  booktitle   = {" + booktitle + "},\n" +
-                        "  series      = {" + series + "},\n" +
-                        "  volume      = {" + volume + "},\n" +
-                        "  pages       = {" + pages + "},\n" +
-                        "  publisher   = {" + publisher + "},\n" +
-                        "  year        = {" + year + "},\n" +
-                        "  url         = {" + url + "},\n" +
-                        "  doi         = {" + doi + "},\n" +
-                        "  address     = {" + address + "},\n" +
-                        "}");
-
+                if (!cbSaveCompact.isSelected()) {
+                    bOut.append("@inproceedings{DBLP:" + dblp + ",\n" +
+                            "  author      = {" + s + "},\n" +
+                            "  editor      = {" + e + "},\n" +
+                            "  title       = {" + title + "},\n" +
+                            "  short title = {" + shortTitle + "},\n" +
+                            "  booktitle   = {" + booktitle + "},\n" +
+                            "  series      = {" + series + "},\n" +
+                            "  volume      = {" + volume + "},\n" +
+                            "  pages       = {" + pages + "},\n" +
+                            "  publisher   = {" + publisher + "},\n" +
+                            "  year        = {" + year + "},\n" +
+                            "  url         = {" + url + "},\n" +
+                            "  doi         = {" + doi + "},\n" +
+                            "  address     = {" + address + "},\n" +
+                            "}");
+                } else {
+                    bOut.append("@inproceedings{DBLP:" + dblp + ",\n" +
+                            "  author      = {" + s + "},\n" +
+                            "  editor      = {" + e + "},\n" +
+                            "  title       = {" + title + "},\n" +
+                            "  booktitle   = {" + shortTitle + "},\n" +
+                            "  series      = {" + series + "},\n" +
+                            "  volume      = {" + volume + "},\n" +
+                            "  pages       = {" + pages + "},\n" +
+                            "  publisher   = {" + publisher + "},\n" +
+                            "  year        = {" + year + "},\n" +
+                            "  url         = {" + url + "},\n" +
+                            "  doi         = {" + doi + "},\n" +
+                            "  address     = {" + address + "},\n" +
+                            "}");
+                }
                 bOut.append("\n\n*************************\n\n");
             }
+            bOut.append("\n\n\n\n");
         }
     }
 }

@@ -66,15 +66,20 @@ public class MainController {
     }
 
 
-
     private void load(String type) throws IOException {
         Stage stage = (Stage) btnLoad.getScene().getWindow();
         FXMLLoader fxmlLoader = new FXMLLoader(Main.class.getResource(type + ".fxml"));
 
         if (!type.equalsIgnoreCase("export")) {
-            ScrollPane root = fxmlLoader.load();
-            Scene scene = new Scene(root, 710, 350);
-            stage.setScene(scene);
+            if (!type.equalsIgnoreCase("inproceedings")) {
+                ScrollPane root = fxmlLoader.load();
+                Scene scene = new Scene(root, 689, 357);
+                stage.setScene(scene);
+            } else {
+                ScrollPane root = fxmlLoader.load();
+                Scene scene = new Scene(root, 647, 447);
+                stage.setScene(scene);
+            }
         } else {
             Pane root = (Pane) fxmlLoader.load();
             Scene scene = new Scene(root, 600, 600);
