@@ -490,7 +490,6 @@ public class ExportController implements Initializable {
                             "  address     = {" + address + "},\n" +
                             "}");
                 }
-                bOut.append("\n\n*************************\n\n");
             }
             bOut.append("\n\n\n\n");
         }

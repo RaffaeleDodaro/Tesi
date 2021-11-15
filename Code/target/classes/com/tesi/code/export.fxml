@@ -10,76 +10,103 @@
 <?import javafx.scene.shape.Rectangle?>
 <?import javafx.scene.text.Font?>
 
-<Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="589.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.tesi.code.Controller.ExportController">
-   <children>
-      <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#1f93ff00" height="35.0" layoutX="81.0" layoutY="5.0" stroke="BLACK" strokeType="INSIDE" width="449.0" />
-      <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#1f93ff00" height="171.0" layoutX="2.0" layoutY="48.0" stroke="BLACK" strokeType="INSIDE" width="269.0" />
-      <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#1f93ff00" height="171.0" layoutX="293.0" layoutY="49.0" stroke="BLACK" strokeType="INSIDE" width="303.0" />
-      <ChoiceBox fx:id="cbChooseType" layoutX="313.0" layoutY="10.0" prefWidth="150.0" />
-      <Label layoutX="137.0" layoutY="12.0" text="Choose type:">
-         <font>
-            <Font name="MS Outlook" size="18.0" />
-         </font></Label>
-      <Button fx:id="btnSave" layoutX="28.0" layoutY="540.0" mnemonicParsing="false" onAction="#saveSelectedArticle" prefHeight="17.0" prefWidth="136.0" text="Save">
-         <font>
-            <Font size="18.0" />
-         </font>
-      </Button>
-      <Label layoutX="14.0" layoutY="89.0" text="Author:">
-         <font>
-            <Font name="MS Outlook" size="18.0" />
-         </font></Label>
-      <TextField fx:id="txtAuthorName" layoutX="106.0" layoutY="91.0" />
-      <TextField fx:id="txtAuthorSurname" layoutX="106.0" layoutY="158.0" />
-      <Label layoutX="297.0" layoutY="105.0" text="Article:">
-         <font>
-            <Font name="MS Outlook" size="18.0" />
-         </font></Label>
-      <TextField fx:id="txtArticleTitle" layoutX="441.0" layoutY="55.0" />
-      <TextField fx:id="txtArticleJournal" layoutX="441.0" layoutY="104.0" />
-      <ChoiceBox fx:id="cbArticleYear" layoutX="441.0" layoutY="149.0" prefHeight="25.0" prefWidth="149.0" />
-      <Label layoutX="368.0" layoutY="56.0" text="Title:">
-         <font>
-            <Font name="MS Outlook" size="18.0" />
-         </font></Label>
-      <Label layoutX="367.0" layoutY="105.0" text="Journal:">
-         <font>
-            <Font name="MS Outlook" size="18.0" />
-         </font></Label>
-      <Label layoutX="369.0" layoutY="150.0" text="Year:">
-         <font>
-            <Font name="MS Outlook" size="18.0" />
-         </font></Label>
-      <TableView fx:id="tblViewinProceedings" editable="true" layoutX="2.0" layoutY="289.0" prefHeight="237.0" prefWidth="295.0" />
-      <Label layoutX="156.0" layoutY="65.0" text="Name">
-         <font>
-            <Font name="MS Outlook" size="18.0" />
-         </font></Label>
-      <Label layoutX="145.0" layoutY="132.0" text="Surname">
-         <font>
-            <Font name="MS Outlook" size="18.0" />
-         </font></Label>
-      <Label layoutX="106.0" layoutY="263.0" text="inProceedings:">
-         <font>
-            <Font name="MS Outlook" size="18.0" />
-         </font></Label>
-      <TableView fx:id="tblViewArticle" editable="true" layoutX="308.0" layoutY="289.0" prefHeight="237.0" prefWidth="289.0" />
-      <Label layoutX="406.0" layoutY="263.0" text="Article:">
-         <font>
-            <Font name="MS Outlook" size="18.0" />
-         </font></Label>
-      <Button fx:id="btnAnotherBibtex" layoutX="418.0" layoutY="540.0" mnemonicParsing="false" onAction="#anotherBibtex" text="Add another bibtex">
-         <font>
-            <Font size="18.0" />
-         </font>
-      </Button>
-      <CheckBox fx:id="cbFilterByYear" layoutX="389.0" layoutY="183.0" mnemonicParsing="false" text="Filter by year?">
-         <font>
-            <Font name="MS Outlook" size="18.0" />
-         </font></CheckBox>
-      <Button fx:id="btnFilter" layoutX="273.0" layoutY="230.0" mnemonicParsing="false" onAction="#filter" text="Filter">
-         <font>
-            <Font name="MS Outlook" size="18.0" />
-         </font></Button>
-   </children>
+<Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="589.0"
+      prefWidth="600.0" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="com.tesi.code.Controller.ExportController">
+    <children>
+        <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#1f93ff00" height="35.0" layoutX="81.0" layoutY="5.0"
+                   stroke="BLACK" strokeType="INSIDE" width="449.0"/>
+        <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#1f93ff00" height="171.0" layoutX="2.0" layoutY="48.0"
+                   stroke="BLACK" strokeType="INSIDE" width="269.0"/>
+        <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#1f93ff00" height="171.0" layoutX="293.0" layoutY="49.0"
+                   stroke="BLACK" strokeType="INSIDE" width="303.0"/>
+        <ChoiceBox fx:id="cbChooseType" layoutX="313.0" layoutY="10.0" prefWidth="150.0"/>
+        <Label layoutX="137.0" layoutY="12.0" text="Choose type:">
+            <font>
+                <Font name="MS Outlook" size="18.0"/>
+            </font>
+        </Label>
+        <Button fx:id="btnSave" layoutX="28.0" layoutY="540.0" mnemonicParsing="false" onAction="#saveSelectedArticle"
+                prefHeight="17.0" prefWidth="136.0" text="Save">
+            <font>
+                <Font size="18.0"/>
+            </font>
+        </Button>
+        <Label layoutX="14.0" layoutY="89.0" text="Author:">
+            <font>
+                <Font name="MS Outlook" size="18.0"/>
+            </font>
+        </Label>
+        <TextField fx:id="txtAuthorName" layoutX="106.0" layoutY="91.0"/>
+        <TextField fx:id="txtAuthorSurname" layoutX="106.0" layoutY="158.0"/>
+        <Label layoutX="297.0" layoutY="105.0" text="Article:">
+            <font>
+                <Font name="MS Outlook" size="18.0"/>
+            </font>
+        </Label>
+        <TextField fx:id="txtArticleTitle" layoutX="441.0" layoutY="55.0"/>
+        <TextField fx:id="txtArticleJournal" layoutX="441.0" layoutY="104.0"/>
+        <ChoiceBox fx:id="cbArticleYear" layoutX="441.0" layoutY="149.0" prefHeight="25.0" prefWidth="149.0"/>
+        <Label layoutX="368.0" layoutY="56.0" text="Title:">
+            <font>
+                <Font name="MS Outlook" size="18.0"/>
+            </font>
+        </Label>
+        <Label layoutX="367.0" layoutY="105.0" text="Journal:">
+            <font>
+                <Font name="MS Outlook" size="18.0"/>
+            </font>
+        </Label>
+        <Label layoutX="369.0" layoutY="150.0" text="Year:">
+            <font>
+                <Font name="MS Outlook" size="18.0"/>
+            </font>
+        </Label>
+        <TableView fx:id="tblViewinProceedings" editable="true" layoutX="2.0" layoutY="289.0" prefHeight="237.0"
+                   prefWidth="295.0"/>
+        <Label layoutX="156.0" layoutY="65.0" text="Name">
+            <font>
+                <Font name="MS Outlook" size="18.0"/>
+            </font>
+        </Label>
+        <Label layoutX="145.0" layoutY="132.0" text="Surname">
+            <font>
+                <Font name="MS Outlook" size="18.0"/>
+            </font>
+        </Label>
+        <Label layoutX="106.0" layoutY="263.0" text="inProceedings:">
+            <font>
+                <Font name="MS Outlook" size="18.0"/>
+            </font>
+        </Label>
+        <TableView fx:id="tblViewArticle" editable="true" layoutX="308.0" layoutY="289.0" prefHeight="237.0"
+                   prefWidth="289.0"/>
+        <Label layoutX="406.0" layoutY="263.0" text="Article:">
+            <font>
+                <Font name="MS Outlook" size="18.0"/>
+            </font>
+        </Label>
+        <Button fx:id="btnAnotherBibtex" layoutX="418.0" layoutY="540.0" mnemonicParsing="false"
+                onAction="#anotherBibtex" text="Add another bibtex">
+            <font>
+                <Font size="18.0"/>
+            </font>
+        </Button>
+        <CheckBox fx:id="cbFilterByYear" layoutX="389.0" layoutY="183.0" mnemonicParsing="false" text="Filter by year?">
+            <font>
+                <Font name="MS Outlook" size="18.0"/>
+            </font>
+        </CheckBox>
+        <CheckBox fx:id="cbSaveCompact" layoutX="408.0" layoutY="231.0" mnemonicParsing="false" text="Save compact">
+            <font>
+                <Font name="MS Outlook" size="18.0"/>
+            </font>
+        </CheckBox>
+        <Button fx:id="btnFilter" layoutX="273.0" layoutY="230.0" mnemonicParsing="false" onAction="#filter"
+                text="Filter">
+            <font>
+                <Font name="MS Outlook" size="18.0"/>
+            </font>
+        </Button>
+    </children>
 </Pane>
