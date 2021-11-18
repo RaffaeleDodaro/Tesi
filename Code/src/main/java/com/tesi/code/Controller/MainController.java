@@ -43,15 +43,15 @@ public class MainController {
 
     @FXML
     void export(ActionEvent event) throws IOException {
-        load("export");
+        loadScene("export");
     }
 
-    private String downloadFile () throws IOException {
+    private String downloadFile() throws IOException {
         StringBuilder res = new StringBuilder();
         try {
             BufferedInputStream inputStream = new BufferedInputStream(new URL(txtUrl.getText()).openStream());
             BufferedReader br = new BufferedReader(new InputStreamReader(inputStream));
-            while(br.ready()) {
+            while (br.ready()) {
                 res.append(br.readLine());
                 res.append(System.lineSeparator());
             }
@@ -78,44 +78,40 @@ public class MainController {
         if (loaded || !txtTextArea.getText().equalsIgnoreCase("") || !txtUrl.getText().equalsIgnoreCase("")) {
             if (!txtTextArea.getText().equalsIgnoreCase(""))
                 gp.parsering(null, txtTextArea.getText());
-            else if(!txtUrl.getText().equalsIgnoreCase(""))
-            {
-                System.out.println("QUIII");
-                String res=downloadFile();
-                if(res.equalsIgnoreCase(""))
+            else if (!txtUrl.getText().equalsIgnoreCase("")) {
+                String res = downloadFile();
+                if (res.equalsIgnoreCase("")) {
                     JOptionPane.showMessageDialog(null, "Errore nella lettura dell'url del file", "ERROR", JOptionPane.INFORMATION_MESSAGE);
-                else
+                    return;
+                } else
                     gp.parsering(null, res);
-            }
-            else
+            } else
                 gp.parsering(file, "");
 
             if (gp.getType().equalsIgnoreCase(Utility.inProceedings))
-                //loadTypeBib(Utility.inProceedings);
-                load(Utility.inProceedings);
+                loadScene(Utility.inProceedings);
             else
-                load(Utility.article);
+                loadScene(Utility.article);
         }
     }
 
 
-    private void load(String type) throws IOException {
+    private void loadScene(String type) throws IOException {
         Stage stage = (Stage) btnLoad.getScene().getWindow();
         FXMLLoader fxmlLoader = new FXMLLoader(Main.class.getResource(type + ".fxml"));
 
-        if (!type.equalsIgnoreCase("export")) {
-            if (!type.equalsIgnoreCase("inproceedings")) {
-                ScrollPane root = fxmlLoader.load();
-                Scene scene = new Scene(root, 689, 357);
-                stage.setScene(scene);
-            } else {
-                ScrollPane root = fxmlLoader.load();
-                Scene scene = new Scene(root, 647, 447);
-                stage.setScene(scene);
-            }
-        } else {
+        if (type.equalsIgnoreCase("export")) {
             Pane root = (Pane) fxmlLoader.load();
             Scene scene = new Scene(root, 600, 600);
+            stage.setScene(scene);
+        } else {
+            ScrollPane root = fxmlLoader.load();
+            Scene scene;
+            if (type.equalsIgnoreCase("inproceedings"))
+                scene = new Scene(root, 695, 447);
+            else
+                scene = new Scene(root, 695, 371);
+
             stage.setScene(scene);
         }
 

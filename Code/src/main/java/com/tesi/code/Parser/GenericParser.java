@@ -67,10 +67,10 @@ public class GenericParser {
         doi=find("doi\\s+\\=\\s+\\{([\\s\\S]*?)\\},",conc);
         journal=find("journal\\s+\\=\\s+\\{([\\s\\S]*?)\\},",conc);
     }
+
     private String find(String p,String row)
     {
-        Pattern pattern = Pattern.compile(p);
-        Matcher matcher = pattern.matcher(row);
+        Matcher matcher = Pattern.compile(p).matcher(row);
         if (matcher.find())
             return matcher.group(1).replaceAll("\\s{2,100}", " ");
         return "";

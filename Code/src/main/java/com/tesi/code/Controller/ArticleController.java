@@ -4,6 +4,8 @@ import com.tesi.code.*;
 import com.tesi.code.Model.Author;
 import com.tesi.code.Parser.GenericParser;
 import javafx.event.ActionEvent;
+import javafx.event.Event;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
@@ -36,12 +38,6 @@ public class ArticleController implements Initializable {
     private TextField txtShortTitle;
 
     @FXML
-    private Button btnSave;
-
-    @FXML
-    private Button btnAnotherBibtex;
-
-    @FXML
     private TextField txtEditor;
 
     @FXML
@@ -51,11 +47,13 @@ public class ArticleController implements Initializable {
     private GridPane grd;
 
     private ArrayList<TextField> allTextField = new ArrayList<TextField>();
+    private final Button btnSave = new Button("Save");
+    private final Button btnAddAnotherBibtex = new Button("Add Another BibTeX");
 
-    @FXML
-    void anotherBibtex(ActionEvent event) throws IOException {
-        Stage stage = (Stage) btnAnotherBibtex.getScene().getWindow();
-        FXMLLoader fxmlLoader = new FXMLLoader(Main.class.getResource("ChooseFile.fxml"));
+
+    void anotherBibtex() throws IOException {
+        Stage stage = (Stage) btnAddAnotherBibtex.getScene().getWindow();
+        FXMLLoader fxmlLoader = new FXMLLoader(Main.class.getResource(Utility.chooseFile + ".fxml"));
         Pane root = (Pane) fxmlLoader.load();
         Scene scene = new Scene(root, 600, 442);
         stage.setTitle("Tesi");
@@ -64,8 +62,7 @@ public class ArticleController implements Initializable {
         stage.show();
     }
 
-    @FXML
-    void save(ActionEvent event) throws ClassNotFoundException {
+    void save() throws ClassNotFoundException {
         Database db = Database.getInstance();
         File file = new FileHandler().getFile();
         GenericParser gp = GenericParser.getInstance();
@@ -105,6 +102,35 @@ public class ArticleController implements Initializable {
         grd.getChildren().clear();
         for (int i = 0; i < db.getAuthors().size(); i++)
             loadAuthors(i, db);
+
+        btnSave.setFont(new Font("System", 19));
+        btnAddAnotherBibtex.setFont(new Font("System", 19));
+
+        grd.add(btnSave, 2, db.getAuthors().size());
+        grd.add(btnAddAnotherBibtex, 3, db.getAuthors().size());
+
+        btnSave.setOnAction(new EventHandler() {
+            @Override
+            public void handle(Event event) {
+                try {
+                    save();
+                } catch (ClassNotFoundException e) {
+                    e.printStackTrace();
+                }
+            }
+
+        });
+        btnAddAnotherBibtex.setOnAction(new EventHandler() {
+            @Override
+            public void handle(Event event) {
+                try {
+                    anotherBibtex();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+
+        });
     }
 
     private void loadAuthors(int i, Database db) {
@@ -118,7 +144,7 @@ public class ArticleController implements Initializable {
 
         Label labelSurname = new Label();
         labelSurname.setFont(new Font("MS Outlook", 22));
-        labelSurname.setText(Utility.surname);
+        labelSurname.setText("    " + Utility.surname);
 
         TextField name = new TextField(db.getAuthors().get(i).getName());
         name.setFont(new Font("MS Outlook", 18));

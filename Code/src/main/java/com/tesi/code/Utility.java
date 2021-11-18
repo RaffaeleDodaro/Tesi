@@ -26,4 +26,5 @@ public class Utility {
     public static final String all="all";
     public static final String author="Author";
     public static final String editor="Editor";
+    public static final String chooseFile="ChooseFile";
 }

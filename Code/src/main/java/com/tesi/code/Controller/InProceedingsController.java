@@ -5,6 +5,8 @@ import com.tesi.code.Model.Author;
 import com.tesi.code.Model.Editor;
 import com.tesi.code.Parser.GenericParser;
 import javafx.event.ActionEvent;
+import javafx.event.Event;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
@@ -40,12 +42,6 @@ public class InProceedingsController implements Initializable {
     private TextField txtAddress;
 
     @FXML
-    private Button btnSave;
-
-    @FXML
-    private Button btnAnotherBibtex;
-
-    @FXML
     private TextField txtEditor;
 
     @FXML
@@ -55,13 +51,13 @@ public class InProceedingsController implements Initializable {
     private GridPane grd;
 
     private ArrayList<TextField> allTextAuthor = new ArrayList<TextField>();
-
     private ArrayList<TextField> allTextEditor = new ArrayList<TextField>();
+    private final Button btnSave = new Button("Save");
+    private final Button btnAddAnotherBibtex = new Button("Add Another BibTeX");
 
-    @FXML
-    void anotherBibtex(ActionEvent event) throws IOException {
-        Stage stage = (Stage) btnAnotherBibtex.getScene().getWindow();
-        FXMLLoader fxmlLoader = new FXMLLoader(Main.class.getResource("ChooseFile.fxml"));
+    void anotherBibtex() throws IOException {
+        Stage stage = (Stage) btnAddAnotherBibtex.getScene().getWindow();
+        FXMLLoader fxmlLoader = new FXMLLoader(Main.class.getResource(Utility.chooseFile + ".fxml"));
         Pane root = (Pane) fxmlLoader.load();
         Scene scene = new Scene(root, 600, 442);
         stage.setTitle("Tesi".toUpperCase(Locale.ROOT));
@@ -70,8 +66,7 @@ public class InProceedingsController implements Initializable {
         stage.show();
     }
 
-    @FXML
-    void save(ActionEvent event) {
+    void save() {
         Database db = Database.getInstance();
         GenericParser gp = GenericParser.getInstance();
 
@@ -86,22 +81,24 @@ public class InProceedingsController implements Initializable {
 
         db.openConnection(Utility.inProceedings);
         db.createTableInProceedings();
-        if (!txtShortTitle.getText().equalsIgnoreCase("") && !txtAddress.getText().equalsIgnoreCase(""))
+
+        if (!txtShortTitle.getText().equalsIgnoreCase("") && !txtAddress.getText().equalsIgnoreCase("")) {
             if (db.insertIntoDBInProceedings(gp.getYear(), gp.getPages(), gp.getDblp(), txtTitle.getText(), gp.getVolume(), txtShortTitle.getText(), gp.getUrl(),
                     txtAddress.getText(), gp.getPublisher(), gp.getSeries(), gp.getBooktitle(), gp.getDoi())) {
-                db.closeConnection();
                 btnSave.setVisible(false);
-                JOptionPane.showMessageDialog(null, "Article correctly saved", "Saved", JOptionPane.INFORMATION_MESSAGE);
+                JOptionPane.showMessageDialog(null, "Article correctly saved", "SAVED", JOptionPane.INFORMATION_MESSAGE);
             } else
-                JOptionPane.showMessageDialog(null, "Article exists in database", "Error", JOptionPane.INFORMATION_MESSAGE);
+                JOptionPane.showMessageDialog(null, "Article exists in database", "ERROR", JOptionPane.INFORMATION_MESSAGE);
+        }
+
         else if (txtShortTitle.getText().equalsIgnoreCase(""))
             JOptionPane.showMessageDialog(null, "Insert short title", "ERROR", JOptionPane.INFORMATION_MESSAGE);
+
         else if (txtAddress.getText().equalsIgnoreCase(""))
             JOptionPane.showMessageDialog(null, "Insert address", "ERROR", JOptionPane.INFORMATION_MESSAGE);
         db.closeConnection();
     }
 
-    @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         GenericParser gp = GenericParser.getInstance();
 
@@ -122,20 +119,45 @@ public class InProceedingsController implements Initializable {
             load(i, db, "Author", 0);
         for (int i = 0; i < db.getEditors().size(); i++)
             load(i, db, "Editor", db.getAuthors().size() + i);
+
+        btnSave.setFont(new Font("System", 19));
+        btnAddAnotherBibtex.setFont(new Font("System", 19));
+
+        grd.add(btnSave, 2, db.getAuthors().size() + db.getEditors().size());
+        grd.add(btnAddAnotherBibtex, 3, db.getAuthors().size() + db.getEditors().size());
+
+        btnSave.setOnAction(new EventHandler() {
+            @Override
+            public void handle(Event event) {
+                save();
+            }
+
+        });
+        btnAddAnotherBibtex.setOnAction(new EventHandler() {
+            @Override
+            public void handle(Event event) {
+                try {
+                    anotherBibtex();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+
+        });
     }
 
     private void load(int i, Database db, String type, int sum) {
         Label labelType = new Label();
-        labelType.setFont(new Font("MS Outlook", 18));
-        labelType.setText(type+":");
+        labelType.setFont(new Font("MS Outlook", 22));
+        labelType.setText(type + ":");
 
         Label labelName = new Label();
-        labelName.setFont(new Font("MS Outlook", 18));
+        labelName.setFont(new Font("MS Outlook", 22));
         labelName.setText(Utility.name);
 
         Label labelSurname = new Label();
-        labelSurname.setFont(new Font("MS Outlook", 18));
-        labelSurname.setText(Utility.surname);
+        labelSurname.setFont(new Font("MS Outlook", 22));
+        labelSurname.setText("    " + Utility.surname);
 
         TextField name;
         TextField surname;
@@ -154,9 +176,7 @@ public class InProceedingsController implements Initializable {
             grd.add(name, 2, i);
             grd.add(labelSurname, 3, i);
             grd.add(surname, 4, i);
-        }
-        else
-        {
+        } else {
             grd.add(labelType, 0, sum);
             grd.add(labelName, 1, sum);
             grd.add(name, 2, sum);
