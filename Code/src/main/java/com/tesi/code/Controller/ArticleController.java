@@ -4,6 +4,8 @@ import com.tesi.code.*;
 import com.tesi.code.Model.Author;
 import com.tesi.code.Parser.GenericParser;
 import javafx.event.ActionEvent;
+import javafx.event.Event;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
@@ -13,6 +15,7 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
+import javafx.scene.layout.RowConstraints;
 import javafx.scene.text.Font;
 import javafx.stage.Stage;
 
@@ -35,26 +38,22 @@ public class ArticleController implements Initializable {
     private TextField txtShortTitle;
 
     @FXML
-    private Button btnSave;
-
-    @FXML
-    private Button btnAnotherBibtex;
-
-    @FXML
     private TextField txtEditor;
 
     @FXML
     private TextField txtAuthor;
 
     @FXML
-    private GridPane grdpane;
+    private GridPane grd;
 
     private ArrayList<TextField> allTextField = new ArrayList<TextField>();
+    private final Button btnSave = new Button("Save");
+    private final Button btnAddAnotherBibtex = new Button("Add Another BibTeX");
 
-    @FXML
-    void anotherBibtex(ActionEvent event) throws IOException {
-        Stage stage = (Stage) btnAnotherBibtex.getScene().getWindow();
-        FXMLLoader fxmlLoader = new FXMLLoader(Main.class.getResource("ChooseFile.fxml"));
+
+    void anotherBibtex() throws IOException {
+        Stage stage = (Stage) btnAddAnotherBibtex.getScene().getWindow();
+        FXMLLoader fxmlLoader = new FXMLLoader(Main.class.getResource(Utility.chooseFile + ".fxml"));
         Pane root = (Pane) fxmlLoader.load();
         Scene scene = new Scene(root, 600, 442);
         stage.setTitle("Tesi");
@@ -63,8 +62,7 @@ public class ArticleController implements Initializable {
         stage.show();
     }
 
-    @FXML
-    void save(ActionEvent event) throws ClassNotFoundException {
+    void save() throws ClassNotFoundException {
         Database db = Database.getInstance();
         File file = new FileHandler().getFile();
         GenericParser gp = GenericParser.getInstance();
@@ -101,59 +99,65 @@ public class ArticleController implements Initializable {
         db.getAuthors().clear();
         db.calculateAuthor(gp.getAuthor());
 
-        grdpane.getChildren().clear();
+        grd.getChildren().clear();
         for (int i = 0; i < db.getAuthors().size(); i++)
             loadAuthors(i, db);
+
+        btnSave.setFont(new Font("System", 19));
+        btnAddAnotherBibtex.setFont(new Font("System", 19));
+
+        grd.add(btnSave, 2, db.getAuthors().size());
+        grd.add(btnAddAnotherBibtex, 3, db.getAuthors().size());
+
+        btnSave.setOnAction(new EventHandler() {
+            @Override
+            public void handle(Event event) {
+                try {
+                    save();
+                } catch (ClassNotFoundException e) {
+                    e.printStackTrace();
+                }
+            }
+
+        });
+        btnAddAnotherBibtex.setOnAction(new EventHandler() {
+            @Override
+            public void handle(Event event) {
+                try {
+                    anotherBibtex();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+
+        });
     }
 
     private void loadAuthors(int i, Database db) {
-        Label labelAuthor = new Label();
-        labelAuthor.setFont(new Font("System", 27));
-        labelAuthor.setText("Author");
+        Label labelType = new Label();
+        labelType.setFont(new Font("MS Outlook", 22));
+        labelType.setText("Author:");
 
         Label labelName = new Label();
-        labelName.setFont(new Font("System", 27));
-        labelName.setText("Name");
+        labelName.setFont(new Font("MS Outlook", 22));
+        labelName.setText(Utility.name);
 
         Label labelSurname = new Label();
-        labelSurname.setFont(new Font("System", 27));
-        labelSurname.setText("Surname");
+        labelSurname.setFont(new Font("MS Outlook", 22));
+        labelSurname.setText("    " + Utility.surname);
 
         TextField name = new TextField(db.getAuthors().get(i).getName());
-        name.setFont(new Font("System", 12));
+        name.setFont(new Font("MS Outlook", 18));
 
         TextField surname = new TextField(db.getAuthors().get(i).getSurname());
-        surname.setFont(new Font("System", 12));
+        surname.setFont(new Font("MS Outlook", 18));
 
-        Pane paneAuthor = new Pane();
-        Pane paneLabelName = new Pane();
-        Pane paneShowName = new Pane();
-        Pane paneLabelSurname = new Pane();
-        Pane paneShowSurname = new Pane();
-
-        paneAuthor.setPrefWidth(50);
-        paneAuthor.setPrefHeight(50);
-
-        paneShowName.setPrefWidth(366);
-        paneShowName.setPrefHeight(25);
-
-        paneLabelName.setPrefWidth(366);
-        paneLabelName.setPrefHeight(25);
-
-        paneLabelSurname.setPrefWidth(366);
-        paneLabelSurname.setPrefHeight(25);
-
-        paneAuthor.getChildren().add(labelAuthor);
-        paneShowName.getChildren().add(name);
-        paneLabelSurname.getChildren().add(labelSurname);
-        paneLabelName.getChildren().add(labelName);
-        paneShowSurname.getChildren().add(surname);
-
-        grdpane.add(paneAuthor, 0, i);
-        grdpane.add(paneLabelName, 1, i);
-        grdpane.add(paneShowName, 2, i);
-        grdpane.add(paneLabelSurname, 3, i);
-        grdpane.add(paneShowSurname, 4, i);
+        grd.add(labelType, 0, i);
+        grd.add(labelName, 1, i);
+        grd.add(name, 2, i);
+        grd.add(labelSurname, 3, i);
+        grd.add(surname, 4, i);
+        grd.getRowConstraints().add(new RowConstraints(40));
 
         allTextField.add(surname);
         allTextField.add(name);
