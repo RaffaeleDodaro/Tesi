@@ -331,7 +331,6 @@ public class Database {
                 return;
             Statement stmt = c.createStatement();
 
-            //if(filteredArticlesInProceedings.size()==0) {
             ResultSet rs = stmt.executeQuery(
                     "SELECT DISTINCT ARTICLE.DBLP,YEAR,PAGES,TITLE,VOLUME," +
                             "SHORT_TITLE,URL,ADDRESS,PUBLISHER,SERIES,BOOKTITLE,DOI,AUTHOR.SURNAME,AUTHOR.NAME," +
@@ -360,25 +359,15 @@ public class Database {
                 String surnameEditor = rs.getString("SURNAME");
                 String nameEditor = rs.getString("NAME");
 
-                //lista di autori
                 if (!oldDblp.equalsIgnoreCase(dblp)) {
                     authors = new ArrayList<>();
                     editors = new ArrayList<>();
                     readingAuthorInProceedings(dblp, authors);
                     readingEditorInProceedings(dblp, editors);
                     filteredArticlesInProceedings.add(new inProceedings(Utility.inProceedings, year, pages, dblp, title, volume, shortTitle, url, booktitle, doi, authors, publisher, series, address, editors));
-                    System.out.println("YEAR: " + year + " PAGES: " + pages + " TITLE: " + title + " VOLUME: " + volume + " SHORT TITLE: " + shortTitle + " URL: " + url +
-                            " DOI: " + doi + " DBLP: " + dblp + " nameAuthor: " + nameAuthor + " surnameAuthor: " + surnameAuthor + " nameEditor: "
-                            + nameEditor + " surnameEditor: " + surnameEditor);
                 }
                 oldDblp = dblp;
             }
-
-            //}
-            //else {
-            //rifiltraggio
-
-            //}
             stmt.close();
         } catch (Exception e) {
             e.printStackTrace();
@@ -687,9 +676,8 @@ public class Database {
             PreparedStatement stmt = null;
 
             String oldDblp = "";
-//            filteredArticlesInProceedings.clear();
 
-            ArrayList<Article> filteredArticle=(ArrayList)filteredArticlesArticle.clone();;
+            ArrayList<Article> filteredArticle=(ArrayList)filteredArticlesArticle.clone();
             filteredArticlesArticle.clear();
 
 
@@ -770,8 +758,6 @@ public class Database {
                 }
             }
             stmt.close();
-            if (filteredArticlesArticle.size() == 0) {
-            }
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -781,19 +767,17 @@ public class Database {
         try {
             if (c == null || c.isClosed())
                 return;
-            if(filteredArticlesInProceedings.size()==0) {
+            if(filteredArticlesInProceedings.size()==0)
                 return;
-            }
-            ArrayList<inProceedings> filteredArticle=(ArrayList<inProceedings>) filteredArticlesInProceedings.clone();;
+
+            ArrayList<inProceedings> filteredArticle=(ArrayList<inProceedings>) filteredArticlesInProceedings.clone();
             filteredArticlesInProceedings.clear();
 
             PreparedStatement stmt = null;
 
             String oldDblp = "";
-            System.out.println("RIGA 962: " + filteredArticle.size());
 
             for (inProceedings a : filteredArticle) {
-                System.out.println("DATABASE RIGA 964");
                 if (!title.equalsIgnoreCase("")) {
                     if (year != -1) {
                         stmt = c.prepareStatement("SELECT * FROM ARTICLE,AUTHOR,WRITTENBY" +
@@ -811,7 +795,6 @@ public class Database {
                     stmt.setString(1, a.getDblp());
                     stmt.setString(2, "%" + title + "%");
                 } else {
-                    System.out.println("DATABASE RIGA 977");
                     if (year != -1) {
                         stmt = c.prepareStatement("SELECT * FROM ARTICLE,AUTHOR " +
                                 " WHERE ARTICLE.DBLP==(?)" +
@@ -826,17 +809,13 @@ public class Database {
                 }
                 ResultSet rs = stmt.executeQuery();
                 while (rs.next()) {
-                    if (!oldDblp.equals(a.getDblp())) {
+                    if (!oldDblp.equals(a.getDblp()))
                         filteredArticlesInProceedings.add(a);
-                    }
                     oldDblp = a.getDblp();
                 }
             }
             stmt.close();
 
-            System.out.println("RIGA 994: " + filteredArticlesInProceedings.size());
-            if (filteredArticlesInProceedings.size() == 0) {
-            }
         } catch (Exception e) {
             e.printStackTrace();
         }

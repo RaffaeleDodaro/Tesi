@@ -22,6 +22,5 @@ public class FileHandler extends Component {
         JFileChooser chooser = new JFileChooser();
         chooser.showOpenDialog(FileHandler.this);
         file = chooser.getSelectedFile();
-        System.out.println(file.getName());
     }
 }

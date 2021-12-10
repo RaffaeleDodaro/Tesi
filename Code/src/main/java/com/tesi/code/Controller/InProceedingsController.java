@@ -4,7 +4,6 @@ import com.tesi.code.*;
 import com.tesi.code.Model.Author;
 import com.tesi.code.Model.Editor;
 import com.tesi.code.Parser.GenericParser;
-import javafx.event.ActionEvent;
 import javafx.event.Event;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
@@ -116,9 +115,9 @@ public class InProceedingsController implements Initializable {
         grd.getChildren().clear();
 
         for (int i = 0; i < db.getAuthors().size(); i++)
-            load(i, db, "Author", 0);
+            loadInformation(i, db, "Author", 0);
         for (int i = 0; i < db.getEditors().size(); i++)
-            load(i, db, "Editor", db.getAuthors().size() + i);
+            loadInformation(i, db, "Editor", db.getAuthors().size() + i);
 
         btnSave.setFont(new Font("System", 19));
         btnAddAnotherBibtex.setFont(new Font("System", 19));
@@ -146,7 +145,7 @@ public class InProceedingsController implements Initializable {
         });
     }
 
-    private void load(int i, Database db, String type, int sum) {
+    private void loadInformation(int i, Database db, String type, int sum) {
         Label labelType = new Label();
         labelType.setFont(new Font("MS Outlook", 22));
         labelType.setText(type + ":");

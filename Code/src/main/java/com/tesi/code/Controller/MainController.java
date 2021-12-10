@@ -57,10 +57,8 @@ public class MainController {
             }
         } catch (IOException e) {
             JOptionPane.showMessageDialog(null, "Errore nella lettura dell'url del file", "ERROR", JOptionPane.INFORMATION_MESSAGE);
-
             return "";
         }
-        System.out.println(res.toString());
         return res.toString();
     }
 
@@ -102,7 +100,7 @@ public class MainController {
 
         if (type.equalsIgnoreCase("export")) {
             Pane root = (Pane) fxmlLoader.load();
-            Scene scene = new Scene(root, 600, 600);
+            Scene scene = new Scene(root, 641, 593);
             stage.setScene(scene);
         } else {
             ScrollPane root = fxmlLoader.load();
